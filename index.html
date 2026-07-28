@@ -3,16 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<!-- ========== PWA / 桌面安装 ========== -->
-<meta name="theme-color" content="#4f9d3a">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="暑假任务">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<!-- ================================== -->
 <title>🌻 植物大战僵尸 · 暑假任务大作战</title>
 <style>
 :root{
@@ -68,19 +58,6 @@ header{
 }
 .card-title{font-size:15px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;}
 .card-title small{font-weight:400; color:var(--ink-light); font-size:11.5px; margin-left:auto;}
-/* ---------- PWA 安装引导卡片 ---------- */
-.install-card{
-  background:linear-gradient(135deg,#7ac74f,#4f9d3a); color:#fff;
-  border-radius:var(--radius); padding:14px; margin-bottom:12px;
-  box-shadow:var(--shadow);
-}
-.install-card h4{font-size:15px; font-weight:800; margin-bottom:6px; display:flex; align-items:center; gap:6px;}
-.install-card p{font-size:12px; line-height:1.7; opacity:.96; margin-bottom:10px;}
-.install-card .platform-tip{
-  font-size:11px; margin-top:8px; opacity:.95;
-  background:rgba(255,255,255,.18); border-radius:10px; padding:8px 10px;
-}
-.hidden{display:none !important;}
 /* ---------- 进度 & 统计 ---------- */
 .progress-wrap{background:#eef5e6; border-radius:999px; height:16px; overflow:hidden; position:relative;}
 .progress-bar{
@@ -402,14 +379,6 @@ body.role-child .role-tip.parent-tip{display:none;}
 
 <!-- ================= 更多 ================= -->
 <div class="page" id="page-more">
-  <div class="card install-card" id="installCard">
-    <h4>📲 添加到手机桌面</h4>
-    <p>安装后像普通 App 一样从桌面图标打开，体验更好，离线也能用。</p>
-    <button class="btn" style="width:100%; box-shadow:0 2px 0 rgba(0,0,0,.15);" id="installBtn" onclick="installApp()">⬇️ 安装到桌面</button>
-    <div class="platform-tip" id="iosTip">iOS 用户：点 Safari 底部「分享」按钮，再选「添加到主屏幕」。</div>
-    <div class="platform-tip hidden" id="installedTip">✅ 已通过桌面图标安装，当前正以独立 App 模式运行。</div>
-  </div>
-
   <div class="more-item" onclick="openModal('pomoModal')">
     <span class="m-icon">🍅</span><span class="m-name">学习番茄钟</span><span class="m-arrow">›</span>
   </div>
@@ -425,8 +394,7 @@ body.role-child .role-tip.parent-tip{display:none;}
       · 数据保存在本机浏览器里，刷新不丢失<br>
       · 孩子模式无法切回家长，需要家长密码<br>
       · 初始家长密码：<b>8888</b>（可在设置修改）<br>
-      · 每晚由家长点击「模拟结算」进行僵尸判定<br>
-      · 已支持安装到手机桌面，图标是可爱的 🌻 向日葵
+      · 每晚由家长点击「模拟结算」进行僵尸判定
     </div>
   </div>
 </div>
@@ -640,48 +608,6 @@ function closeModal(id){ $(id).classList.remove("show"); }
 document.querySelectorAll(".mask").forEach(function(m){
   m.addEventListener("click", function(e){ if(e.target === m) m.classList.remove("show"); });
 });
-
-/* ==================== PWA / 安装到桌面 ==================== */
-var deferredPrompt = null;
-function isStandalone(){
-  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-}
-window.addEventListener("beforeinstallprompt", function(e){
-  e.preventDefault();
-  deferredPrompt = e;
-  var btn = $("installBtn"), tip = $("iosTip");
-  if(btn) btn.style.display = "block";
-  if(tip) tip.style.display = "none";
-});
-window.addEventListener("appinstalled", function(){
-  toast("安装完成！可从桌面图标打开 🎉");
-  updateInstallUI();
-  deferredPrompt = null;
-});
-function updateInstallUI(){
-  if(!isStandalone()) return;
-  var btn = $("installBtn"), ios = $("iosTip"), ok = $("installedTip");
-  if(btn) btn.style.display = "none";
-  if(ios) ios.style.display = "none";
-  if(ok) ok.classList.remove("hidden");
-}
-async function installApp(){
-  if(!deferredPrompt){
-    toast("当前环境不支持自动安装，请用浏览器菜单「添加到主屏幕」");
-    return;
-  }
-  deferredPrompt.prompt();
-  var r = await deferredPrompt.userChoice;
-  if(r.outcome === "accepted"){
-    toast("已接受安装，稍后在桌面查看图标 🌻");
-  }else{
-    toast("安装已取消");
-  }
-  deferredPrompt = null;
-}
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js").catch(function(e){ console.log("SW register failed", e); });
-}
 
 /* ==================== 导航 ==================== */
 function go(btn){
@@ -1230,7 +1156,6 @@ load();
 applyRole();
 renderAll();
 updatePomoUI();
-updateInstallUI();
 $("fPwd").addEventListener("keydown", function(e){ if(e.key==="Enter") checkPwd(); });
 </script>
 </body>
