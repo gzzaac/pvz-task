@@ -135,11 +135,11 @@ header{
 /* ---------- 花园 ---------- */
 .garden-grid{
   display:grid;
-  grid-template-columns: repeat(6, 1fr);  /* 改为一行6块 */
-  gap:6px;  /* 适当缩小间距 */
+  grid-template-columns: repeat(6, 1fr);
+  gap:6px;
   background:linear-gradient(160deg,#8bc34a33,#68a03733);
   border:3px dashed #9ccc65; border-radius:16px;
-  padding:8px;  /* 稍微减小内边距 */
+  padding:8px;
 }
 .plot{
   aspect-ratio:1/1; border-radius:13px; cursor:pointer; position:relative;
@@ -148,7 +148,7 @@ header{
     linear-gradient(160deg,#a5d6a7,#7cb56e);
   box-shadow:inset 0 -4px 0 rgba(70,110,50,.25);
   display:flex; align-items:center; justify-content:center;
-  font-size:26px;  /* 图标稍小以适应6列 */
+  font-size:26px;
   transition:.15s;
 }
 .plot:active{transform:scale(.93);}
@@ -532,7 +532,7 @@ body.role-child .role-tip.parent-tip{display:none;}
   </div>
 </div>
 
-<!-- ========== 弹窗：设置 ========== -->
+<!-- ========== 弹窗：设置（家长） ========== -->
 <div class="mask" id="setModal">
   <div class="modal">
     <h3>⚙️ 家长设置 <button class="close-x" onclick="closeModal('setModal')">✕</button></h3>
@@ -546,12 +546,19 @@ body.role-child .role-tip.parent-tip{display:none;}
       <input type="number" id="fDayNum" min="1" max="999">
     </div>
     <button class="btn" style="width:100%;margin-bottom:10px;" onclick="changeDay()">📅 保存天数</button>
-    <!-- 花园地块数量调整 -->
     <div class="form-group">
       <label>花园地块数量（1~30）</label>
       <input type="number" id="fPlotCount" min="1" max="30">
     </div>
     <button class="btn" style="width:100%;margin-bottom:10px;" onclick="changePlotCount()">🌱 调整地块</button>
+
+    <!-- 导出导入按钮 -->
+    <div class="btn-row" style="margin-bottom:10px;">
+      <button class="btn blue sm" onclick="exportData()">📤 导出全部数据</button>
+      <button class="btn blue sm" onclick="document.getElementById('importFileSettings').click()">📥 导入全部数据</button>
+    </div>
+    <input type="file" id="importFileSettings" accept=".json" style="display:none" onchange="importData(this)">
+
     <button class="btn red" style="width:100%;" onclick="resetAll()">🗑️ 清空全部数据（慎点）</button>
   </div>
 </div>
@@ -562,8 +569,57 @@ body.role-child .role-tip.parent-tip{display:none;}
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <script>
+/* ========== 反调试 & 禁用右键 / 快捷键 ========== */
+(function antiDebug() {
+    // 禁用右键菜单
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+
+    // 禁用开发者工具快捷键
+    document.addEventListener('keydown', function(e) {
+        // F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+Shift+I (开发者工具)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+Shift+J (控制台)
+        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+U (查看源码)
+        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // 干扰控制台打开（通过 debugger 检测调试状态）
+    function detectDevTools() {
+        var start = Date.now();
+        debugger;
+        var end = Date.now();
+        if (end - start > 100) {
+            // 如果 debugger 执行时间过长，说明处于调试模式
+            console.clear();
+            console.log('%c⚠️ 检测到开发者工具，请关闭后再使用', 'font-size:16px;color:red;');
+            // 可加入更激进的干扰，但为了不卡死，仅做提示和清空控制台
+        }
+        setTimeout(detectDevTools, 2000);
+    }
+    // 延迟启动，避免影响页面加载
+    setTimeout(detectDevTools, 1500);
+})();
+
+/* ==================== 业务代码 ==================== */
 "use strict";
-/* ==================== 常量 ==================== */
 var LS_KEY = "pvz_summer_garden_v1";
 var CATS = [
   {id:"study", name:"学习", icon:"📚", cls:"tag-study"},
@@ -591,7 +647,7 @@ var DEFAULT_SHOP = [
   {id:uid(), icon:"🧸", name:"小玩具一个", cost:300},
   {id:uid(), icon:"🎡", name:"周末游乐园一次", cost:800}
 ];
-var SHOP_EDIT_INDEX = -1;  // -1 表示新增
+var SHOP_EDIT_INDEX = -1;
 
 /* ==================== 状态 ==================== */
 var S = null;
@@ -605,7 +661,7 @@ function defaultState(){
       {id:uid(), name:"跳绳 200 个", cat:"sport", diff:"mid", done:false},
       {id:uid(), name:"帮忙收拾碗筷", cat:"chore", diff:"easy", done:false}
     ],
-    garden:new Array(12).fill(null),  // 默认12块
+    garden:new Array(12).fill(null),
     plotCount:12,
     logs:[], invasions:[],
     shopItems: JSON.parse(JSON.stringify(DEFAULT_SHOP))
@@ -617,7 +673,6 @@ function load(){
     var raw = localStorage.getItem(LS_KEY);
     if(raw){
       S = JSON.parse(raw);
-      // 兼容旧数据
       if(!S.shopItems || !Array.isArray(S.shopItems)){
         S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP));
       }else{
@@ -626,7 +681,6 @@ function load(){
       if(!S.plotCount || typeof S.plotCount !== "number" || S.plotCount < 1){
         S.plotCount = 12;
       }
-      // 保证 garden 长度与 plotCount 一致
       if(!S.garden || !Array.isArray(S.garden)){
         S.garden = new Array(S.plotCount).fill(null);
       }else if(S.garden.length !== S.plotCount){
@@ -842,7 +896,6 @@ function importData(input){
       }else{
         S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); });
       }
-      // 确保长度一致
       if(S.garden.length !== S.plotCount){
         var old = S.garden;
         S.garden = new Array(S.plotCount);
@@ -954,7 +1007,6 @@ function doSettle(){
   var lines = [];
   var oldStreak = S.streak;
 
-  // 1) 向日葵产阳光（遍历整个花园）
   var sfCount = 0;
   for(var i=0; i<S.garden.length; i++){
     var c = S.garden[i];
@@ -986,7 +1038,6 @@ function doSettle(){
     lines.push("🧟 有 "+undone.length+" 个任务没完成，"+zombies+" 只僵尸来袭！");
     addLog("🧟","第 "+S.day+" 天有任务未完成，"+zombies+" 只僵尸入侵花园！");
 
-    // ① 一次性植物
     for(var j=0; j<S.garden.length && zombies>0; j++){
       var cell = S.garden[j];
       if(cell){
@@ -1000,7 +1051,6 @@ function doSettle(){
         }
       }
     }
-    // ② 射手
     if(zombies > 0){
       for(var k=0; k<S.garden.length && zombies>0; k++){
         var cell2 = S.garden[k];
@@ -1014,7 +1064,6 @@ function doSettle(){
       }
       if(zombies < 0) zombies = 0;
     }
-    // ③ 剩余僵尸啃植物
     if(zombies <= 0){
       lines.push("🛡️ 植物防线成功守住了花园！");
       addLog("🛡️","植物防线击退全部僵尸，花园守住了！");
@@ -1163,7 +1212,7 @@ function pomoReset(){
   updatePomoUI();
 }
 
-/* ==================== 商城（增强：家长可编辑） ==================== */
+/* ==================== 商城 ==================== */
 function renderShop(){
   var items = S.shopItems || [];
   if(!items.length){
@@ -1260,7 +1309,7 @@ function saveShopItem(){
   toast("商品已保存 ✅");
 }
 
-/* ==================== 设置（新增地块调整） ==================== */
+/* ==================== 设置 ==================== */
 function openSettings(){
   $("fNewPwd").value = "";
   $("fDayNum").value = S.day;
@@ -1284,7 +1333,6 @@ function changePlotCount(){
   var n = parseInt($("fPlotCount").value, 10);
   if(!n || n < 1 || n > 30){ toast("请输入 1-30"); return; }
   if(n === S.plotCount){ toast("数量未变化"); return; }
-  // 调整 garden 数组长度
   var old = S.garden || [];
   S.plotCount = n;
   var newGarden = new Array(n);
