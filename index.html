@@ -43,9 +43,11 @@ header{
 }
 .role-btn{
   background:rgba(255,255,255,.22); border:1.5px solid rgba(255,255,255,.55);
-  color:#fff; font-weight:700; font-size:13px;
-  padding:5px 11px; border-radius:999px; cursor:pointer;
+  color:#fff; font-weight:700; font-size:12px;      /* 将 13px 改为 12px 或更小 */
+  padding:4px 10px;      /* 将 5px 11px 改为 4px 10px，减小内边距 */
+  border-radius:999px; cursor:pointer;
   font-family:inherit;
+  white-space:nowrap;       /* 增加这一行，强制文字不换行 */
 }
 .h-sub{margin-top:8px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px; opacity:.95;}
 /* ---------- 页面容器 ---------- */
