@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🌻 植物大战僵尸 · 暑假任务大作战</title>
+<title>🌻 我的阳光花园保卫战</title>
 <style>
 :root{
   --green:#5cb85c; --green-deep:#3e8e41; --green-light:#a8e063;
@@ -129,13 +129,17 @@ header{
 .btn.blue:active{box-shadow:0 1px 0 #2f74ba;}
 .btn.red{background:linear-gradient(135deg,#ff7b6b,#e74c3c); box-shadow:0 3px 0 #bb3a2c;}
 .btn.sm{padding:8px 12px; font-size:13px; border-radius:12px;}
+.btn.xs{padding:4px 8px; font-size:11px; border-radius:9px; min-width:28px;}
 .btn-row{display:flex; gap:8px; flex-wrap:wrap;}
 .btn-row .btn{flex:1; min-width:96px;}
 /* ---------- 花园 ---------- */
 .garden-grid{
-  display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+  display:grid;
+  grid-template-columns: repeat(6, 1fr);  /* 改为一行6块 */
+  gap:6px;  /* 适当缩小间距 */
   background:linear-gradient(160deg,#8bc34a33,#68a03733);
-  border:3px dashed #9ccc65; border-radius:16px; padding:10px;
+  border:3px dashed #9ccc65; border-radius:16px;
+  padding:8px;  /* 稍微减小内边距 */
 }
 .plot{
   aspect-ratio:1/1; border-radius:13px; cursor:pointer; position:relative;
@@ -144,13 +148,14 @@ header{
     linear-gradient(160deg,#a5d6a7,#7cb56e);
   box-shadow:inset 0 -4px 0 rgba(70,110,50,.25);
   display:flex; align-items:center; justify-content:center;
-  font-size:30px; transition:.15s;
+  font-size:26px;  /* 图标稍小以适应6列 */
+  transition:.15s;
 }
 .plot:active{transform:scale(.93);}
-.plot.empty::after{content:"➕"; font-size:15px; opacity:.4;}
+.plot.empty::after{content:"➕"; font-size:14px; opacity:.4;}
 .plot .hp{
-  position:absolute; bottom:3px; right:5px; font-size:9px; font-weight:800;
-  background:#fff; color:#c0392b; border-radius:999px; padding:0 5px;
+  position:absolute; bottom:2px; right:3px; font-size:8px; font-weight:800;
+  background:#fff; color:#c0392b; border-radius:999px; padding:0 4px;
 }
 .plot .p-emoji{filter:drop-shadow(0 2px 2px rgba(0,0,0,.2)); animation:bounceIn .4s;}
 @keyframes bounceIn{0%{transform:scale(0);}60%{transform:scale(1.25);}100%{transform:scale(1);}}
@@ -239,10 +244,11 @@ nav{
 .pomo-label{font-size:12px; color:var(--ink-light);}
 /* 商城 */
 .shop-item{display:flex; align-items:center; gap:10px; padding:11px; border:1.5px solid #e4f0d8; border-radius:14px; margin-bottom:8px;}
-.shop-icon{font-size:27px;}
+.shop-icon{font-size:27px; width:40px; text-align:center; flex-shrink:0;}
 .shop-info{flex:1;}
 .shop-name{font-weight:800; font-size:14px;}
 .shop-cost{font-size:12px; color:#b8860b; font-weight:700;}
+.shop-ops{display:flex; gap:4px; flex-shrink:0;}
 /* 更多列表 */
 .more-item{
   display:flex; align-items:center; gap:12px; background:#fff; border-radius:15px;
@@ -281,14 +287,14 @@ body.role-child .role-tip.parent-tip{display:none;}
 
 <header>
   <div class="h-top">
-    <div class="h-title">🌻 暑假任务大作战</div>
+    <div class="h-title">🌻 我的阳光花园保卫战</div>
     <div class="h-right">
       <div class="sun-badge" id="sunBadge">☀️ <span id="sunCount">0</span></div>
       <button class="role-btn" id="roleBtn" onclick="toggleRole()">👧 孩子</button>
     </div>
   </div>
   <div class="h-sub">
-    <span id="dayLabel">🏖️ 暑假第 1 天</span>
+    <span id="dayLabel">🌻 第 1 天</span>
     <span id="dateLabel"></span>
   </div>
 </header>
@@ -395,6 +401,10 @@ body.role-child .role-tip.parent-tip{display:none;}
       · 孩子模式无法切回家长，需要家长密码<br>
       · 初始家长密码：<b>8888</b>（可在设置修改）<br>
       · 每晚由家长点击「模拟结算」进行僵尸判定
+      <!-- 不蒜子统计 -->
+      <div style="font-size:11px; color:#aab8a2; margin-top:8px; border-top:1px dashed #e4f0d8; padding-top:8px;">
+        总访问量：<span id="busuanzi_value_site_pv"></span> 次
+      </div>
     </div>
   </div>
 </div>
@@ -491,8 +501,34 @@ body.role-child .role-tip.parent-tip{display:none;}
 <div class="mask" id="shopModal">
   <div class="modal">
     <h3>🛒 阳光商城 <button class="close-x" onclick="closeModal('shopModal')">✕</button></h3>
-    <div style="font-size:12px;color:var(--ink-light);margin-bottom:10px;">用攒下的阳光兑换小奖励，兑换后找家长领取哦～</div>
+    <div style="font-size:12px;color:var(--ink-light);margin-bottom:10px;">
+      用攒下的阳光兑换小奖励，兑换后找家长领取哦～
+      <span class="parent-only" style="display:inline-block;margin-left:8px;color:var(--green-deep);font-weight:700;">🧑‍🌾 家长可编辑商品</span>
+    </div>
     <div id="shopBox"></div>
+    <div class="parent-only" style="margin-top:10px;">
+      <button class="btn" style="width:100%;" onclick="openShopEdit(-1)">➕ 新增商品</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 弹窗：编辑商品（商城） ========== -->
+<div class="mask" id="shopEditModal">
+  <div class="modal">
+    <h3 id="shopEditTitle">✏️ 编辑商品 <button class="close-x" onclick="closeModal('shopEditModal')">✕</button></h3>
+    <div class="form-group">
+      <label>图标（emoji）</label>
+      <input type="text" id="fShopIcon" maxlength="4" placeholder="例如：🍦" value="🎁">
+    </div>
+    <div class="form-group">
+      <label>商品名称</label>
+      <input type="text" id="fShopName" maxlength="20" placeholder="例如：冰淇淋一支">
+    </div>
+    <div class="form-group">
+      <label>兑换价格（☀️ 阳光）</label>
+      <input type="number" id="fShopCost" min="1" max="9999" placeholder="例如：80">
+    </div>
+    <button class="btn" style="width:100%;" onclick="saveShopItem()">💾 保存商品</button>
   </div>
 </div>
 
@@ -506,15 +542,24 @@ body.role-child .role-tip.parent-tip{display:none;}
     </div>
     <button class="btn blue" style="width:100%;margin-bottom:10px;" onclick="changePwd()">🔑 保存新密码</button>
     <div class="form-group">
-      <label>暑假天数调整</label>
-      <input type="number" id="fDayNum" min="1" max="99">
+      <label>保卫战天数调整</label>
+      <input type="number" id="fDayNum" min="1" max="999">
     </div>
     <button class="btn" style="width:100%;margin-bottom:10px;" onclick="changeDay()">📅 保存天数</button>
+    <!-- 花园地块数量调整 -->
+    <div class="form-group">
+      <label>花园地块数量（1~30）</label>
+      <input type="number" id="fPlotCount" min="1" max="30">
+    </div>
+    <button class="btn" style="width:100%;margin-bottom:10px;" onclick="changePlotCount()">🌱 调整地块</button>
     <button class="btn red" style="width:100%;" onclick="resetAll()">🗑️ 清空全部数据（慎点）</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- 不蒜子统计脚本 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <script>
 "use strict";
@@ -539,14 +584,14 @@ var PLANTS = [
   {id:"potatomine",name:"土豆地雷",icon:"🥔", cost:25,  streak:7,  hp:1, kill:1, oneshot:true, desc:"一次性：炸飞 1 只僵尸后消失"},
   {id:"cherrybomb",name:"樱桃炸弹",icon:"🍒", cost:150, streak:10, hp:1, kill:3, oneshot:true, desc:"一次性：轰飞最多 3 只僵尸后消失"}
 ];
-var SHOP = [
-  {icon:"🍦", name:"冰淇淋一支", cost:80},
-  {icon:"📺", name:"动画片 30 分钟", cost:120},
-  {icon:"🎮", name:"游戏时间 30 分钟", cost:150},
-  {icon:"🧸", name:"小玩具一个", cost:300},
-  {icon:"🎡", name:"周末游乐园一次", cost:800}
+var DEFAULT_SHOP = [
+  {id:uid(), icon:"🍦", name:"冰淇淋一支", cost:80},
+  {id:uid(), icon:"📺", name:"动画片 30 分钟", cost:120},
+  {id:uid(), icon:"🎮", name:"游戏时间 30 分钟", cost:150},
+  {id:uid(), icon:"🧸", name:"小玩具一个", cost:300},
+  {id:uid(), icon:"🎡", name:"周末游乐园一次", cost:800}
 ];
-var PLOT_COUNT = 12;
+var SHOP_EDIT_INDEX = -1;  // -1 表示新增
 
 /* ==================== 状态 ==================== */
 var S = null;
@@ -560,15 +605,39 @@ function defaultState(){
       {id:uid(), name:"跳绳 200 个", cat:"sport", diff:"mid", done:false},
       {id:uid(), name:"帮忙收拾碗筷", cat:"chore", diff:"easy", done:false}
     ],
-    garden:new Array(PLOT_COUNT).fill(null),
-    logs:[], invasions:[]
+    garden:new Array(12).fill(null),  // 默认12块
+    plotCount:12,
+    logs:[], invasions:[],
+    shopItems: JSON.parse(JSON.stringify(DEFAULT_SHOP))
   };
 }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function load(){
   try{
     var raw = localStorage.getItem(LS_KEY);
-    if(raw){ S = JSON.parse(raw); if(!S.garden || S.garden.length !== PLOT_COUNT){ S.garden = new Array(PLOT_COUNT).fill(null); } return; }
+    if(raw){
+      S = JSON.parse(raw);
+      // 兼容旧数据
+      if(!S.shopItems || !Array.isArray(S.shopItems)){
+        S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP));
+      }else{
+        S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); });
+      }
+      if(!S.plotCount || typeof S.plotCount !== "number" || S.plotCount < 1){
+        S.plotCount = 12;
+      }
+      // 保证 garden 长度与 plotCount 一致
+      if(!S.garden || !Array.isArray(S.garden)){
+        S.garden = new Array(S.plotCount).fill(null);
+      }else if(S.garden.length !== S.plotCount){
+        var old = S.garden;
+        S.garden = new Array(S.plotCount);
+        for(var i=0; i<S.plotCount; i++){
+          S.garden[i] = (i < old.length) ? old[i] : null;
+        }
+      }
+      return;
+    }
   }catch(e){}
   S = defaultState();
   addLog("🌞","欢迎来到阳光花园！完成任务赚阳光，种植物防僵尸吧！");
@@ -752,7 +821,7 @@ function exportData(){
   var blob = new Blob([JSON.stringify(S, null, 2)], {type:"application/json"});
   var a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "暑假任务大作战_备份_第"+S.day+"天.json";
+  a.download = "阳光花园保卫战_备份_第"+S.day+"天.json";
   a.click();
   URL.revokeObjectURL(a.href);
   toast("已导出备份文件 📤");
@@ -766,7 +835,21 @@ function importData(input){
       if(!data || !Array.isArray(data.tasks)) throw new Error("bad");
       if(!confirm("导入将覆盖当前全部数据，确定吗？")) { input.value=""; return; }
       S = data;
-      if(!S.garden || S.garden.length!==PLOT_COUNT) S.garden = new Array(PLOT_COUNT).fill(null);
+      if(!S.garden || !Array.isArray(S.garden)) S.garden = new Array(12).fill(null);
+      if(!S.plotCount || S.plotCount < 1) S.plotCount = 12;
+      if(!S.shopItems || !Array.isArray(S.shopItems)){
+        S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP));
+      }else{
+        S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); });
+      }
+      // 确保长度一致
+      if(S.garden.length !== S.plotCount){
+        var old = S.garden;
+        S.garden = new Array(S.plotCount);
+        for(var i=0; i<S.plotCount; i++){
+          S.garden[i] = (i < old.length) ? old[i] : null;
+        }
+      }
       addLog("📥","导入了备份数据");
       save(); applyRole(); renderAll();
       toast("导入成功 ✅");
@@ -781,7 +864,9 @@ var pickPlotIdx = -1;
 var shovel = false;
 function renderGarden(){
   var html = "";
-  S.garden.forEach(function(cell, i){
+  var count = S.plotCount || 12;
+  for(var i=0; i<count; i++){
+    var cell = S.garden[i] || null;
     if(cell){
       var p = getPlant(cell.p);
       html += '<div class="plot" onclick="plotClick('+i+')"><span class="p-emoji">'+p.icon+'</span>'
@@ -789,10 +874,11 @@ function renderGarden(){
     }else{
       html += '<div class="plot empty" onclick="plotClick('+i+')"></div>';
     }
-  });
+  }
   $("gardenGrid").innerHTML = html;
 }
 function plotClick(i){
+  if(i >= S.garden.length) return;
   var cell = S.garden[i];
   if(cell){
     var p = getPlant(cell.p);
@@ -833,7 +919,7 @@ function renderPlantPick(){
 function plantAt(pid){
   var p = getPlant(pid);
   if(S.sun < p.cost){ toast("阳光不够啦 ☀️ 快去完成任务！"); return; }
-  if(pickPlotIdx < 0 || S.garden[pickPlotIdx]){ closeModal("plantModal"); return; }
+  if(pickPlotIdx < 0 || pickPlotIdx >= S.garden.length || S.garden[pickPlotIdx]){ closeModal("plantModal"); return; }
   S.sun -= p.cost;
   S.garden[pickPlotIdx] = {p:pid, hp:p.hp};
   addLog("🌱","种下了一棵 "+p.icon+p.name+"（消耗 ☀️"+p.cost+"）");
@@ -868,8 +954,12 @@ function doSettle(){
   var lines = [];
   var oldStreak = S.streak;
 
-  // 1) 向日葵产阳光
-  var sfCount = S.garden.filter(function(c){ return c && c.p==="sunflower"; }).length;
+  // 1) 向日葵产阳光（遍历整个花园）
+  var sfCount = 0;
+  for(var i=0; i<S.garden.length; i++){
+    var c = S.garden[i];
+    if(c && c.p==="sunflower") sfCount++;
+  }
   if(sfCount > 0){
     var produced = sfCount * 15;
     S.sun += produced;
@@ -884,7 +974,6 @@ function doSettle(){
     lines.push("🎉 今日任务全部完成，僵尸不敢进攻！");
     lines.push("🔥 连续达标 "+S.streak+" 天");
     addLog("🛡️","第 "+S.day+" 天任务全清，花园安然无恙！连续达标 "+S.streak+" 天");
-    // 解锁检查
     PLANTS.forEach(function(p){
       if(p.streak > 0 && oldStreak < p.streak && S.streak >= p.streak){
         lines.push("🎁 解锁新植物："+p.icon+" "+p.name+"！");
@@ -897,31 +986,32 @@ function doSettle(){
     lines.push("🧟 有 "+undone.length+" 个任务没完成，"+zombies+" 只僵尸来袭！");
     addLog("🧟","第 "+S.day+" 天有任务未完成，"+zombies+" 只僵尸入侵花园！");
 
-    // ① 一次性植物先炸
-    for(var i=0; i<S.garden.length && zombies>0; i++){
-      var c = S.garden[i];
-      if(c){
-        var p = getPlant(c.p);
+    // ① 一次性植物
+    for(var j=0; j<S.garden.length && zombies>0; j++){
+      var cell = S.garden[j];
+      if(cell){
+        var p = getPlant(cell.p);
         if(p.oneshot){
           var k = Math.min(p.kill, zombies);
           zombies -= k;
-          S.garden[i] = null;
+          S.garden[j] = null;
           lines.push("💥 "+p.icon+" "+p.name+" 引爆，炸飞 "+k+" 只僵尸！");
           addLog("💥",p.icon+p.name+" 英勇引爆，炸飞 "+k+" 只僵尸");
         }
       }
     }
-    // ② 射手开火
+    // ② 射手
     if(zombies > 0){
-      S.garden.forEach(function(c){
-        if(c && zombies > 0){
-          var p = getPlant(c.p);
-          if(p.kill && !p.oneshot){
-            zombies -= p.kill;
-            lines.push("🎯 "+p.icon+" "+p.name+" 击退 1 只僵尸！");
+      for(var k=0; k<S.garden.length && zombies>0; k++){
+        var cell2 = S.garden[k];
+        if(cell2){
+          var p2 = getPlant(cell2.p);
+          if(p2.kill && !p2.oneshot){
+            zombies -= p2.kill;
+            lines.push("🎯 "+p2.icon+" "+p2.name+" 击退 1 只僵尸！");
           }
         }
-      });
+      }
       if(zombies < 0) zombies = 0;
     }
     // ③ 剩余僵尸啃植物
@@ -931,23 +1021,25 @@ function doSettle(){
     }else{
       for(var z=0; z<zombies; z++){
         var idxs = [];
-        S.garden.forEach(function(c, i){ if(c) idxs.push(i); });
+        for(var m=0; m<S.garden.length; m++){
+          if(S.garden[m]) idxs.push(m);
+        }
         if(!idxs.length){
           lines.push("😱 花园已经空空如也，僵尸扬长而去…");
           break;
         }
         var pick = idxs[Math.floor(Math.random()*idxs.length)];
-        var cell = S.garden[pick];
-        var pp = getPlant(cell.p);
-        cell.hp--;
-        if(cell.hp <= 0){
+        var cell3 = S.garden[pick];
+        var pp = getPlant(cell3.p);
+        cell3.hp--;
+        if(cell3.hp <= 0){
           S.garden[pick] = null;
           eaten.push(pp);
           lines.push("😭 "+pp.icon+" "+pp.name+" 被僵尸吃掉了…");
           addLog("💀","一棵 "+pp.icon+pp.name+" 被僵尸吃掉了");
         }else{
-          lines.push("🌰 "+pp.icon+" "+pp.name+" 被咬了一口（剩 ❤️"+cell.hp+"）");
-          addLog("🩹",pp.icon+pp.name+" 被僵尸咬了一口，还剩 "+cell.hp+" 点耐久");
+          lines.push("🌰 "+pp.icon+" "+pp.name+" 被咬了一口（剩 ❤️"+cell3.hp+"）");
+          addLog("🩹",pp.icon+pp.name+" 被僵尸咬了一口，还剩 "+cell3.hp+" 点耐久");
         }
       }
     }
@@ -955,17 +1047,15 @@ function doSettle(){
     if(S.invasions.length > 30) S.invasions.length = 30;
   }
 
-  // 渲染结算剧场
   var stage = safe
     ? '<div>🌙 第 '+S.day+' 天 · 夜幕降临</div><div class="big">🌻🛡️✨</div><div style="font-weight:800;font-size:17px;">花园平安无事！</div>'
     : '<div>🌙 第 '+S.day+' 天 · 夜幕降临</div><div class="big">🧟🧟‍♂️🧟‍♀️</div><div style="font-weight:800;font-size:17px;color:#ffb3a7;">僵尸入侵了花园！</div>';
   stage += '<div class="settle-lines">'+ lines.map(function(l){ return esc(l); }).join("<br>") +'</div>';
   $("settleStage").innerHTML = stage;
 
-  // 进入新的一天：任务重置
   S.day++;
   S.tasks.forEach(function(t){ t.done = false; });
-  addLog("🌅","新的一天开始了！今天是暑假第 "+S.day+" 天");
+  addLog("🌅","新的一天开始了！今天是第 "+S.day+" 天");
 
   save(); renderAll();
   if(!safe){
@@ -982,7 +1072,6 @@ function renderBattle(){
   var plants = S.garden.filter(function(c){ return c; });
   $("btPlants").textContent = plants.length;
 
-  // 阵容
   var counts = {};
   plants.forEach(function(c){ counts[c.p] = (counts[c.p]||0)+1; });
   var lh = "";
@@ -995,16 +1084,14 @@ function renderBattle(){
   });
   $("lineupBox").innerHTML = lh || '<div class="empty-hint">🌵 花园还是空的，快去种第一棵植物吧！</div>';
 
-  // 入侵记录
   var ih = "";
   S.invasions.forEach(function(v){
     ih += '<div class="log-item"><span class="log-icon">🧟</span><div>'
-       + '<div>暑假第 '+v.day+' 天：'+v.undone+' 个任务未完成，损失 '+v.lost+' 棵植物</div>'
+       + '<div>第 '+v.day+' 天：'+v.undone+' 个任务未完成，损失 '+v.lost+' 棵植物</div>'
        + '<div class="log-time">'+fmtTime(v.t)+'</div></div></div>';
   });
   $("invasionBox").innerHTML = ih || '<div class="empty-hint">🎉 太棒了，还没有僵尸攻进来过！</div>';
 
-  // 解锁进度
   var uh = "";
   PLANTS.forEach(function(p){
     if(p.streak > 0){
@@ -1024,7 +1111,7 @@ function renderLog(){
   var html = "";
   S.logs.forEach(function(l){
     html += '<div class="log-item"><span class="log-icon">'+l.icon+'</span><div>'
-      + '<div>'+esc(l.text)+'</div><div class="log-time">暑假第 '+l.day+' 天 · '+fmtTime(l.t)+'</div></div></div>';
+      + '<div>'+esc(l.text)+'</div><div class="log-time">第 '+l.day+' 天 · '+fmtTime(l.t)+'</div></div></div>';
   });
   $("logBox").innerHTML = html || '<div class="empty-hint">还没有事件记录</div>';
 }
@@ -1043,7 +1130,7 @@ function updatePomoUI(){
   $("pomoTime").textContent = (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
   var pct = (1 - pomoLeft/(pomoMin*60)) * 360;
   $("pomoCircle").style.background = "conic-gradient(var(--green) "+pct+"deg, #e8f0e0 "+pct+"deg)";
-  document.title = pomoRunning ? "🍅 "+$("pomoTime").textContent+" 专注中" : "🌻 植物大战僵尸 · 暑假任务大作战";
+  document.title = pomoRunning ? "🍅 "+$("pomoTime").textContent+" 专注中" : "🌻 我的阳光花园保卫战";
 }
 function pomoStartPause(){
   if(pomoRunning){
@@ -1076,32 +1163,108 @@ function pomoReset(){
   updatePomoUI();
 }
 
-/* ==================== 商城 ==================== */
+/* ==================== 商城（增强：家长可编辑） ==================== */
 function renderShop(){
+  var items = S.shopItems || [];
+  if(!items.length){
+    $("shopBox").innerHTML = '<div class="empty-hint">🛒 商城还是空的，家长可以添加商品哦～</div>';
+    return;
+  }
   var html = "";
-  SHOP.forEach(function(it, i){
-    var can = S.sun >= it.cost;
-    html += '<div class="shop-item"><span class="shop-icon">'+it.icon+'</span>'
-      + '<div class="shop-info"><div class="shop-name">'+it.name+'</div>'
-      + '<div class="shop-cost">☀️ '+it.cost+' 阳光</div></div>'
-      + '<button class="btn sm'+(can?"":" gray")+'" onclick="buyShop('+i+')">'+(can?"兑换":"不够")+'</button></div>';
+  var isParent = (S.role === "parent");
+  items.forEach(function(item, idx){
+    var can = S.sun >= item.cost;
+    html += '<div class="shop-item">'
+      + '<span class="shop-icon">'+(item.icon || "🎁")+'</span>'
+      + '<div class="shop-info">'
+      +   '<div class="shop-name">'+esc(item.name)+'</div>'
+      +   '<div class="shop-cost">☀️ '+item.cost+' 阳光</div>'
+      + '</div>'
+      + '<div class="shop-ops">'
+      +   (isParent ? '<button class="btn xs blue" onclick="openShopEdit('+idx+')" title="编辑">✏️</button>' : '')
+      +   (isParent ? '<button class="btn xs red" onclick="deleteShopItem('+idx+')" title="删除">🗑️</button>' : '')
+      +   '<button class="btn sm'+(can?"":" gray")+'" onclick="buyShop('+idx+')">'+(can?"兑换":"☀️不足")+'</button>'
+      + '</div>'
+      + '</div>';
   });
   $("shopBox").innerHTML = html;
 }
-function buyShop(i){
-  var it = SHOP[i];
-  if(S.sun < it.cost){ toast("阳光还不够，继续加油 💪"); return; }
-  if(!confirm("确定用 ☀️"+it.cost+" 兑换「"+it.name+"」吗？")) return;
-  S.sun -= it.cost;
-  addLog("🎁","用 ☀️"+it.cost+" 阳光兑换了 "+it.icon+"「"+it.name+"」，记得找家长领取！");
-  save(); renderAll(); renderShop();
-  toast("兑换成功！找家长领奖励吧 "+it.icon);
+
+function buyShop(idx){
+  var items = S.shopItems || [];
+  if(idx < 0 || idx >= items.length){ toast("商品不存在 🥲"); return; }
+  var item = items[idx];
+  if(S.sun < item.cost){ toast("阳光不够哦，继续攒吧 💪"); return; }
+  if(!confirm("确定用 ☀️"+item.cost+" 兑换「"+item.name+"」吗？")) return;
+  S.sun -= item.cost;
+  addLog("🎁","用 ☀️"+item.cost+" 阳光兑换了 "+(item.icon||"🎁")+"「"+item.name+"」，找家长领取！");
+  save(); renderAll();
+  if($("shopModal").classList.contains("show")) renderShop();
+  toast("兑换成功！找家长领奖励吧 "+ (item.icon||"🎁"));
 }
 
-/* ==================== 设置 ==================== */
+function openShopEdit(idx){
+  SHOP_EDIT_INDEX = idx;
+  var items = S.shopItems || [];
+  if(idx >= 0 && idx < items.length){
+    var item = items[idx];
+    $("shopEditTitle").firstChild.textContent = "✏️ 编辑商品 ";
+    $("fShopIcon").value = item.icon || "🎁";
+    $("fShopName").value = item.name || "";
+    $("fShopCost").value = item.cost || 1;
+  }else{
+    $("shopEditTitle").firstChild.textContent = "➕ 新增商品 ";
+    $("fShopIcon").value = "🎁";
+    $("fShopName").value = "";
+    $("fShopCost").value = 1;
+  }
+  openModal("shopEditModal");
+}
+
+function deleteShopItem(idx){
+  var items = S.shopItems || [];
+  if(idx < 0 || idx >= items.length){ toast("商品不存在 🥲"); return; }
+  var item = items[idx];
+  if(!confirm("确定删除商品「"+item.name+"」吗？")) return;
+  items.splice(idx, 1);
+  S.shopItems = items;
+  addLog("🗑️","家长删除了商城商品「"+item.name+"」");
+  save();
+  renderAll();
+  if($("shopModal").classList.contains("show")) renderShop();
+  toast("已删除商品");
+}
+
+function saveShopItem(){
+  var icon = $("fShopIcon").value.trim() || "🎁";
+  var name = $("fShopName").value.trim();
+  var cost = parseInt($("fShopCost").value, 10);
+  if(!name){ toast("请输入商品名称 ✍️"); return; }
+  if(isNaN(cost) || cost < 1){ toast("请输入有效的价格（≥1）"); return; }
+  var items = S.shopItems || [];
+  if(SHOP_EDIT_INDEX >= 0 && SHOP_EDIT_INDEX < items.length){
+    var item = items[SHOP_EDIT_INDEX];
+    item.icon = icon;
+    item.name = name;
+    item.cost = cost;
+    addLog("✏️","家长编辑了商城商品「"+name+"」");
+  }else{
+    items.push({id:uid(), icon:icon, name:name, cost:cost});
+    addLog("➕","家长新增了商城商品「"+name+"」（☀️"+cost+"）");
+  }
+  S.shopItems = items;
+  save();
+  closeModal("shopEditModal");
+  renderAll();
+  if($("shopModal").classList.contains("show")) renderShop();
+  toast("商品已保存 ✅");
+}
+
+/* ==================== 设置（新增地块调整） ==================== */
 function openSettings(){
   $("fNewPwd").value = "";
   $("fDayNum").value = S.day;
+  $("fPlotCount").value = S.plotCount || 12;
   openModal("setModal");
 }
 function changePwd(){
@@ -1113,9 +1276,26 @@ function changePwd(){
 }
 function changeDay(){
   var n = parseInt($("fDayNum").value, 10);
-  if(!n || n < 1 || n > 99){ toast("请输入 1-99"); return; }
+  if(!n || n < 1 || n > 999){ toast("请输入 1-999"); return; }
   S.day = n; save(); renderAll();
-  toast("已调整为暑假第 "+n+" 天");
+  toast("已调整为第 "+n+" 天");
+}
+function changePlotCount(){
+  var n = parseInt($("fPlotCount").value, 10);
+  if(!n || n < 1 || n > 30){ toast("请输入 1-30"); return; }
+  if(n === S.plotCount){ toast("数量未变化"); return; }
+  // 调整 garden 数组长度
+  var old = S.garden || [];
+  S.plotCount = n;
+  var newGarden = new Array(n);
+  for(var i=0; i<n; i++){
+    newGarden[i] = (i < old.length) ? old[i] : null;
+  }
+  S.garden = newGarden;
+  save();
+  renderAll();
+  toast("花园地块已调整为 "+n+" 块 🌱");
+  closeModal("setModal");
 }
 function resetAll(){
   if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return;
@@ -1130,7 +1310,7 @@ function resetAll(){
 /* ==================== 总渲染 ==================== */
 function renderAll(){
   $("sunCount").textContent = S.sun;
-  $("dayLabel").textContent = "🏖️ 暑假第 " + S.day + " 天";
+  $("dayLabel").textContent = "🌻 第 " + S.day + " 天";
   var now = new Date();
   var weeks = ["日","一","二","三","四","五","六"];
   $("dateLabel").textContent = (now.getMonth()+1)+"月"+now.getDate()+"日 星期"+weeks[now.getDay()];
