@@ -198,11 +198,7 @@ body.role-child .role-tip.parent-tip{display:none;}
     <button class="btn" onclick="openTaskModal()">➕ 添加任务</button>
     <button class="btn warn" onclick="doSettle()">🌙 模拟结算</button>
   </div>
-  <div class="btn-row" style="margin-top:8px;">
-    <button class="btn blue sm" onclick="exportData()">📤 导出任务</button>
-    <button class="btn gray sm parent-only" onclick="document.getElementById('importFile').click()">📥 导入任务</button>
-  </div>
-  <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
+  <!-- 已删除导出/导入任务按钮，只保留设置中的 -->
 </div>
 
 <div class="page" id="page-garden">
@@ -351,9 +347,10 @@ body.role-child .role-tip.parent-tip{display:none;}
     <div class="form-group"><label>花园地块数量（1~42）</label><input type="number" id="fPlotCount" min="1" max="42"></div>
     <button class="btn" style="width:100%;margin-bottom:10px;" onclick="changePlotCount()">🌱 调整地块</button>
     <button class="btn" style="width:100%;margin-bottom:10px;" onclick="openWheelConfig()">🎰 转盘配置</button>
+    <!-- 修改：导出/导入按钮文字简化 -->
     <div class="btn-row" style="margin-bottom:10px;">
-      <button class="btn blue sm" onclick="exportData()">📤 导出全部数据</button>
-      <button class="btn blue sm" onclick="document.getElementById('importFileSettings').click()">📥 导入全部数据</button>
+      <button class="btn blue sm" onclick="exportData()">📤 导出数据</button>
+      <button class="btn blue sm" onclick="document.getElementById('importFileSettings').click()">📥 导入数据</button>
     </div>
     <input type="file" id="importFileSettings" accept=".json" style="display:none" onchange="importData(this)">
     <button class="btn red" style="width:100%;" onclick="resetAll()">🗑️ 清空全部数据（慎点）</button>
@@ -369,7 +366,6 @@ body.role-child .role-tip.parent-tip{display:none;}
       <canvas id="wheelCanvas" width="300" height="300"></canvas>
     </div>
     <div class="wheel-result" id="wheelResult">🎯 点击下方按钮试试手气</div>
-    <!-- 修改：兑换、当前阳光、机会三列 -->
     <div style="display:flex; justify-content:space-between; margin:10px 0; font-size:14px; align-items:center;">
       <span>☀️ 兑换：<span id="wheelCostDisplay">50</span> 阳光</span>
       <span style="color:var(--green-deep); font-weight:700;">☀️ 当前：<span id="wheelSunDisplay">0</span></span>
@@ -634,13 +630,12 @@ function openWheelModal() {
   renderWheelStatus();
   drawWheel();
   openModal('wheelModal');
-  // 始终保持初始提示
   document.getElementById('wheelResult').textContent = '🎯 点击下方按钮试试手气';
 }
 function renderWheelStatus() {
   document.getElementById('wheelSpinsDisplay').textContent = S.wheelSpins || 0;
   document.getElementById('wheelCostDisplay').textContent = S.wheel.cost || 50;
-  document.getElementById('wheelSunDisplay').textContent = S.sun; // 显示当前阳光数
+  document.getElementById('wheelSunDisplay').textContent = S.sun;
   var freeInfo = '';
   if (S.wheel.freeStreakEnabled && S.wheel.freeStreakDays > 0) {
     freeInfo = '连续达标 ' + S.wheel.freeStreakDays + ' 天送 1 次';
@@ -682,7 +677,6 @@ function drawWheel() {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // 文字水平正排，小字不加粗
     var midAngle = startAngle + angleStep/2;
     var textR = r * 0.65;
     var tx = cx + Math.cos(midAngle) * textR;
@@ -703,7 +697,6 @@ function drawWheel() {
     startAngle = endAngle;
   });
 
-  // 中心圆
   ctx.beginPath();
   ctx.arc(cx, cy, 30, 0, 2*Math.PI);
   ctx.fillStyle = '#fff';
@@ -734,7 +727,6 @@ function spinWheel() {
   isSpinning = true;
   document.getElementById('wheelSpinBtn').disabled = true;
 
-  // 根据概率选中
   var rand = Math.random() * totalProb;
   var cumulative = 0;
   var selectedIndex = 0;
@@ -743,7 +735,6 @@ function spinWheel() {
     if (rand <= cumulative) { selectedIndex = i; break; }
   }
 
-  // 计算旋转角度（使选中扇区对准指针）
   var angleStep = (2 * Math.PI) / prizes.length;
   var startAngle = -Math.PI/2;
   var selectedMidAngle = startAngle + selectedIndex * angleStep + angleStep/2;
@@ -771,9 +762,8 @@ function spinWheel() {
       S.wheel.totalSpins = (S.wheel.totalSpins || 0) + 1;
       save();
       var prize = prizes[selectedIndex];
-      // 仅执行奖品逻辑，不更新结果文字
       handlePrize(prize);
-      // 保持结果区域初始文字（不显示中奖信息）
+      // 保持结果区域初始提示
       document.getElementById('wheelResult').textContent = '🎯 点击下方按钮试试手气';
     }
   }
@@ -804,9 +794,8 @@ function handlePrize(prize) {
   }
   save();
   renderAll();
-  renderWheelStatus(); // 刷新阳光和机会显示
-  drawWheel(); // 刷新转盘（无变化）
-  // 不修改 wheelResult
+  renderWheelStatus();
+  drawWheel();
 }
 
 function buyWheelSpin() {
