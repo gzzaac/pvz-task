@@ -99,6 +99,11 @@ header{
 .btn.xs{padding:4px 8px; font-size:11px; border-radius:9px; min-width:28px;}
 .btn-row{display:flex; gap:8px; flex-wrap:wrap;}
 .btn-row .btn{flex:1; min-width:96px;}
+.setting-row{display:flex; gap:8px; align-items:center;}
+.setting-row .form-group{flex:1; margin-bottom:0;}
+.setting-row .btn{flex-shrink:0; min-width:72px; padding:8px 12px; font-size:13px;}
+.setting-divider{height:1px; background:linear-gradient(to right, transparent, #dcead0, transparent); margin:14px 0;}
+.setting-section-title{font-size:12px; color:var(--ink-light); font-weight:700; margin-bottom:8px; letter-spacing:1px;}
 .garden-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:6px; background:linear-gradient(160deg,#8bc34a33,#68a03733); border:3px dashed #9ccc65; border-radius:16px; padding:8px;}
 .plot{aspect-ratio:1/1; border-radius:13px; cursor:pointer; position:relative; background:radial-gradient(circle at 30% 25%, #c8e6a0 0 18%, transparent 19%),linear-gradient(160deg,#a5d6a7,#7cb56e); box-shadow:inset 0 -4px 0 rgba(70,110,50,.25); display:flex; align-items:center; justify-content:center; font-size:26px; transition:.15s;}
 .plot:active{transform:scale(.93);}
@@ -162,7 +167,6 @@ body.role-child .role-tip.parent-tip{display:none;}
 .toast{position:fixed; top:70px; left:50%; transform:translateX(-50%); background:rgba(50,70,45,.92); color:#fff; padding:9px 18px; border-radius:999px; font-size:13.5px; z-index:200; display:none; white-space:nowrap; max-width:90vw; box-shadow:0 4px 14px rgba(0,0,0,.25);}
 .sun-fly{position:fixed; z-index:300; font-size:26px; pointer-events:none; animation:sunFly 0.9s ease forwards;}
 @keyframes sunFly{0%{transform:scale(.5); opacity:0;}25%{transform:scale(1.3); opacity:1;}100%{transform:translate(40px,-120px) scale(.5); opacity:0;}}
-/* 转盘容器定位 */
 .wheel-container{
   position:relative;
   display:inline-block;
@@ -179,7 +183,6 @@ body.role-child .role-tip.parent-tip{display:none;}
   transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
   display:block;
 }
-/* 指针固定在底部，尖端朝上指向转盘中心 */
 .wheel-pointer{
   position:absolute;
   bottom:-6px;
@@ -345,16 +348,17 @@ body.role-child .role-tip.parent-tip{display:none;}
     <button class="btn" style="width:100%;" onclick="checkPwd()">✅ 确认</button>
   </div>
 </div>
+<!-- 番茄钟弹窗 -->
 <div class="mask" id="pomoModal">
   <div class="modal">
     <h3>🍅 学习番茄钟 <button class="close-x" onclick="closeModal('pomoModal')">✕</button></h3>
     <div class="chip-row" style="justify-content:center;" id="pomoChips">
-      <button class="chip" data-min="15" onclick="setPomo(15,this)">15 分钟</button>
-      <button class="chip on" data-min="25" onclick="setPomo(25,this)">25 分钟</button>
-      <button class="chip" data-min="45" onclick="setPomo(45,this)">45 分钟</button>
+      <button class="chip" data-min="10" onclick="setPomo(10,this)">10 分钟</button>
+      <button class="chip on" data-min="20" onclick="setPomo(20,this)">20 分钟</button>
+      <button class="chip" data-min="30" onclick="setPomo(30,this)">30 分钟</button>
     </div>
     <div class="pomo-circle" id="pomoCircle">
-      <div class="pomo-inner"><div class="pomo-time" id="pomoTime">25:00</div><div class="pomo-label">专注完成 +5 ☀️</div></div>
+      <div class="pomo-inner"><div class="pomo-time" id="pomoTime">20:00</div><div class="pomo-label">专注完成 +10 ☀️</div></div>
     </div>
     <div class="btn-row">
       <button class="btn" id="pomoStartBtn" onclick="pomoStartPause()">▶️ 开始专注</button>
@@ -379,22 +383,62 @@ body.role-child .role-tip.parent-tip{display:none;}
     <button class="btn" style="width:100%;" onclick="saveShopItem()">💾 保存商品</button>
   </div>
 </div>
+
+<!-- ========== 重新设计的家长设置弹窗 ========== -->
 <div class="mask" id="setModal">
   <div class="modal">
     <h3>⚙️ 家长设置 <button class="close-x" onclick="closeModal('setModal')">✕</button></h3>
-    <div class="form-group"><label>修改家长密码</label><input type="password" id="fNewPwd" inputmode="numeric" placeholder="输入新密码（4-8位）"></div>
-    <button class="btn blue" style="width:100%;margin-bottom:10px;" onclick="changePwd()">🔑 保存新密码</button>
-    <div class="form-group"><label>保卫战天数调整</label><input type="number" id="fDayNum" min="1" max="999"></div>
-    <button class="btn" style="width:100%;margin-bottom:10px;" onclick="changeDay()">📅 保存天数</button>
-    <div class="form-group"><label>花园地块数量（1~42）</label><input type="number" id="fPlotCount" min="1" max="42"></div>
-    <button class="btn" style="width:100%;margin-bottom:10px;" onclick="changePlotCount()">🌱 调整地块</button>
-    <button class="btn" style="width:100%;margin-bottom:10px;" onclick="openWheelConfig()">🎰 转盘配置</button>
-    <div class="btn-row" style="margin-bottom:10px;">
-      <button class="btn blue sm" onclick="exportData()">📤 导出数据</button>
-      <button class="btn blue sm" onclick="document.getElementById('importFileSettings').click()">📥 导入数据</button>
+
+    <!-- 区域一：账户安全 -->
+    <div class="setting-section-title">🔐 账户安全</div>
+    <div class="form-group">
+      <label>修改家长密码</label>
+      <div class="setting-row">
+        <input type="password" id="fNewPwd" inputmode="numeric" placeholder="输入新密码（4-8位）" style="flex:1;">
+        <button class="btn blue sm" onclick="changePwd()" style="flex-shrink:0; min-width:72px;">保存</button>
+      </div>
+    </div>
+
+    <div class="setting-divider"></div>
+
+    <!-- 区域二：游戏参数（天数+地块并列一行） -->
+    <div class="setting-section-title">🎮 游戏参数</div>
+    <div class="setting-row" style="gap:8px;">
+      <div class="form-group" style="flex:1; margin-bottom:0;">
+        <label>保卫战天数</label>
+        <input type="number" id="fDayNum" min="1" max="999">
+      </div>
+      <div class="form-group" style="flex:1; margin-bottom:0;">
+        <label>花园地块数</label>
+        <input type="number" id="fPlotCount" min="1" max="42">
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:6px;">
+      <button class="btn sm" onclick="changeDay()" style="flex:1;">📅 保存天数</button>
+      <button class="btn sm" onclick="changePlotCount()" style="flex:1;">🌱 调整地块</button>
+    </div>
+
+    <div class="setting-divider"></div>
+
+    <!-- 区域三：转盘配置 -->
+    <div class="setting-section-title">🎰 转盘管理</div>
+    <button class="btn" style="width:100%;" onclick="openWheelConfig()">🎰 转盘配置</button>
+
+    <div class="setting-divider"></div>
+
+    <!-- 区域四：数据管理 -->
+    <div class="setting-section-title">💾 数据管理</div>
+    <div class="btn-row" style="margin-bottom:4px;">
+      <button class="btn blue sm" onclick="exportData()" style="flex:1;">📤 导出数据</button>
+      <button class="btn blue sm" onclick="document.getElementById('importFileSettings').click()" style="flex:1;">📥 导入数据</button>
     </div>
     <input type="file" id="importFileSettings" accept=".json" style="display:none" onchange="importData(this)">
-    <button class="btn red" style="width:100%;" onclick="resetAll()">🗑️ 清空全部数据（慎点）</button>
+
+    <div class="setting-divider"></div>
+
+    <!-- 区域五：危险操作 -->
+    <div class="setting-section-title" style="color:var(--red);">⚠️ 危险操作</div>
+    <button class="btn red" style="width:100%;" onclick="resetAll()">🗑️ 清空全部数据</button>
   </div>
 </div>
 
@@ -405,7 +449,6 @@ body.role-child .role-tip.parent-tip{display:none;}
     <div style="text-align:center; position:relative;">
       <div class="wheel-container">
         <canvas id="wheelCanvas" width="300" height="300"></canvas>
-        <!-- 指针改为上三角 ▲，位置仍在底部 -->
         <div class="wheel-pointer">▲</div>
       </div>
     </div>
@@ -508,6 +551,7 @@ var DEFAULT_SHOP = [
 ];
 var SHOP_EDIT_INDEX = -1;
 var S = null;
+
 function defaultState(){
   return {
     ver:1, day:1, sun:50, streak:0, role:"child", pwd:"8888",
@@ -648,45 +692,108 @@ function renderBattle(){
 }
 function renderLog(){ var html = ""; S.logs.forEach(function(l){ html += '<div class="log-item"><span class="log-icon">'+l.icon+'</span><div><div>'+esc(l.text)+'</div><div class="log-time">第 '+l.day+' 天 · '+fmtTime(l.t)+'</div></div></div>'; }); $("logBox").innerHTML = html || '<div class="empty-hint">还没有事件记录</div>'; }
 
-var pomoMin = 25, pomoLeft = 25*60, pomoTimer = null, pomoRunning = false;
-function setPomo(min, btn){ if(pomoRunning){ toast("先暂停再切换时长哦"); return; } pomoMin = min; pomoLeft = min*60; document.querySelectorAll("#pomoChips .chip").forEach(function(c){ c.classList.remove("on"); }); btn.classList.add("on"); updatePomoUI(); }
-function updatePomoUI(){ var m = Math.floor(pomoLeft/60), s = pomoLeft%60; $("pomoTime").textContent = (m<10?"0"+m:m)+":"+(s<10?"0"+s:s); var pct = (1 - pomoLeft/(pomoMin*60)) * 360; $("pomoCircle").style.background = "conic-gradient(var(--green) "+pct+"deg, #e8f0e0 "+pct+"deg)"; document.title = pomoRunning ? "🍅 "+$("pomoTime").textContent+" 专注中" : "🌻 我的阳光花园保卫战"; }
-function pomoStartPause(){ if(pomoRunning){ clearInterval(pomoTimer); pomoRunning = false; $("pomoStartBtn").textContent = "▶️ 继续专注"; }else{ pomoRunning = true; $("pomoStartBtn").textContent = "⏸️ 暂停"; pomoTimer = setInterval(function(){ pomoLeft--; if(pomoLeft <= 0){ clearInterval(pomoTimer); pomoRunning = false; pomoLeft = 0; updatePomoUI(); S.sun += 5; addLog("🍅","完成一个 "+pomoMin+" 分钟番茄钟，奖励 ☀️5 阳光"); save(); renderAll(); $("pomoStartBtn").textContent = "▶️ 开始专注"; pomoLeft = pomoMin*60; updatePomoUI(); alert("🍅 专注完成！奖励 5 ☀️ 阳光，休息一下眼睛吧～"); return; } updatePomoUI(); }, 1000); } updatePomoUI(); }
-function pomoReset(){ clearInterval(pomoTimer); pomoRunning = false; pomoLeft = pomoMin*60; $("pomoStartBtn").textContent = "▶️ 开始专注"; updatePomoUI(); }
+/* ==================== 番茄钟（包含蜂鸣） ==================== */
+function playBuzzer() {
+  try {
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var oscillator = audioCtx.createOscillator();
+    var gainNode = audioCtx.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.frequency.value = 600;
+    oscillator.type = 'sine';  // 将 'square' 改为 'sine'蜂鸣改正弦波
+    gainNode.gain.value = 0.3;   //调节音量
+    oscillator.start();
+    setTimeout(function() { oscillator.stop(); audioCtx.close(); }, 2500);
+  } catch(e) { console.warn('蜂鸣失败', e); }
+}
 
+var pomoMin = 20, pomoLeft = 20*60, pomoTimer = null, pomoRunning = false;
+
+function setPomo(min, btn){
+  if(pomoRunning){ toast("先暂停再切换时长哦"); return; }
+  pomoMin = min; pomoLeft = min*60;
+  document.querySelectorAll("#pomoChips .chip").forEach(function(c){ c.classList.remove("on"); });
+  btn.classList.add("on");
+  var reward = min===10?5:min===20?10:15;
+  document.querySelector('.pomo-label').textContent = '专注完成 +' + reward + ' ☀️';
+  updatePomoUI();
+}
+
+function updatePomoUI(){
+  var m = Math.floor(pomoLeft/60), s = pomoLeft%60;
+  $("pomoTime").textContent = (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
+  var pct = (1 - pomoLeft/(pomoMin*60)) * 360;
+  $("pomoCircle").style.background = "conic-gradient(var(--green) "+pct+"deg, #e8f0e0 "+pct+"deg)";
+  document.title = pomoRunning ? "🍅 "+$("pomoTime").textContent+" 专注中" : "🌻 我的阳光花园保卫战";
+}
+
+function pomoStartPause(){
+  if(pomoRunning){
+    clearInterval(pomoTimer); pomoRunning = false;
+    $("pomoStartBtn").textContent = "▶️ 继续专注";
+  }else{
+    pomoRunning = true;
+    $("pomoStartBtn").textContent = "⏸️ 暂停";
+    pomoTimer = setInterval(function(){
+      pomoLeft--;
+      if(pomoLeft <= 0){
+        clearInterval(pomoTimer); pomoRunning = false; pomoLeft = 0;
+        updatePomoUI();
+        playBuzzer();
+        var reward = pomoMin===10?5:pomoMin===20?10:15;
+        S.sun += reward;
+        addLog("🍅","完成一个 "+pomoMin+" 分钟番茄钟，奖励 ☀️"+reward+" 阳光");
+        save(); renderAll();
+        $("pomoStartBtn").textContent = "▶️ 开始专注";
+        pomoLeft = pomoMin*60;
+        updatePomoUI();
+        alert("🍅 专注完成！奖励 "+reward+" ☀️ 阳光，休息一下眼睛吧～");
+        return;
+      }
+      updatePomoUI();
+    }, 1000);
+  }
+  updatePomoUI();
+}
+
+function pomoReset(){
+  clearInterval(pomoTimer); pomoRunning = false; pomoLeft = pomoMin*60;
+  $("pomoStartBtn").textContent = "▶️ 开始专注";
+  updatePomoUI();
+}
+
+/* ==================== 商城 ==================== */
 function renderShop(){ var items = S.shopItems || []; if(!items.length){ $("shopBox").innerHTML = '<div class="empty-hint">🛒 商城还是空的，家长可以添加商品哦～</div>'; return; } var html = ""; var isParent = (S.role === "parent"); items.forEach(function(item, idx){ var can = S.sun >= item.cost; html += '<div class="shop-item"><span class="shop-icon">'+(item.icon || "🎁")+'</span><div class="shop-info"><div class="shop-name">'+esc(item.name)+'</div><div class="shop-cost">☀️ '+item.cost+' 阳光</div></div><div class="shop-ops">' + (isParent ? '<button class="btn xs blue" onclick="openShopEdit('+idx+')" title="编辑">✏️</button>' : '') + (isParent ? '<button class="btn xs red" onclick="deleteShopItem('+idx+')" title="删除">🗑️</button>' : '') + '<button class="btn sm'+(can?"":" gray")+'" onclick="buyShop('+idx+')">'+(can?"兑换":"☀️不足")+'</button></div></div>'; }); $("shopBox").innerHTML = html; }
 function buyShop(idx){ var items = S.shopItems || []; if(idx < 0 || idx >= items.length){ toast("商品不存在 🥲"); return; } var item = items[idx]; if(S.sun < item.cost){ toast("阳光不够哦，继续攒吧 💪"); return; } if(!confirm("确定用 ☀️"+item.cost+" 兑换「"+item.name+"」吗？")) return; S.sun -= item.cost; addLog("🎁","用 ☀️"+item.cost+" 阳光兑换了 "+(item.icon||"🎁")+"「"+item.name+"」，找家长领取！"); save(); renderAll(); if($("shopModal").classList.contains("show")) renderShop(); toast("兑换成功！找家长领奖励吧 "+ (item.icon||"🎁")); }
 function openShopEdit(idx){ SHOP_EDIT_INDEX = idx; var items = S.shopItems || []; if(idx >= 0 && idx < items.length){ var item = items[idx]; $("shopEditTitle").firstChild.textContent = "✏️ 编辑商品 "; $("fShopIcon").value = item.icon || "🎁"; $("fShopName").value = item.name || ""; $("fShopCost").value = item.cost || 1; }else{ $("shopEditTitle").firstChild.textContent = "➕ 新增商品 "; $("fShopIcon").value = "🎁"; $("fShopName").value = ""; $("fShopCost").value = 1; } openModal("shopEditModal"); }
 function deleteShopItem(idx){ var items = S.shopItems || []; if(idx < 0 || idx >= items.length){ toast("商品不存在 🥲"); return; } var item = items[idx]; if(!confirm("确定删除商品「"+item.name+"」吗？")) return; items.splice(idx, 1); S.shopItems = items; addLog("🗑️","家长删除了商城商品「"+item.name+"」"); save(); renderAll(); if($("shopModal").classList.contains("show")) renderShop(); toast("已删除商品"); }
 function saveShopItem(){ var icon = $("fShopIcon").value.trim() || "🎁"; var name = $("fShopName").value.trim(); var cost = parseInt($("fShopCost").value, 10); if(!name){ toast("请输入商品名称 ✍️"); return; } if(isNaN(cost) || cost < 1){ toast("请输入有效的价格（≥1）"); return; } var items = S.shopItems || []; if(SHOP_EDIT_INDEX >= 0 && SHOP_EDIT_INDEX < items.length){ var item = items[SHOP_EDIT_INDEX]; item.icon = icon; item.name = name; item.cost = cost; addLog("✏️","家长编辑了商城商品「"+name+"」"); }else{ items.push({id:uid(), icon:icon, name:name, cost:cost}); addLog("➕","家长新增了商城商品「"+name+"」（☀️"+cost+"）"); } S.shopItems = items; save(); closeModal("shopEditModal"); renderAll(); if($("shopModal").classList.contains("show")) renderShop(); toast("商品已保存 ✅"); }
 
-function openSettings(){ $("fNewPwd").value = ""; $("fDayNum").value = S.day; $("fPlotCount").value = S.plotCount || 12; openModal("setModal"); }
-function changePwd(){ var p = $("fNewPwd").value.trim(); if(p.length < 4 || p.length > 8){ toast("密码需 4-8 位"); return; } S.pwd = p; save(); toast("密码已更新 🔑"); $("fNewPwd").value = ""; }
-function changeDay(){ var n = parseInt($("fDayNum").value, 10); if(!n || n < 1 || n > 999){ toast("请输入 1-999"); return; } S.day = n; save(); renderAll(); toast("已调整为第 "+n+" 天"); }
-function changePlotCount(){ var n = parseInt($("fPlotCount").value, 10); if(!n || n < 1 || n > 42){ toast("请输入 1-42"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); closeModal("setModal"); }
-function resetAll(){ if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return; if(!confirm("再确认一次：真的要全部重来吗？")) return; localStorage.removeItem(LS_KEY); S = defaultState(); addLog("🌞","数据已重置，新的冒险开始！"); save(); applyRole(); renderAll(); closeModal("setModal"); toast("已重置 🌱"); }
+/* ==================== 设置相关函数 ==================== */
+function openSettings() {
+  document.getElementById('fNewPwd').value = '';
+  document.getElementById('fDayNum').value = S.day;
+  document.getElementById('fPlotCount').value = S.plotCount || 12;
+  openModal('setModal');
+}
+function changePwd(){ var p = document.getElementById('fNewPwd').value.trim(); if(p.length < 4 || p.length > 8){ toast("密码需 4-8 位"); return; } S.pwd = p; save(); toast("密码已更新 🔑"); document.getElementById('fNewPwd').value = ''; }
+function changeDay(){ var n = parseInt(document.getElementById('fDayNum').value, 10); if(!n || n < 1 || n > 999){ toast("请输入 1-999"); return; } S.day = n; save(); renderAll(); toast("已调整为第 "+n+" 天"); }
+function changePlotCount(){ var n = parseInt(document.getElementById('fPlotCount').value, 10); if(!n || n < 1 || n > 42){ toast("请输入 1-42"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); closeModal('setModal'); }
+function resetAll(){ if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return; if(!confirm("再确认一次：真的要全部重来吗？")) return; localStorage.removeItem(LS_KEY); S = defaultState(); addLog("🌞","数据已重置，新的冒险开始！"); save(); applyRole(); renderAll(); closeModal('setModal'); toast("已重置 🌱"); }
 
+/* ==================== 转盘 ==================== */
 function resetDailyExchange() { var today = new Date().toDateString(); if (S.wheel.lastExchangeDate !== today) { S.wheel.todayExchangeCount = 0; S.wheel.lastExchangeDate = today; } }
 
-/* ==================== 幸运转盘 ==================== */
-function openWheelModal() {
-  resetDailyExchange();
-  renderWheelStatus();
-  drawWheel();
-  openModal('wheelModal');
-  document.getElementById('wheelResult').textContent = '🎯 点击下方按钮试试手气';
-}
+function openWheelModal() { resetDailyExchange(); renderWheelStatus(); drawWheel(); openModal('wheelModal'); document.getElementById('wheelResult').textContent = '🎯 点击下方按钮试试手气'; }
 function renderWheelStatus() {
   document.getElementById('wheelSpinsDisplay').textContent = S.wheelSpins || 0;
   document.getElementById('wheelCostDisplay').textContent = S.wheel.cost || 50;
   document.getElementById('wheelSunDisplay').textContent = S.sun;
   var freeInfo = '';
-  if (S.wheel.freeStreakEnabled && S.wheel.freeStreakDays > 0) {
-    freeInfo = '连续达标 ' + S.wheel.freeStreakDays + ' 天送 1 次';
-  } else { freeInfo = '免费赠送已关闭'; }
+  if (S.wheel.freeStreakEnabled && S.wheel.freeStreakDays > 0) { freeInfo = '连续达标 ' + S.wheel.freeStreakDays + ' 天送 1 次'; } else { freeInfo = '免费赠送已关闭'; }
   document.getElementById('wheelFreeInfo').textContent = freeInfo;
 }
-
 function drawWheel() {
   var canvas = document.getElementById('wheelCanvas');
   if (!canvas) return;
@@ -694,72 +801,31 @@ function drawWheel() {
   var w = canvas.width, h = canvas.height;
   var cx = w/2, cy = h/2, r = Math.min(w,h)/2 * 0.85;
   ctx.clearRect(0, 0, w, h);
-
   var prizes = S.wheel.prizes || [];
   var count = prizes.length;
-  if (count === 0) {
-    ctx.fillStyle = '#ddd';
-    ctx.font = '16px "PingFang SC",sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('请配置奖品', cx, cy);
-    return;
-  }
-
+  if (count === 0) { ctx.fillStyle = '#ddd'; ctx.font = '16px "PingFang SC",sans-serif'; ctx.textAlign = 'center'; ctx.fillText('请配置奖品', cx, cy); return; }
   var colors = ['#FF6B6B','#4ECDC4','#FFE66D','#A8E6CF','#FFB7B2','#B5B8C3','#F7DC6F','#BB8FCE','#85C1E9','#F8C471','#82E0AA','#F1948A'];
   var angleStep = (2 * Math.PI) / count;
-  // 起始角度偏移半个扇区，使第一个扇区的中心对准正下方（指针方向）
   var startAngle = Math.PI/2 - angleStep/2;
-
   prizes.forEach(function(p, i) {
     var endAngle = startAngle + angleStep;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, r, startAngle, endAngle);
-    ctx.closePath();
-    ctx.fillStyle = colors[i % colors.length];
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, startAngle, endAngle); ctx.closePath();
+    ctx.fillStyle = colors[i % colors.length]; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
     var midAngle = startAngle + angleStep/2;
     var textR = r * 0.65;
     var tx = cx + Math.cos(midAngle) * textR;
     var ty = cy + Math.sin(midAngle) * textR;
     ctx.fillStyle = '#2c3e50';
     ctx.font = '12px "PingFang SC","Microsoft YaHei",sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     var name = p.name || '奖品';
-    if (name.length <= 4) {
-      ctx.fillText(name, tx, ty);
-    } else {
-      var first = name.substring(0, Math.ceil(name.length/2));
-      var second = name.substring(Math.ceil(name.length/2));
-      ctx.fillText(first, tx, ty-8);
-      ctx.fillText(second, tx, ty+8);
-    }
+    if (name.length <= 4) { ctx.fillText(name, tx, ty); } else { var first = name.substring(0, Math.ceil(name.length/2)); var second = name.substring(Math.ceil(name.length/2)); ctx.fillText(first, tx, ty-8); ctx.fillText(second, tx, ty+8); }
     startAngle = endAngle;
   });
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, 30, 0, 2*Math.PI);
-  ctx.fillStyle = '#fff';
-  ctx.fill();
-  ctx.shadowColor = 'rgba(0,0,0,0.1)';
-  ctx.shadowBlur = 8;
-  ctx.strokeStyle = '#ddd';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = '#2c3e50';
-  ctx.font = '12px "PingFang SC","Microsoft YaHei",sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('幸运', cx, cy-8);
-  ctx.fillText('转盘', cx, cy+10);
+  ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 2*Math.PI); ctx.fillStyle = '#fff'; ctx.fill(); ctx.shadowColor = 'rgba(0,0,0,0.1)'; ctx.shadowBlur = 8; ctx.strokeStyle = '#ddd'; ctx.lineWidth = 2; ctx.stroke(); ctx.shadowBlur = 0;
+  ctx.fillStyle = '#2c3e50'; ctx.font = '12px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('幸运', cx, cy-8); ctx.fillText('转盘', cx, cy+10);
 }
-
 var isSpinning = false;
 function spinWheel() {
   if (isSpinning) return;
@@ -768,45 +834,29 @@ function spinWheel() {
   var prizes = S.wheel.prizes || [];
   var totalProb = prizes.reduce(function(s, p) { return s + (p.prob || 0); }, 0);
   if (totalProb === 0) { toast('转盘奖品未配置'); return; }
-
-  isSpinning = true;
-  document.getElementById('wheelSpinBtn').disabled = true;
-
+  isSpinning = true; document.getElementById('wheelSpinBtn').disabled = true;
   var rand = Math.random() * totalProb;
   var cumulative = 0;
   var selectedIndex = 0;
-  for (var i=0; i<prizes.length; i++) {
-    cumulative += (prizes[i].prob || 0);
-    if (rand <= cumulative) { selectedIndex = i; break; }
-  }
-
+  for (var i=0; i<prizes.length; i++) { cumulative += (prizes[i].prob || 0); if (rand <= cumulative) { selectedIndex = i; break; } }
   var angleStep = (2 * Math.PI) / prizes.length;
   var startAngle = Math.PI/2 - angleStep/2;
   var selectedMidAngle = startAngle + selectedIndex * angleStep + angleStep/2;
   var extraSpins = 5 + Math.floor(Math.random() * 5);
-  // 指针在正下方（PI/2），旋转使选中扇区中心对准 PI/2
   var targetAngle = Math.PI/2 - selectedMidAngle + extraSpins * 2 * Math.PI;
-
   var canvas = document.getElementById('wheelCanvas');
   var duration = 4000;
   var startTime = null;
   var startAngleCurrent = 0;
-
   function animate(timestamp) {
     if (!startTime) startTime = timestamp;
     var progress = Math.min((timestamp - startTime) / duration, 1);
     var ease = 1 - Math.pow(1 - progress, 3);
     var currentAngle = startAngleCurrent + (targetAngle - startAngleCurrent) * ease;
     canvas.style.transform = 'rotate(' + currentAngle + 'rad)';
-
-    if (progress < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      isSpinning = false;
-      document.getElementById('wheelSpinBtn').disabled = false;
-      S.wheelSpins = (S.wheelSpins || 0) - 1;
-      S.wheel.totalSpins = (S.wheel.totalSpins || 0) + 1;
-      save();
+    if (progress < 1) { requestAnimationFrame(animate); } else {
+      isSpinning = false; document.getElementById('wheelSpinBtn').disabled = false;
+      S.wheelSpins = (S.wheelSpins || 0) - 1; S.wheel.totalSpins = (S.wheel.totalSpins || 0) + 1; save();
       var prize = prizes[selectedIndex];
       handlePrize(prize);
       document.getElementById('wheelResult').textContent = '🎯 点击下方按钮试试手气';
@@ -814,35 +864,17 @@ function spinWheel() {
   }
   requestAnimationFrame(animate);
 }
-
 function handlePrize(prize) {
   var name = prize.name || '未知奖品';
   switch (prize.type) {
-    case 'sun':
-      S.sun = (S.sun || 0) + (prize.value || 0);
-      addLog('🎰', '转盘抽中 ' + name + '，获得 ' + prize.value + ' 阳光');
-      break;
-    case 'reward':
-      addLog('🎰', '转盘抽中 ' + name + '（实物奖励）');
-      break;
-    case 'coupon':
-      S.discount = prize.value || 0.8;
-      addLog('🎰', '转盘抽中 ' + name + '，折扣 ' + prize.value);
-      break;
-    case 'retry':
-      S.wheelSpins = (S.wheelSpins || 0) + 1;
-      addLog('🎰', '转盘抽中 ' + name + '，返还1次机会');
-      break;
-    default:
-      addLog('🎰', '转盘抽中 ' + name + '（谢谢参与）');
-      break;
+    case 'sun': S.sun = (S.sun || 0) + (prize.value || 0); addLog('🎰', '转盘抽中 ' + name + '，获得 ' + prize.value + ' 阳光'); break;
+    case 'reward': addLog('🎰', '转盘抽中 ' + name + '（实物奖励）'); break;
+    case 'coupon': S.discount = prize.value || 0.8; addLog('🎰', '转盘抽中 ' + name + '，折扣 ' + prize.value); break;
+    case 'retry': S.wheelSpins = (S.wheelSpins || 0) + 1; addLog('🎰', '转盘抽中 ' + name + '，返还1次机会'); break;
+    default: addLog('🎰', '转盘抽中 ' + name + '（谢谢参与）'); break;
   }
-  save();
-  renderAll();
-  renderWheelStatus();
-  drawWheel();
+  save(); renderAll(); renderWheelStatus(); drawWheel();
 }
-
 function buyWheelSpin() {
   resetDailyExchange();
   var cost = S.wheel.cost || 50;
@@ -856,12 +888,8 @@ function buyWheelSpin() {
   S.wheel.todayExchangeCount = (S.wheel.todayExchangeCount || 0) + 1;
   S.wheel.lastExchangeDate = new Date().toDateString();
   addLog('☀️', '用 ' + cost + ' 阳光兑换了 1 次转盘机会（今日已兑 ' + S.wheel.todayExchangeCount + ' 次）');
-  save();
-  renderAll();
-  renderWheelStatus();
-  toast('兑换成功！现在有 ' + S.wheelSpins + ' 次机会');
+  save(); renderAll(); renderWheelStatus(); toast('兑换成功！现在有 ' + S.wheelSpins + ' 次机会');
 }
-
 function checkWheelFreeSpin() {
   if (!S.wheel.freeStreakEnabled || S.wheel.freeStreakDays <= 0) return;
   if (S.streak > 0 && S.streak % S.wheel.freeStreakDays === 0) {
@@ -871,7 +899,7 @@ function checkWheelFreeSpin() {
   }
 }
 
-/* --- 家长配置转盘 --- */
+/* 转盘配置 */
 function openWheelConfig() { openModal('wheelConfigModal'); renderWheelConfig(); }
 function renderWheelConfig() {
   document.getElementById('wCost').value = S.wheel.cost || 50;
@@ -882,8 +910,7 @@ function renderWheelConfig() {
 function renderPrizeList() {
   var container = document.getElementById('wheelPrizeList');
   var prizes = S.wheel.prizes || [];
-  var html = '';
-  var total = 0;
+  var html = ''; var total = 0;
   prizes.forEach(function(p, idx) {
     total += (p.prob || 0);
     html += '<div style="display:flex; align-items:center; gap:6px; margin-bottom:4px; background:#f5f5f5; border-radius:8px; padding:6px 8px;">'
@@ -895,7 +922,6 @@ function renderPrizeList() {
   container.innerHTML = html || '<div class="empty-hint">暂无奖品，点击下方添加</div>';
   document.getElementById('probSumDisplay').textContent = '总和：' + total + '%' + (total === 100 ? ' ✅' : ' ⚠️ 需等于100%');
 }
-
 var editingPrizeIndex = -1;
 function openPrizeEditor(idx) {
   editingPrizeIndex = idx;
@@ -920,25 +946,15 @@ function savePrize() {
   var prizes = S.wheel.prizes || [];
   if (editingPrizeIndex >= 0 && editingPrizeIndex < prizes.length) {
     prizes[editingPrizeIndex] = { id: prizes[editingPrizeIndex].id, name, type, value, prob };
-  } else {
-    prizes.push({ id: uid(), name, type, value, prob });
-  }
-  S.wheel.prizes = prizes;
-  save();
-  closeModal('prizeEditorModal');
-  renderWheelConfig();
-  toast('奖品已保存');
+  } else { prizes.push({ id: uid(), name, type, value, prob }); }
+  S.wheel.prizes = prizes; save(); closeModal('prizeEditorModal'); renderWheelConfig(); toast('奖品已保存');
 }
 function deletePrize() {
   if (editingPrizeIndex < 0) return;
   if (!confirm('确定删除该奖品？')) return;
   var prizes = S.wheel.prizes || [];
   prizes.splice(editingPrizeIndex, 1);
-  S.wheel.prizes = prizes;
-  save();
-  closeModal('prizeEditorModal');
-  renderWheelConfig();
-  toast('已删除');
+  S.wheel.prizes = prizes; save(); closeModal('prizeEditorModal'); renderWheelConfig(); toast('已删除');
 }
 function saveWheelConfig() {
   var cost = parseInt(document.getElementById('wCost').value);
@@ -947,20 +963,13 @@ function saveWheelConfig() {
   if (isNaN(cost) || cost < 1) { toast('请输入有效的阳光数'); return; }
   if (isNaN(dailyLimit) || dailyLimit < 0) { toast('请输入有效的每日兑换次数'); return; }
   if (isNaN(freeDays) || freeDays < 0) { toast('请输入有效的天数'); return; }
-  S.wheel.cost = cost;
-  S.wheel.dailyLimit = dailyLimit;
-  S.wheel.freeStreakDays = freeDays;
-  S.wheel.freeStreakEnabled = (freeDays > 0);
+  S.wheel.cost = cost; S.wheel.dailyLimit = dailyLimit; S.wheel.freeStreakDays = freeDays; S.wheel.freeStreakEnabled = (freeDays > 0);
   var total = S.wheel.prizes.reduce(function(s, p) { return s + (p.prob || 0); }, 0);
-  if (Math.abs(total - 100) > 0.01) {
-    if (!confirm('奖品概率总和为 ' + total + '%，不等于100%，确定保存吗？')) return;
-  }
-  save();
-  closeModal('wheelConfigModal');
-  renderAll();
-  toast('转盘配置已保存');
+  if (Math.abs(total - 100) > 0.01) { if (!confirm('奖品概率总和为 ' + total + '%，不等于100%，确定保存吗？')) return; }
+  save(); closeModal('wheelConfigModal'); renderAll(); toast('转盘配置已保存');
 }
 
+/* ==================== 渲染主函数 ==================== */
 function renderAll(){
   $("sunCount").textContent = S.sun;
   $("dayLabel").textContent = "🌻 第 " + S.day + " 天";
@@ -984,9 +993,11 @@ function renderAll(){
   if (statusEl) { statusEl.textContent = '机会：' + (S.wheelSpins || 0); }
 }
 
+/* ==================== 启动 ==================== */
 load();
 applyRole();
 renderAll();
+pomoLeft = 20*60;
 updatePomoUI();
 $("fPwd").addEventListener("keydown", function(e){ if(e.key==="Enter") checkPwd(); });
 </script>
