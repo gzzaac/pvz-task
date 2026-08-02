@@ -225,9 +225,11 @@ body.role-child .role-tip.parent-tip{display:none;}
   </div>
 </header>
 
+<!-- ================= 任务页面（修改后：按钮整合进卡片） ================= -->
 <div class="page active" id="page-tasks">
   <div class="role-tip child-tip">👧 孩子模式：完成任务领阳光，去花园种植物守护家园吧！</div>
   <div class="role-tip parent-tip">🧑‍🌾 家长模式：可新增/编辑/删除任务，每晚点「模拟结算」</div>
+
   <div class="card">
     <div class="card-title">📋 今日任务进度</div>
     <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
@@ -237,13 +239,16 @@ body.role-child .role-tip.parent-tip{display:none;}
       <div class="stat-box"><b id="stTodo">0</b><span>⏳ 未完成</span></div>
       <div class="stat-box"><b id="stRate">0%</b><span>🎯 完成率</span></div>
     </div>
+    <!-- 操作按钮移至卡片内部 -->
+    <div class="btn-row parent-only" style="margin-top:12px;">
+      <button class="btn" onclick="openTaskModal()">➕ 添加任务</button>
+      <button class="btn warn" onclick="doSettle()">🌙 模拟结算</button>
+    </div>
   </div>
+
   <div class="cat-tabs" id="catTabs"></div>
   <div id="taskList"></div>
-  <div class="btn-row parent-only" style="margin-top:12px;">
-    <button class="btn" onclick="openTaskModal()">➕ 添加任务</button>
-    <button class="btn warn" onclick="doSettle()">🌙 模拟结算</button>
-  </div>
+  <!-- 原下方的按钮行已删除 -->
 </div>
 
 <div class="page" id="page-garden">
@@ -384,7 +389,7 @@ body.role-child .role-tip.parent-tip{display:none;}
   </div>
 </div>
 
-<!-- ========== 重新设计的家长设置弹窗 ========== -->
+<!-- 家长设置弹窗（优化布局） -->
 <div class="mask" id="setModal">
   <div class="modal">
     <h3>⚙️ 家长设置 <button class="close-x" onclick="closeModal('setModal')">✕</button></h3>
@@ -700,11 +705,11 @@ function playBuzzer() {
     var gainNode = audioCtx.createGain();
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
+    oscillator.type = 'sine';
     oscillator.frequency.value = 600;
-    oscillator.type = 'sine';  // 将 'square' 改为 'sine'蜂鸣改正弦波
-    gainNode.gain.value = 0.3;   //调节音量
+    gainNode.gain.value = 0.25;
     oscillator.start();
-    setTimeout(function() { oscillator.stop(); audioCtx.close(); }, 2500);
+    setTimeout(function() { oscillator.stop(); audioCtx.close(); }, 1500);
   } catch(e) { console.warn('蜂鸣失败', e); }
 }
 
