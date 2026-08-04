@@ -437,10 +437,11 @@ body.role-child .role-tip.parent-tip{display:none;}
   </div>
 </div>
 
-<!-- 家长设置 -->
+<!-- ================= 家长设置（含阳光管理） ================= -->
 <div class="mask" id="setModal">
   <div class="modal">
     <h3>⚙️ 家长设置 <button class="close-x" onclick="closeModal('setModal')">✕</button></h3>
+
     <div class="setting-section-title">🔐 账户安全</div>
     <div class="form-group">
       <label>修改家长密码</label>
@@ -449,7 +450,9 @@ body.role-child .role-tip.parent-tip{display:none;}
         <button class="btn blue sm" onclick="changePwd()" style="flex-shrink:0; min-width:72px;">保存</button>
       </div>
     </div>
+
     <div class="setting-divider"></div>
+
     <div class="setting-section-title">🎮 游戏参数</div>
     <div class="setting-row" style="gap:8px;">
       <div class="form-group" style="flex:1; margin-bottom:0;">
@@ -465,17 +468,38 @@ body.role-child .role-tip.parent-tip{display:none;}
       <button class="btn sm" onclick="changeDay()" style="flex:1;">📅 保存天数</button>
       <button class="btn sm" onclick="changePlotCount()" style="flex:1;">🌱 调整地块</button>
     </div>
+
     <div class="setting-divider"></div>
+
+    <!-- 新增：阳光管理 -->
+    <div class="setting-section-title">🌞 阳光管理</div>
+    <div class="setting-row" style="gap:8px;">
+      <div class="form-group" style="flex:1; margin-bottom:0;">
+        <label>数量</label>
+        <input type="number" id="fSunAmount" min="1" max="999" value="1">
+      </div>
+      <div class="form-group" style="flex:0 0 auto; display:flex; gap:6px; align-items:flex-end;">
+        <button class="btn blue sm" onclick="addSun()" style="min-width:72px;">➕ 增加</button>
+        <button class="btn warn sm" onclick="subSun()" style="min-width:72px;">➖ 减少</button>
+      </div>
+    </div>
+
+    <div class="setting-divider"></div>
+
     <div class="setting-section-title">🎰 转盘管理</div>
     <button class="btn" style="width:100%;" onclick="openWheelConfig()">🎰 转盘配置</button>
+
     <div class="setting-divider"></div>
+
     <div class="setting-section-title">💾 数据管理</div>
     <div class="btn-row" style="margin-bottom:4px;">
       <button class="btn blue sm" onclick="exportData()" style="flex:1;">📤 导出数据</button>
       <button class="btn blue sm" onclick="document.getElementById('importFileSettings').click()" style="flex:1;">📥 导入数据</button>
     </div>
     <input type="file" id="importFileSettings" accept=".json" style="display:none" onchange="importData(this)">
+
     <div class="setting-divider"></div>
+
     <div class="setting-section-title" style="color:var(--red);">⚠️ 危险操作</div>
     <button class="btn red" style="width:100%;" onclick="resetAll()">🗑️ 清空全部数据</button>
   </div>
@@ -602,10 +626,10 @@ function defaultState(){
     plotCount:12,
     logs:[], invasions:[],
     shopItems: JSON.parse(JSON.stringify(DEFAULT_SHOP)),
-    // 新增库存系统
+    // 库存系统
     inventory: {
       coupons: 0,
-      rewards: {}  // { '冰淇淋': 0, '小零食': 0 }
+      rewards: {}
     },
     wheel: {
       cost: 50,
@@ -638,7 +662,7 @@ function load(){
       if(!S.shopItems || !Array.isArray(S.shopItems)){ S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP)); }else{ S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); }); }
       if(!S.plotCount || typeof S.plotCount !== "number" || S.plotCount < 1) S.plotCount = 12;
       if(!S.garden || !Array.isArray(S.garden)){ S.garden = new Array(S.plotCount).fill(null); }else if(S.garden.length !== S.plotCount){ var old = S.garden; S.garden = new Array(S.plotCount); for(var i=0; i<S.plotCount; i++){ S.garden[i] = (i < old.length) ? old[i] : null; } }
-      // 兼容 inventory
+      // inventory 兼容
       if (!S.inventory) { S.inventory = { coupons: 0, rewards: {} }; }
       if (S.inventory.coupons === undefined) S.inventory.coupons = 0;
       if (!S.inventory.rewards) S.inventory.rewards = {};
@@ -934,7 +958,6 @@ function pomoReset(){
 }
 
 /* ==================== 商城 + 库存系统 ==================== */
-// 奖品图标映射（可扩展）
 var rewardIcons = {
   '冰淇淋': '🍦',
   '小零食': '🍿',
@@ -946,12 +969,10 @@ var rewardIcons = {
 function renderInventory() {
   var inv = S.inventory || { coupons: 0, rewards: {} };
   var html = '';
-  // 折扣券
   if (inv.coupons > 0) {
     html += '<span class="inventory-item">🎫 8折券 <span class="count">×' + inv.coupons + '</span>'
       + '<button class="use-btn" onclick="useCoupon()">使用</button></span>';
   }
-  // 实物奖励
   for (var name in inv.rewards) {
     if (inv.rewards[name] > 0) {
       var icon = rewardIcons[name] || '🎁';
@@ -963,11 +984,9 @@ function renderInventory() {
   document.getElementById('inventoryDisplay').innerHTML = html;
 }
 
-// 使用折扣券
 function useCoupon() {
   if (!S.inventory || S.inventory.coupons <= 0) { toast('没有8折券库存'); return; }
   if (!confirm('消耗 1 张 8折券，本次商城兑换享受8折优惠？')) return;
-  // 标记使用折扣，在兑换商品时自动扣减
   S._pendingCoupon = true;
   S.inventory.coupons--;
   addLog('🎫', '使用了 1 张 8折券');
@@ -977,7 +996,6 @@ function useCoupon() {
   toast('8折券已激活，下次兑换商品自动打折！');
 }
 
-// 领取实物奖励
 function useReward(name) {
   if (!S.inventory || !S.inventory.rewards[name] || S.inventory.rewards[name] <= 0) { toast('没有 ' + name + ' 库存'); return; }
   if (!confirm('领取 1 份「' + name + '」奖励（找家长领取实物）？')) return;
@@ -990,9 +1008,7 @@ function useReward(name) {
 }
 
 function renderShop(){
-  // 渲染库存
   renderInventory();
-
   var items = S.shopItems || [];
   if(!items.length){
     $("shopBox").innerHTML = '<div class="empty-hint">🛒 商城还是空的，家长可以添加商品哦～</div>';
@@ -1030,15 +1046,11 @@ function buyShop(idx){
   if (S._pendingCoupon) {
     cost = Math.round(cost * 0.8);
     couponUsed = true;
-    S._pendingCoupon = false; // 一次性使用
+    S._pendingCoupon = false;
   }
   if(S.sun < cost){ toast("阳光不够哦，继续攒吧 💪"); return; }
   if(!confirm("确定用 ☀️"+cost+" 阳光兑换「"+item.name+"」吗？" + (couponUsed ? ' (已使用8折券)' : ''))) {
-    // 如果取消，还原折扣券状态
-    if (couponUsed) {
-      S._pendingCoupon = true;
-      save();
-    }
+    if (couponUsed) { S._pendingCoupon = true; save(); }
     return;
   }
   S.sun -= cost;
@@ -1052,17 +1064,39 @@ function openShopEdit(idx){ SHOP_EDIT_INDEX = idx; var items = S.shopItems || []
 function deleteShopItem(idx){ var items = S.shopItems || []; if(idx < 0 || idx >= items.length){ toast("商品不存在 🥲"); return; } var item = items[idx]; if(!confirm("确定删除商品「"+item.name+"」吗？")) return; items.splice(idx, 1); S.shopItems = items; addLog("🗑️","家长删除了商城商品「"+item.name+"」"); save(); renderAll(); if($("shopModal").classList.contains("show")) renderShop(); toast("已删除商品"); }
 function saveShopItem(){ var icon = $("fShopIcon").value.trim() || "🎁"; var name = $("fShopName").value.trim(); var cost = parseInt($("fShopCost").value, 10); if(!name){ toast("请输入商品名称 ✍️"); return; } if(isNaN(cost) || cost < 1){ toast("请输入有效的价格（≥1）"); return; } var items = S.shopItems || []; if(SHOP_EDIT_INDEX >= 0 && SHOP_EDIT_INDEX < items.length){ var item = items[SHOP_EDIT_INDEX]; item.icon = icon; item.name = name; item.cost = cost; addLog("✏️","家长编辑了商城商品「"+name+"」"); }else{ items.push({id:uid(), icon:icon, name:name, cost:cost}); addLog("➕","家长新增了商城商品「"+name+"」（☀️"+cost+"）"); } S.shopItems = items; save(); closeModal("shopEditModal"); renderAll(); if($("shopModal").classList.contains("show")) renderShop(); toast("商品已保存 ✅"); }
 
-/* ==================== 设置 ==================== */
+/* ==================== 设置相关（含阳光管理） ==================== */
 function openSettings() {
   document.getElementById('fNewPwd').value = '';
   document.getElementById('fDayNum').value = S.day;
   document.getElementById('fPlotCount').value = S.plotCount || 12;
+  document.getElementById('fSunAmount').value = 1;
   openModal('setModal');
 }
 function changePwd(){ var p = document.getElementById('fNewPwd').value.trim(); if(p.length < 4 || p.length > 8){ toast("密码需 4-8 位"); return; } S.pwd = p; save(); toast("密码已更新 🔑"); document.getElementById('fNewPwd').value = ''; }
 function changeDay(){ var n = parseInt(document.getElementById('fDayNum').value, 10); if(!n || n < 1 || n > 999){ toast("请输入 1-999"); return; } S.day = n; save(); renderAll(); toast("已调整为第 "+n+" 天"); }
 function changePlotCount(){ var n = parseInt(document.getElementById('fPlotCount').value, 10); if(!n || n < 1 || n > 42){ toast("请输入 1-42"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); closeModal('setModal'); }
 function resetAll(){ if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return; if(!confirm("再确认一次：真的要全部重来吗？")) return; localStorage.removeItem(LS_KEY); S = defaultState(); addLog("🌞","数据已重置，新的冒险开始！"); save(); applyRole(); renderAll(); closeModal('setModal'); toast("已重置 🌱"); }
+
+// 阳光管理函数
+function addSun() {
+  var amount = parseInt(document.getElementById('fSunAmount').value, 10);
+  if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; }
+  S.sun += amount;
+  addLog('☀️', '家长手动增加了 ' + amount + ' 阳光（当前 ' + S.sun + '）');
+  save();
+  renderAll();
+  toast('已增加 ' + amount + ' 阳光');
+}
+function subSun() {
+  var amount = parseInt(document.getElementById('fSunAmount').value, 10);
+  if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; }
+  if (S.sun < amount) { toast('阳光不足，无法减少 ' + amount + '（当前仅 ' + S.sun + '）'); return; }
+  S.sun -= amount;
+  addLog('☀️', '家长手动减少了 ' + amount + ' 阳光（当前 ' + S.sun + '）');
+  save();
+  renderAll();
+  toast('已减少 ' + amount + ' 阳光');
+}
 
 function resetDailyExchange() { var today = new Date().toDateString(); if (S.wheel.lastExchangeDate !== today) { S.wheel.todayExchangeCount = 0; S.wheel.lastExchangeDate = today; } }
 
@@ -1303,7 +1337,6 @@ function renderAll(){
   renderLog();
   var statusEl = document.getElementById('wheelStatus');
   if (statusEl) { statusEl.textContent = '机会：' + (S.wheelSpins || 0); }
-  // 如果商城弹窗打开，刷新库存显示
   if (document.getElementById('shopModal').classList.contains('show')) {
     renderInventory();
   }
