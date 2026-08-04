@@ -160,7 +160,6 @@ nav{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; 
 .shop-name{font-weight:800; font-size:14px;}
 .shop-cost{font-size:12px; color:#b8860b; font-weight:700;}
 .shop-ops{display:flex; gap:4px; flex-shrink:0;}
-/* 库存样式 */
 .inventory-bar{
   background:#f8faf6;
   border-radius:12px;
@@ -419,10 +418,7 @@ body.role-child .role-tip.parent-tip{display:none;}
   <div class="modal">
     <h3>🛒 阳光商城 <button class="close-x" onclick="closeModal('shopModal')">✕</button></h3>
     <div style="font-size:12px;color:var(--ink-light);margin-bottom:8px;">用攒下的阳光兑换小奖励，兑换后找家长领取哦～</div>
-
-    <!-- 库存显示区域 -->
     <div id="inventoryDisplay" class="inventory-bar"></div>
-
     <div id="shopBox"></div>
     <div class="parent-only" style="margin-top:10px;"><button class="btn" style="width:100%;" onclick="openShopEdit(-1)">➕ 新增商品</button></div>
   </div>
@@ -437,7 +433,7 @@ body.role-child .role-tip.parent-tip{display:none;}
   </div>
 </div>
 
-<!-- ================= 家长设置（含阳光管理） ================= -->
+<!-- ================= 家长设置（阳光管理已完美对齐） ================= -->
 <div class="mask" id="setModal">
   <div class="modal">
     <h3>⚙️ 家长设置 <button class="close-x" onclick="closeModal('setModal')">✕</button></h3>
@@ -471,16 +467,16 @@ body.role-child .role-tip.parent-tip{display:none;}
 
     <div class="setting-divider"></div>
 
-    <!-- 新增：阳光管理 -->
+    <!-- 阳光管理 - 完全参照“修改家长密码”的布局，label在外，内部仅input+按钮 -->
     <div class="setting-section-title">🌞 阳光管理</div>
-    <div class="setting-row" style="gap:8px;">
-      <div class="form-group" style="flex:1; margin-bottom:0;">
-        <label>数量</label>
-        <input type="number" id="fSunAmount" min="1" max="999" value="1">
-      </div>
-      <div class="form-group" style="flex:0 0 auto; display:flex; gap:6px; align-items:flex-end;">
-        <button class="btn blue sm" onclick="addSun()" style="min-width:72px;">➕ 增加</button>
-        <button class="btn warn sm" onclick="subSun()" style="min-width:72px;">➖ 减少</button>
+    <div class="form-group" style="margin-bottom:0;">
+      <label>数量</label>
+      <div class="setting-row" style="gap:8px;">
+        <input type="number" id="fSunAmount" min="1" max="999" value="1" style="flex:1;">
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="btn blue sm" onclick="addSun()" style="min-width:72px;">➕ 增加</button>
+          <button class="btn warn sm" onclick="subSun()" style="min-width:72px;">➖ 减少</button>
+        </div>
       </div>
     </div>
 
@@ -626,11 +622,7 @@ function defaultState(){
     plotCount:12,
     logs:[], invasions:[],
     shopItems: JSON.parse(JSON.stringify(DEFAULT_SHOP)),
-    // 库存系统
-    inventory: {
-      coupons: 0,
-      rewards: {}
-    },
+    inventory: { coupons: 0, rewards: {} },
     wheel: {
       cost: 50,
       dailyLimit: 0,
@@ -662,7 +654,6 @@ function load(){
       if(!S.shopItems || !Array.isArray(S.shopItems)){ S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP)); }else{ S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); }); }
       if(!S.plotCount || typeof S.plotCount !== "number" || S.plotCount < 1) S.plotCount = 12;
       if(!S.garden || !Array.isArray(S.garden)){ S.garden = new Array(S.plotCount).fill(null); }else if(S.garden.length !== S.plotCount){ var old = S.garden; S.garden = new Array(S.plotCount); for(var i=0; i<S.plotCount; i++){ S.garden[i] = (i < old.length) ? old[i] : null; } }
-      // inventory 兼容
       if (!S.inventory) { S.inventory = { coupons: 0, rewards: {} }; }
       if (S.inventory.coupons === undefined) S.inventory.coupons = 0;
       if (!S.inventory.rewards) S.inventory.rewards = {};
@@ -1077,7 +1068,6 @@ function changeDay(){ var n = parseInt(document.getElementById('fDayNum').value,
 function changePlotCount(){ var n = parseInt(document.getElementById('fPlotCount').value, 10); if(!n || n < 1 || n > 42){ toast("请输入 1-42"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); closeModal('setModal'); }
 function resetAll(){ if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return; if(!confirm("再确认一次：真的要全部重来吗？")) return; localStorage.removeItem(LS_KEY); S = defaultState(); addLog("🌞","数据已重置，新的冒险开始！"); save(); applyRole(); renderAll(); closeModal('setModal'); toast("已重置 🌱"); }
 
-// 阳光管理函数
 function addSun() {
   var amount = parseInt(document.getElementById('fSunAmount').value, 10);
   if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; }
