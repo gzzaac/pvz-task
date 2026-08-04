@@ -457,7 +457,7 @@ body.role-child .role-tip.parent-tip{display:none;}
       </div>
       <div class="form-group" style="flex:1; margin-bottom:0;">
         <label>花园地块数</label>
-        <input type="number" id="fPlotCount" min="1" max="42">
+        <input type="number" id="fPlotCount" min="1" max="126">
       </div>
     </div>
     <div class="btn-row" style="margin-top:6px;">
@@ -1065,7 +1065,7 @@ function openSettings() {
 }
 function changePwd(){ var p = document.getElementById('fNewPwd').value.trim(); if(p.length < 4 || p.length > 8){ toast("密码需 4-8 位"); return; } S.pwd = p; save(); toast("密码已更新 🔑"); document.getElementById('fNewPwd').value = ''; }
 function changeDay(){ var n = parseInt(document.getElementById('fDayNum').value, 10); if(!n || n < 1 || n > 999){ toast("请输入 1-999"); return; } S.day = n; save(); renderAll(); toast("已调整为第 "+n+" 天"); }
-function changePlotCount(){ var n = parseInt(document.getElementById('fPlotCount').value, 10); if(!n || n < 1 || n > 42){ toast("请输入 1-42"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); closeModal('setModal'); }
+function changePlotCount(){ var n = parseInt(document.getElementById('fPlotCount').value, 10); if(!n || n < 1 || n > 126){ toast("请输入 1-126"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); closeModal('setModal'); }
 function resetAll(){ if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return; if(!confirm("再确认一次：真的要全部重来吗？")) return; localStorage.removeItem(LS_KEY); S = defaultState(); addLog("🌞","数据已重置，新的冒险开始！"); save(); applyRole(); renderAll(); closeModal('setModal'); toast("已重置 🌱"); }
 
 function addSun() {
