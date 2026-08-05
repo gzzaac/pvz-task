@@ -828,7 +828,16 @@ function go(btn){ document.querySelectorAll(".nav-item").forEach(function(n){ n.
 
 function toggleRole(){ if(S.role === "child"){ $("fPwd").value = ""; openModal("pwdModal"); setTimeout(function(){ $("fPwd").focus(); }, 300); }else{ S.role = "child"; save(); applyRole(); toast("已切换到孩子模式 👧"); } }
 function checkPwd(){ if($("fPwd").value === S.pwd){ S.role = "parent"; save(); applyRole(); closeModal("pwdModal"); toast("已进入家长模式 🧑‍🌾"); }else{ toast("密码不对哦 🙅"); } }
-function applyRole(){ document.body.className = S.role === "parent" ? "role-parent" : "role-child"; $("roleBtn").textContent = S.role === "parent" ? "🧑‍🌾 家长" : "👧 孩子"; renderAll(); }
+function applyRole(){
+  document.body.className = S.role === "parent" ? "role-parent" : "role-child";
+  $("roleBtn").textContent = S.role === "parent" ? "🧑‍🌾 家长" : "👧 孩子";
+  // 👇 新增：孩子模式下强制关闭铲子
+  if (S.role === "child") {
+    shovel = false;
+    $("shovelBtn").textContent = "🪏 铲子";
+  }
+  renderAll();
+}
 
 var curCatFilter = "all";
 var editingTaskId = null;
