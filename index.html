@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🌻 我的阳光花园保卫战</title>
+<title>🌻 我的阳光花园保卫战 · 优化版</title>
 <style>
 :root{
   --green:#5cb85c; --green-deep:#3e8e41; --green-light:#a8e063;
@@ -327,13 +327,10 @@ body.role-child .role-tip.parent-tip{display:none;}
 
 <!-- ===== 花园页面 ===== -->
 <div class="page" id="page-garden">
-  <!-- 1️⃣ 天气卡片（移到最上面，更醒目） -->
   <div class="card" id="weatherZombieCard">
     <div class="card-title">🌤️ 战地气象</div>
     <div id="weatherZombieInfo"></div>
   </div>
-
-  <!-- 2️⃣ 花园卡片 -->
   <div class="card">
     <div class="card-title">🌱 阳光花园 <small>点击空地种植 · 点击植物查看</small></div>
     <div class="garden-grid" id="gardenGrid"></div>
@@ -341,29 +338,29 @@ body.role-child .role-tip.parent-tip{display:none;}
       <button class="btn sm" onclick="openDex()">📖 植物图鉴</button>
       <button class="btn gray sm parent-only" onclick="shovelMode()" id="shovelBtn">🪏 铲子</button>
     </div>
+    <!-- 扩建栏将由 JS 动态插入 -->
   </div>
-
-  <!-- 3️⃣ 玩法提示 -->
   <div class="card">
     <div class="card-title">📖 玩法规则</div>
     <div style="font-size:12.5px; color:var(--ink-light); line-height:1.9;">
       <b>🌤️ 天气效果：</b><br>
-      ☀️ 晴天：僵尸数量 -1<br>
+      ☀️ 晴天：僵尸数量 -1（至少1只）<br>
       🌧️ 雨天：向日葵产出 ×1.5<br>
       ❄️ 霜冻：寒冰射手额外冻 1 只<br>
       🌫️ 大雾：僵尸数量 +1<br><br>
       <b>🌻 向日葵产出规则：</b><br>
-      基础 8 阳光/棵，数量越多单棵产出递减：<br>
-      · 1~20 棵：8 /棵<br>
-      · 21~40 棵：4 /棵<br>
-      · 41~60 棵：2 /棵<br>
-      · 61+ 棵：1 /棵<br>
+      基础 6 阳光/棵，数量越多单棵产出递减：<br>
+      · 1~20 棵：6 /棵<br>
+      · 21~40 棵：3 /棵<br>
+      · 41~60 棵：1.5 /棵<br>
+      · 61+ 棵：0.6 /棵<br>
       雨天产出 ×1.5，种得越多总产出仍越高（但边际递减）<br><br>
       <b>🧟 僵尸攻击规则：</b><br>
       ① 优先啃咬 <b>🌰 坚果墙</b>（保护后排）<br>
       ② 无坚果墙时，随机选<b>一列</b>，从<b>底部向上</b>啃食<br>
       ③ 啃食深度随花园行数增加（严厉档：最少3个，最多15个）<br>
-      ④ 每只僵尸独立选列，选到空列则直接离开<br><br>
+      ④ 每只僵尸独立选列，选到空列则直接离开<br>
+      ⑤ 无论天气，至少 1 只僵尸来袭（保持压力）<br><br>
       <b>🌱 植物特性：</b><br>
       🌻 向日葵：每晚结算产出阳光（见上规则）<br>
       🌰 坚果墙：吸引僵尸攻击，保护后排<br>
@@ -538,6 +535,21 @@ body.role-child .role-tip.parent-tip{display:none;}
       <button class="btn sm" onclick="changePlotCount()" style="flex:1;">🌱 调整地块</button>
     </div>
     <div class="setting-divider"></div>
+    <div class="setting-section-title">🏗️ 扩建参数（孩子模式）</div>
+    <div class="setting-row" style="gap:8px;">
+      <div class="form-group" style="flex:1; margin-bottom:0;">
+        <label>最大地块数</label>
+        <input type="number" id="fMaxPlot" min="1" max="999" value="99">
+      </div>
+      <div class="form-group" style="flex:1; margin-bottom:0;">
+        <label>每块地价格（☀️）</label>
+        <input type="number" id="fExpandPrice" min="1" max="999" value="50">
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:6px;">
+      <button class="btn blue sm" onclick="saveExpandParams()" style="flex:1;">💾 保存扩建参数</button>
+    </div>
+    <div class="setting-divider"></div>
     <div class="setting-section-title">🌞 阳光管理</div>
     <div class="form-group" style="margin-bottom:0;">
       <label>数量</label>
@@ -554,7 +566,7 @@ body.role-child .role-tip.parent-tip{display:none;}
     <div class="setting-row" style="gap:8px; flex-wrap:wrap;">
       <div class="form-group" style="flex:1; min-width:80px; margin-bottom:0;">
         <label>简单</label>
-        <input type="number" id="fRewardEasy" min="0" max="999" value="10">
+        <input type="number" id="fRewardEasy" min="0" max="999" value="15">
       </div>
       <div class="form-group" style="flex:1; min-width:80px; margin-bottom:0;">
         <label>中等</label>
@@ -568,12 +580,12 @@ body.role-child .role-tip.parent-tip{display:none;}
     <div class="setting-row" style="gap:8px; margin-top:6px;">
       <div class="form-group" style="flex:1; margin-bottom:0;">
         <label>🌻 向日葵基础产出（第1档）</label>
-        <input type="number" id="fSunflowerProduce" min="0" max="999" value="8">
+        <input type="number" id="fSunflowerProduce" min="0" max="999" value="6">
       </div>
       <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; align-self:flex-end;">💾 保存</button>
     </div>
     <div style="font-size:11px; color:var(--ink-light); margin-top:4px; text-align:right;">
-      分档：1~20棵×基础，21~40×基础/2，41~60×基础/4，61+×基础/8（雨天×1.5）
+      分档：1~20棵×基础，21~40×基础/2，41~60×基础/4，61+×基础/10（雨天×1.5）
     </div>
     <div class="setting-divider"></div>
     <div class="setting-section-title">🎰 转盘管理</div>
@@ -602,7 +614,7 @@ body.role-child .role-tip.parent-tip{display:none;}
     </div>
     <div class="wheel-result" id="wheelResult">🎯 点击下方按钮试试手气</div>
     <div style="display:flex; justify-content:space-between; margin:10px 0; font-size:14px; align-items:center;">
-      <span>☀️ 兑换：<span id="wheelCostDisplay">50</span> 阳光</span>
+      <span>☀️ 兑换：<span id="wheelCostDisplay">30</span> 阳光</span>
       <span style="color:var(--green-deep); font-weight:700;">☀️ 当前：<span id="wheelSunDisplay">0</span></span>
       <span>🎯 机会：<span id="wheelSpinsDisplay">0</span> 次</span>
     </div>
@@ -619,9 +631,9 @@ body.role-child .role-tip.parent-tip{display:none;}
 <div class="mask" id="wheelConfigModal">
   <div class="modal">
     <h3>🎰 转盘配置 <button class="close-x" onclick="closeModal('wheelConfigModal')">✕</button></h3>
-    <div class="form-group"><label>每次消耗阳光数</label><input type="number" id="wCost" min="1" max="999"></div>
-    <div class="form-group"><label>每日兑换次数上限（0不限）</label><input type="number" id="wDailyLimit" min="0" max="99"></div>
-    <div class="form-group"><label>连续达标赠送天数（0关闭）</label><input type="number" id="wFreeDays" min="0" max="99"></div>
+    <div class="form-group"><label>每次消耗阳光数</label><input type="number" id="wCost" min="1" max="999" value="30"></div>
+    <div class="form-group"><label>每日兑换次数上限（0不限）</label><input type="number" id="wDailyLimit" min="0" max="99" value="5"></div>
+    <div class="form-group"><label>连续达标赠送天数（0关闭）</label><input type="number" id="wFreeDays" min="0" max="99" value="3"></div>
     <div style="margin:10px 0; font-weight:700;">奖品列表（概率总和需=100%）</div>
     <div id="wheelPrizeList"></div>
     <button class="btn" style="width:100%; margin-top:8px;" onclick="openPrizeEditor(-1)">➕ 添加奖品</button>
@@ -675,23 +687,23 @@ var CATS = [
   {id:"health", name:"健康", icon:"💪", cls:"tag-health"}
 ];
 var DIFFS = [
-  {id:"easy", name:"简单", sun:10},
+  {id:"easy", name:"简单", sun:15},
   {id:"mid",  name:"中等", sun:20},
   {id:"hard", name:"困难", sun:30}
 ];
 var PLANTS = [
-  {id:"sunflower", name:"向日葵",  icon:"🌻", cost:50,  streak:0,  hp:1, dmg:0, freeze:0, upgradeCost:50, maxLv:3, desc:"每晚结算产出阳光（分档递减）", produce:8},
+  {id:"sunflower", name:"向日葵",  icon:"🌻", cost:50,  streak:0,  hp:1, dmg:0, freeze:0, upgradeCost:50, maxLv:3, desc:"每晚结算产出阳光（分档递减）", produce:6},
   {id:"wallnut",   name:"坚果墙",  icon:"🌰", cost:50,  streak:0,  hp:4, dmg:0, freeze:0, upgradeCost:50, maxLv:3, desc:"吸引仇恨 · 保护后排植物", taunt:true},
-  {id:"peashooter",name:"豌豆射手",icon:"🫛", cost:100, streak:3,  hp:1, dmg:1, freeze:0, upgradeCost:100, maxLv:3, desc:"造成 1 点伤害"},
+  {id:"peashooter",name:"豌豆射手",icon:"🫛", cost:80, streak:3,  hp:1, dmg:1, freeze:0, upgradeCost:100, maxLv:3, desc:"造成 1 点伤害"},
   {id:"snowpea",   name:"寒冰射手",icon:"❄️", cost:150, streak:5,  hp:1, dmg:1, freeze:1, upgradeCost:150, maxLv:3, desc:"1 伤害 + 冰冻（被冻住本轮不咬人）"},
   {id:"potatomine",name:"土豆地雷",icon:"🥔", cost:50,  streak:7,  hp:1, dmg:999, freeze:0, upgradeCost:0, maxLv:1, desc:"一次性：秒杀 1 只僵尸", oneshot:true, kill:1},
   {id:"cherrybomb",name:"樱桃炸弹",icon:"🍒", cost:150, streak:10, hp:1, dmg:999, freeze:0, upgradeCost:0, maxLv:1, desc:"一次性：秒杀 3 只僵尸", oneshot:true, kill:3}
 ];
 var DEFAULT_SHOP = [
-  {id:uid(), icon:"🍦", name:"冰淇淋一支", cost:80},
+  {id:uid(), icon:"🍦", name:"冰淇淋一支", cost:60},
   {id:uid(), icon:"📺", name:"动画片 30 分钟", cost:120},
   {id:uid(), icon:"🎮", name:"游戏时间 30 分钟", cost:150},
-  {id:uid(), icon:"🧸", name:"小玩具一个", cost:300},
+  {id:uid(), icon:"🧸", name:"小玩具一个", cost:250},
   {id:uid(), icon:"🎡", name:"周末游乐园一次", cost:800}
 ];
 var SHOP_EDIT_INDEX = -1;
@@ -703,17 +715,17 @@ var ZOMBIE_TYPES = [
   {id:"giant", name:"巨人僵尸", icon:"👹", hp:3, bite:3, minDay:7, weight:3, desc:"3血，咬伤3"}
 ];
 var WEATHERS = [
-  {id:'sunny', icon:'☀️', name:'晴天', desc:'僵尸 -1 只', effect:'zombieMinus'},
+  {id:'sunny', icon:'☀️', name:'晴天', desc:'僵尸数量 -1（至少1只）', effect:'zombieMinus'},
   {id:'rainy', icon:'🌧️', name:'雨天', desc:'向日葵产出 ×1.5', effect:'sunflowerDouble'},
   {id:'frost', icon:'❄️', name:'霜冻', desc:'寒冰射手额外冻 1 只', effect:'freezePlus'},
-  {id:'fog', icon:'🌫️', name:'大雾', desc:'僵尸 +1 只', effect:'zombiePlus'}
+  {id:'fog', icon:'🌫️', name:'大雾', desc:'僵尸数量 +1', effect:'zombiePlus'}
 ];
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
 function defaultState(){
   return {
-    ver:1, day:1, sun:50, streak:0, role:"child", pwd:"8888",
+    ver:2, day:1, sun:50, streak:0, role:"child", pwd:"8888",
     totalDoneAll:0,
     tasks:[
       {id:uid(), name:"口算练习 20 题", cat:"study", diff:"easy", done:false, skip:false},
@@ -723,31 +735,34 @@ function defaultState(){
     ],
     garden:new Array(24).fill(null),
     plotCount:24,
+    maxPlotCount:99,          // 扩建上限
+    expandPrice:50,           // 每块地固定价格
     logs:[], invasions:[],
     shopItems: JSON.parse(JSON.stringify(DEFAULT_SHOP)),
     inventory: { coupons: 0, rewards: {} },
-    rewardEasy: 10,
+    rewardEasy: 15,
     rewardMid: 20,
     rewardHard: 30,
-    sunflowerProduce: 8,
+    sunflowerProduce: 6,
     weather: { today: 'sunny', tomorrow: 'sunny' },
     wheel: {
-      cost: 50,
-      dailyLimit: 0,
+      cost: 30,
+      dailyLimit: 5,
       freeStreakDays: 3,
       freeStreakEnabled: true,
       totalSpins: 0,
       todayExchangeCount: 0,
       lastExchangeDate: '',
       prizes: [
-        { id: "p1", name: "阳光+30", type: "sun", value: 30, prob: 20 },
-        { id: "p2", name: "阳光+50", type: "sun", value: 50, prob: 15 },
+        { id: "p1", name: "阳光+30", type: "sun", value: 30, prob: 15 },
+        { id: "p2", name: "阳光+50", type: "sun", value: 50, prob: 20 },
         { id: "p3", name: "冰淇淋", type: "reward", value: 0, prob: 10 },
         { id: "p4", name: "小零食", type: "reward", value: 0, prob: 10 },
         { id: "p5", name: "8折券", type: "coupon", value: 0.8, prob: 10 },
-        { id: "p6", name: "谢谢参与", type: "none", value: 0, prob: 20 },
+        { id: "p6", name: "谢谢参与", type: "none", value: 0, prob: 10 },
         { id: "p7", name: "再来一次", type: "retry", value: 1, prob: 10 },
-        { id: "p8", name: "阳光+100", type: "sun", value: 100, prob: 5 }
+        { id: "p8", name: "阳光+100", type: "sun", value: 100, prob: 10 },
+        { id: "p9", name: "阳光+150", type: "sun", value: 150, prob: 5 }
       ]
     },
     wheelSpins: 0
@@ -759,6 +774,52 @@ function load(){
     var raw = localStorage.getItem(LS_KEY);
     if(raw){
       S = JSON.parse(raw);
+      // 自动迁移旧版本数据
+      if(!S.ver || S.ver < 2){
+        S.rewardEasy = 15;
+        S.rewardMid = 20;
+        S.rewardHard = 30;
+        S.sunflowerProduce = 6;
+        if(S.plotCount < 24) S.plotCount = 24;
+        if(!S.garden || S.garden.length < 24){
+          var oldGarden = S.garden || [];
+          S.garden = new Array(24);
+          for(var i=0; i<24; i++) S.garden[i] = (i < oldGarden.length) ? oldGarden[i] : null;
+        }
+        if(S.shopItems && Array.isArray(S.shopItems)){
+          for(var j=0; j<S.shopItems.length; j++){
+            var item = S.shopItems[j];
+            if(item.name.indexOf('冰淇淋') !== -1) item.cost = 60;
+            else if(item.name.indexOf('小玩具') !== -1) item.cost = 250;
+            else if(item.name.indexOf('动画片') !== -1) item.cost = 120;
+            else if(item.name.indexOf('游戏时间') !== -1) item.cost = 150;
+            else if(item.name.indexOf('游乐园') !== -1) item.cost = 800;
+          }
+        }
+        if(S.wheel){
+          S.wheel.cost = 30;
+          S.wheel.dailyLimit = 5;
+          if(!S.wheel.prizes || S.wheel.prizes.length === 0){
+            S.wheel.prizes = defaultState().wheel.prizes;
+          } else {
+            var newPrizes = defaultState().wheel.prizes;
+            for(var k=0; k<newPrizes.length; k++){
+              var existing = S.wheel.prizes.find(function(p){ return p.name === newPrizes[k].name; });
+              if(existing){
+                existing.prob = newPrizes[k].prob;
+                existing.value = newPrizes[k].value;
+              } else {
+                S.wheel.prizes.push(newPrizes[k]);
+              }
+            }
+          }
+        }
+        S.ver = 2;
+      }
+      // 新增扩建参数（如果不存在）
+      if(S.maxPlotCount === undefined) S.maxPlotCount = 99;
+      if(S.expandPrice === undefined) S.expandPrice = 50;
+      // 其余原有加载逻辑
       if(!S.shopItems || !Array.isArray(S.shopItems)){ S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP)); }else{ S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); }); }
       if(!S.plotCount || typeof S.plotCount !== "number" || S.plotCount < 1) S.plotCount = 24;
       if(!S.garden || !Array.isArray(S.garden)){ S.garden = new Array(S.plotCount).fill(null); }
@@ -773,17 +834,17 @@ function load(){
       if(!S.inventory) { S.inventory = { coupons: 0, rewards: {} }; }
       if(S.inventory.coupons === undefined) S.inventory.coupons = 0;
       if(!S.inventory.rewards) S.inventory.rewards = {};
-      if(S.rewardEasy === undefined) S.rewardEasy = 10;
+      if(S.rewardEasy === undefined) S.rewardEasy = 15;
       if(S.rewardMid === undefined) S.rewardMid = 20;
       if(S.rewardHard === undefined) S.rewardHard = 30;
-      if(S.sunflowerProduce === undefined) S.sunflowerProduce = 8;
+      if(S.sunflowerProduce === undefined) S.sunflowerProduce = 6;
       if(!S.weather) { S.weather = { today: 'sunny', tomorrow: 'sunny' }; }
       if(!S.weather.today) S.weather.today = 'sunny';
       if(!S.weather.tomorrow) S.weather.tomorrow = 'sunny';
       if(!S.wheel) { S.wheel = JSON.parse(JSON.stringify(defaultState().wheel)); } else {
         if(!S.wheel.prizes || !Array.isArray(S.wheel.prizes)) { S.wheel.prizes = JSON.parse(JSON.stringify(defaultState().wheel.prizes)); } else { S.wheel.prizes.forEach(function(p){ if(!p.id) p.id = uid(); }); }
-        if(S.wheel.cost === undefined) S.wheel.cost = 50;
-        if(S.wheel.dailyLimit === undefined) S.wheel.dailyLimit = 0;
+        if(S.wheel.cost === undefined) S.wheel.cost = 30;
+        if(S.wheel.dailyLimit === undefined) S.wheel.dailyLimit = 5;
         if(S.wheel.freeStreakDays === undefined) S.wheel.freeStreakDays = 3;
         if(S.wheel.freeStreakEnabled === undefined) S.wheel.freeStreakEnabled = true;
         if(S.wheel.totalSpins === undefined) S.wheel.totalSpins = 0;
@@ -834,7 +895,6 @@ function checkPwd(){ if($("fPwd").value === S.pwd){ S.role = "parent"; save(); a
 function applyRole(){
   document.body.className = S.role === "parent" ? "role-parent" : "role-child";
   $("roleBtn").textContent = S.role === "parent" ? "🧑‍🌾 家长" : "👧 孩子";
-  // 👇 新增：孩子模式下强制关闭铲子
   if (S.role === "child") {
     shovel = false;
     $("shovelBtn").textContent = "🪏 铲子";
@@ -857,13 +917,75 @@ function saveTask(){ var name = $("fTaskName").value.trim(); if(!name){ toast("�
 function delTask(id){ var t = S.tasks.find(function(x){ return x.id===id; }); if(!t) return; if(!confirm("确定删除任务「"+t.name+"」吗？")) return; S.tasks = S.tasks.filter(function(x){ return x.id!==id; }); addLog("🗑️","家长删除了任务「"+t.name+"」"); save(); renderAll(); }
 
 function exportData(){ var blob = new Blob([JSON.stringify(S, null, 2)], {type:"application/json"}); var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "阳光花园保卫战_备份_第"+S.day+"天.json"; a.click(); URL.revokeObjectURL(a.href); toast("已导出备份文件 📤"); }
-function importData(input){ var f = input.files[0]; if(!f) return; var reader = new FileReader(); reader.onload = function(){ try{ var data = JSON.parse(reader.result); if(!data || !Array.isArray(data.tasks)) throw new Error("bad"); if(!confirm("导入将覆盖当前全部数据，确定吗？")) { input.value=""; return; } S = data; if(!S.garden || !Array.isArray(S.garden)) S.garden = new Array(S.plotCount||24).fill(null); if(!S.plotCount) S.plotCount = 24; S.garden.forEach(function(cell){ if(cell){ if(typeof cell.lv === 'undefined') cell.lv = 1; if(typeof cell.hp === 'undefined') cell.hp = 1; } }); if(!S.shopItems || !Array.isArray(S.shopItems)){ S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP)); }else{ S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); }); } if(!S.inventory) { S.inventory = { coupons: 0, rewards: {} }; } if(S.inventory.coupons === undefined) S.inventory.coupons = 0; if(!S.inventory.rewards) S.inventory.rewards = {}; if(S.rewardEasy === undefined) S.rewardEasy = 10; if(S.rewardMid === undefined) S.rewardMid = 20; if(S.rewardHard === undefined) S.rewardHard = 30; if(S.sunflowerProduce === undefined) S.sunflowerProduce = 8; if(!S.weather) { S.weather = { today: 'sunny', tomorrow: 'sunny' }; } if(!S.weather.today) S.weather.today = 'sunny'; if(!S.weather.tomorrow) S.weather.tomorrow = 'sunny'; if(!S.wheel) { S.wheel = JSON.parse(JSON.stringify(defaultState().wheel)); } else { if(!S.wheel.prizes || !Array.isArray(S.wheel.prizes)) { S.wheel.prizes = JSON.parse(JSON.stringify(defaultState().wheel.prizes)); } else { S.wheel.prizes.forEach(function(p){ if(!p.id) p.id = uid(); }); } if(S.wheel.cost === undefined) S.wheel.cost = 50; if(S.wheel.dailyLimit === undefined) S.wheel.dailyLimit = 0; if(S.wheel.freeStreakDays === undefined) S.wheel.freeStreakDays = 3; if(S.wheel.freeStreakEnabled === undefined) S.wheel.freeStreakEnabled = true; if(S.wheel.totalSpins === undefined) S.wheel.totalSpins = 0; if(S.wheel.todayExchangeCount === undefined) S.wheel.todayExchangeCount = 0; if(S.wheel.lastExchangeDate === undefined) S.wheel.lastExchangeDate = ''; } if(S.wheelSpins === undefined) S.wheelSpins = 0; if(S.tasks && Array.isArray(S.tasks)) { S.tasks.forEach(function(t){ if(t.skip === undefined) t.skip = false; }); } addLog("📥","导入了备份数据"); save(); applyRole(); renderAll(); toast("导入成功 ✅"); }catch(e){ toast("文件格式不对 ❌"); } input.value = ""; }; reader.readAsText(f); }
+function importData(input){ var f = input.files[0]; if(!f) return; var reader = new FileReader(); reader.onload = function(){ try{ var data = JSON.parse(reader.result); if(!data || !Array.isArray(data.tasks)) throw new Error("bad"); if(!confirm("导入将覆盖当前全部数据，确定吗？")) { input.value=""; return; } S = data; if(!S.garden || !Array.isArray(S.garden)) S.garden = new Array(S.plotCount||24).fill(null); if(!S.plotCount) S.plotCount = 24; S.garden.forEach(function(cell){ if(cell){ if(typeof cell.lv === 'undefined') cell.lv = 1; if(typeof cell.hp === 'undefined') cell.hp = 1; } }); if(!S.shopItems || !Array.isArray(S.shopItems)){ S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP)); }else{ S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); }); } if(!S.inventory) { S.inventory = { coupons: 0, rewards: {} }; } if(S.inventory.coupons === undefined) S.inventory.coupons = 0; if(!S.inventory.rewards) S.inventory.rewards = {}; if(S.rewardEasy === undefined) S.rewardEasy = 15; if(S.rewardMid === undefined) S.rewardMid = 20; if(S.rewardHard === undefined) S.rewardHard = 30; if(S.sunflowerProduce === undefined) S.sunflowerProduce = 6; if(!S.weather) { S.weather = { today: 'sunny', tomorrow: 'sunny' }; } if(!S.weather.today) S.weather.today = 'sunny'; if(!S.weather.tomorrow) S.weather.tomorrow = 'sunny'; if(!S.wheel) { S.wheel = JSON.parse(JSON.stringify(defaultState().wheel)); } else { if(!S.wheel.prizes || !Array.isArray(S.wheel.prizes)) { S.wheel.prizes = JSON.parse(JSON.stringify(defaultState().wheel.prizes)); } else { S.wheel.prizes.forEach(function(p){ if(!p.id) p.id = uid(); }); } if(S.wheel.cost === undefined) S.wheel.cost = 30; if(S.wheel.dailyLimit === undefined) S.wheel.dailyLimit = 5; if(S.wheel.freeStreakDays === undefined) S.wheel.freeStreakDays = 3; if(S.wheel.freeStreakEnabled === undefined) S.wheel.freeStreakEnabled = true; if(S.wheel.totalSpins === undefined) S.wheel.totalSpins = 0; if(S.wheel.todayExchangeCount === undefined) S.wheel.todayExchangeCount = 0; if(S.wheel.lastExchangeDate === undefined) S.wheel.lastExchangeDate = ''; } if(S.wheelSpins === undefined) S.wheelSpins = 0; if(S.tasks && Array.isArray(S.tasks)) { S.tasks.forEach(function(t){ if(t.skip === undefined) t.skip = false; }); } addLog("📥","导入了备份数据"); save(); applyRole(); renderAll(); toast("导入成功 ✅"); }catch(e){ toast("文件格式不对 ❌"); } input.value = ""; }; reader.readAsText(f); }
 
 var pickPlotIdx = -1, shovel = false, selectedPlotForDetail = -1;
-function renderGarden(){ var el = $("gardenGrid"); if(!el) return; var html = ""; var count = S.plotCount || 24; for(var i=0; i<count; i++){ var cell = S.garden[i] || null; if(cell){ var p = getPlant(cell.p); var lv = cell.lv || 1; var lvText = (p.maxLv > 1 && lv > 1) ? '<span class="lv-badge">⭐'+lv+'</span>' : ''; html += '<div class="plot" onclick="plotClick('+i+')">' + lvText + '<span class="p-emoji">'+p.icon+'</span>' + (p.hp>1 ? '<span class="hp">❤️'+cell.hp+'</span>' : '') + '</div>'; }else{ html += '<div class="plot empty" onclick="plotClick('+i+')"></div>'; } } el.innerHTML = html; }
+function renderGarden(){
+  var el = $("gardenGrid");
+  if(!el) return;
+  // 移除旧的扩建栏
+  var oldExt = document.getElementById('plotExpandBar');
+  if (oldExt) oldExt.remove();
+
+  var html = "";
+  var count = S.plotCount || 24;
+  for(var i=0; i<count; i++){
+    var cell = S.garden[i] || null;
+    if(cell){
+      var p = getPlant(cell.p);
+      var lv = cell.lv || 1;
+      var lvText = (p.maxLv > 1 && lv > 1) ? '<span class="lv-badge">⭐'+lv+'</span>' : '';
+      html += '<div class="plot" onclick="plotClick('+i+')">' + lvText + '<span class="p-emoji">'+p.icon+'</span>' + (p.hp>1 ? '<span class="hp">❤️'+cell.hp+'</span>' : '') + '</div>';
+    }else{
+      html += '<div class="plot empty" onclick="plotClick('+i+')"></div>';
+    }
+  }
+  el.innerHTML = html;
+
+  // ---- 扩建栏 ----
+  var extEl = document.createElement('div');
+  extEl.id = 'plotExpandBar';
+  extEl.style.cssText = 'margin-top:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; background:#f5faf3; padding:8px 12px; border-radius:14px;';
+  var current = S.plotCount;
+  var max = S.maxPlotCount || 99;
+  var price = S.expandPrice || 50;
+  var canExpand = (S.role === "child" && current < max);
+  var htmlExt = '<span style="font-size:13px; color:var(--ink-light);">🌱 地块 ' + current + ' / ' + max + '</span>';
+  if (canExpand) {
+    htmlExt += '<button class="btn sm" onclick="buyPlot()" style="padding:6px 16px;">➕ 扩建 1 块（☀️' + price + '）</button>';
+  } else if (S.role === "child") {
+    htmlExt += '<span style="font-size:12px; color:#aaa;">已达上限</span>';
+  } else {
+    htmlExt = '<span style="font-size:12px; color:var(--ink-light);">地块 ' + current + ' / ' + max + '（家长可在设置中调整）</span>';
+  }
+  extEl.innerHTML = htmlExt;
+  el.parentNode.appendChild(extEl);
+}
 function plotClick(i){ if(i >= S.garden.length) return; var cell = S.garden[i]; if(cell){ var p = getPlant(cell.p); if(shovel){ if(confirm("确定铲掉这棵「"+p.name+"」吗？不返还阳光哦")){ S.garden[i] = null; addLog("🪏","家长铲掉了一棵 "+p.icon+p.name); save(); renderAll(); } return; } selectedPlotForDetail = i; renderPlantDetail(i); openModal('plantDetailModal'); }else{ if(shovel){ toast("这里是空地～"); return; } pickPlotIdx = i; renderPlantPick(); openModal("plantModal"); } }
 function shovelMode(){ shovel = !shovel; $("shovelBtn").textContent = shovel ? "🪏 铲子（开启）" : "🪏 铲子"; toast(shovel ? "铲子模式：点植物可铲除" : "铲子已收起"); }
-function renderPlantDetail(idx){ var el = $("plantDetailBody"); if(!el) return; var cell = S.garden[idx]; if(!cell) return; var p = getPlant(cell.p); var lv = cell.lv || 1; var isParent = S.role === 'parent'; var canUpgrade = isParent && p.maxLv > 1 && lv < p.maxLv && S.sun >= (p.upgradeCost || 50); var upgradeInfo = ''; if(p.maxLv > 1 && lv < p.maxLv){ var cost = p.upgradeCost || 50; var desc = ''; if(p.id === 'peashooter') desc = '伤害 1→2'; else if(p.id === 'snowpea') desc = '冰冻范围 1→2'; else if(p.id === 'wallnut') desc = '生命 4→6'; else if(p.id === 'sunflower') desc = '产出 8→12/晚（第1档）'; upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f0f8f0;border-radius:8px;"><span style="font-weight:700;">⬆️ 升级 → Lv' + (lv+1) + '</span><br><span style="font-size:12px;color:var(--ink-light);">' + desc + ' · 费用 ☀️' + cost + '</span><br>' + (canUpgrade ? '<button class="btn sm" style="margin-top:4px;" onclick="upgradePlant('+idx+')">升级</button>' : '<span style="color:var(--red);font-size:12px;">' + (S.sun < cost ? '阳光不足' : '已满级') + '</span>') + '</div>'; } else if(lv >= p.maxLv && p.maxLv > 1){ upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f5f5f5;border-radius:8px;font-size:12px;color:#888;">⭐ 已满级</div>'; }
+
+function buyPlot(){
+  if (S.role !== "child") { toast("仅孩子模式可扩建"); return; }
+  var current = S.plotCount;
+  var max = S.maxPlotCount || 99;
+  if (current >= max) { toast("花园已到达最大地块数 🏁"); return; }
+  var price = S.expandPrice || 50;
+  if (S.sun < price) { toast("阳光不足，需要 ☀️" + price); return; }
+  if (!confirm("花费 ☀️" + price + " 阳光扩建 1 块地吗？")) return;
+  S.sun -= price;
+  S.plotCount = current + 1;
+  var newGarden = new Array(S.plotCount);
+  for (var i=0; i<S.plotCount; i++) {
+    newGarden[i] = (i < S.garden.length) ? S.garden[i] : null;
+  }
+  S.garden = newGarden;
+  addLog("🏗️", "孩子花费 ☀️" + price + " 阳光扩建了 1 块地，当前共 " + S.plotCount + " 块");
+  save();
+  renderAll();
+  toast("扩建成功！当前 " + S.plotCount + " 块地 🌱");
+}
+
+function renderPlantDetail(idx){ var el = $("plantDetailBody"); if(!el) return; var cell = S.garden[idx]; if(!cell) return; var p = getPlant(cell.p); var lv = cell.lv || 1; var isParent = S.role === 'parent'; var canUpgrade = isParent && p.maxLv > 1 && lv < p.maxLv && S.sun >= (p.upgradeCost || 50); var upgradeInfo = ''; if(p.maxLv > 1 && lv < p.maxLv){ var cost = p.upgradeCost || 50; var desc = ''; if(p.id === 'peashooter') desc = '伤害 1→2'; else if(p.id === 'snowpea') desc = '冰冻范围 1→2'; else if(p.id === 'wallnut') desc = '生命 4→6'; else if(p.id === 'sunflower') desc = '产出 6→12/晚（第1档）'; upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f0f8f0;border-radius:8px;"><span style="font-weight:700;">⬆️ 升级 → Lv' + (lv+1) + '</span><br><span style="font-size:12px;color:var(--ink-light);">' + desc + ' · 费用 ☀️' + cost + '</span><br>' + (canUpgrade ? '<button class="btn sm" style="margin-top:4px;" onclick="upgradePlant('+idx+')">升级</button>' : '<span style="color:var(--red);font-size:12px;">' + (S.sun < cost ? '阳光不足' : '已满级') + '</span>') + '</div>'; } else if(lv >= p.maxLv && p.maxLv > 1){ upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f5f5f5;border-radius:8px;font-size:12px;color:#888;">⭐ 已满级</div>'; }
 var stats = []; if(p.dmg > 0) stats.push('⚔️ 伤害 ' + (p.id === 'peashooter' ? (lv>=2?'2':'1') : (p.id==='snowpea'?(lv>=2?'2':'1'):p.dmg))); if(p.freeze > 0) stats.push('❄️ 冰冻 ' + (lv>=2 ? 2 : 1) + ' 只'); if(p.hp > 1) stats.push('❤️ 生命 ' + (p.id==='wallnut' ? (lv>=2?6:4) : p.hp)); if(p.taunt) stats.push('🛡️ 吸引仇恨'); if(p.oneshot) stats.push('💥 秒杀 ' + p.kill + ' 只');
 var html = '<div style="text-align:center;"><div style="font-size:48px;margin:8px 0;">' + p.icon + '</div><div style="font-size:18px;font-weight:700;">' + p.name + ' <span style="font-size:14px;color:#888;">Lv' + lv + '</span></div><div style="font-size:13px;color:var(--ink-light);margin:4px 0;">' + p.desc + '</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0;font-size:12px;">'; stats.forEach(function(s){ html += '<span style="background:#f0f4ec;padding:0 8px;border-radius:4px;">'+s+'</span>'; }); html += '</div><div style="font-size:12px;color:var(--ink-light);">❤️ ' + cell.hp + '/' + (p.id==='wallnut' ? (lv>=2?6:4) : p.hp) + '</div>' + upgradeInfo + (isParent ? '<button class="btn red sm" style="margin-top:6px;" onclick="removePlant('+idx+')">🗑️ 铲除</button>' : '') + '</div>'; el.innerHTML = html; document.getElementById('plantDetailTitle').firstChild.textContent = '🌱 ' + p.name + ' 详情'; }
 function upgradePlant(idx){ var cell = S.garden[idx]; if(!cell) return; var p = getPlant(cell.p); var lv = cell.lv || 1; if(lv >= p.maxLv){ toast('已满级'); return; } var cost = p.upgradeCost || 50; if(S.sun < cost){ toast('阳光不足，需要 ☀️' + cost); return; } S.sun -= cost; cell.lv = (cell.lv || 1) + 1; addLog('⬆️', '将 ' + p.icon + p.name + ' 升级到 Lv' + cell.lv + '（消耗 ☀️' + cost + '）'); save(); closeModal('plantDetailModal'); renderAll(); toast('升级成功！Lv' + cell.lv); }
@@ -893,7 +1015,7 @@ function renderWeatherZombieInfo(){
   el.innerHTML = html;
 }
 
-// ===== 计算向日葵总产出（分档递减） =====
+// ===== 计算向日葵总产出 =====
 function calcSunflowerTotal(count, baseProduce, multiplier){
   if(count <= 0) return 0;
   var total = 0;
@@ -901,7 +1023,7 @@ function calcSunflowerTotal(count, baseProduce, multiplier){
     { limit: 20, rate: 1.0 },
     { limit: 40, rate: 0.5 },
     { limit: 60, rate: 0.25 },
-    { limit: Infinity, rate: 0.125 }
+    { limit: Infinity, rate: 0.1 }
   ];
   var remaining = count;
   var prev = 0;
@@ -917,7 +1039,7 @@ function calcSunflowerTotal(count, baseProduce, multiplier){
 }
 
 /* ============================================================
-   🌙 核心结算函数（已修改：分档向日葵 + 纵向啃食 + 严厉档）
+   🌙 核心结算函数
    ============================================================ */
 function doSettle(){
   var tasks = S.tasks || [];
@@ -928,7 +1050,7 @@ function doSettle(){
   if(!confirm("🌙 "+msg)) return;
   var lines = [], oldStreak = S.streak;
   var sfCount = 0; for(var i=0; i<S.garden.length; i++){ var c = S.garden[i]; if(c && c.p==="sunflower") sfCount++; }
-  var baseProduce = S.sunflowerProduce || 8;
+  var baseProduce = S.sunflowerProduce || 6;
   var weatherEffect = applyWeatherEffect(S.weather.today, undone.length, sfCount);
   var sunMultiplier = weatherEffect.sunMultiplier;
   if(sfCount > 0){
@@ -937,32 +1059,63 @@ function doSettle(){
     lines.push("🌻 "+sfCount+" 棵向日葵产出 ☀️"+produced+" 阳光" + (sunMultiplier>1 ? '（雨天×1.5）' : ''));
     addLog("🌻","向日葵们产出了 ☀️"+produced+" 阳光" + (sunMultiplier>1 ? '（雨天×1.5）' : ''));
   }
-  var zombieCount = undone.length; var wEffect = applyWeatherEffect(S.weather.today, zombieCount, sfCount); zombieCount = wEffect.count; zombieCount = Math.max(0, Math.min(8, zombieCount));
+  var zombieCount = undone.length;
+  var wEffect = applyWeatherEffect(S.weather.today, zombieCount, sfCount);
+  zombieCount = wEffect.count;
+  zombieCount = Math.max(1, Math.min(8, zombieCount));
   var zombieQueue = []; var day = S.day; for(var z=0; z<zombieCount; z++){ var available = ZOMBIE_TYPES.filter(function(zt){ return day >= zt.minDay; }); if(!available.length) available = [ZOMBIE_TYPES[0]]; var totalWeight = available.reduce(function(s, a){ return s + a.weight; }, 0); var rand = Math.random() * totalWeight; var cum = 0; var selected = available[0]; for(var a=0; a<available.length; a++){ cum += available[a].weight; if(rand <= cum){ selected = available[a]; break; } } zombieQueue.push({ type: selected, hp: selected.hp, maxHp: selected.hp, icon: selected.icon, name: selected.name, bite: selected.bite }); }
   if(zombieCount > 0){ lines.push("🧟 来袭 " + zombieCount + " 只僵尸：" + zombieQueue.map(function(z){ return z.icon; }).join(' ')); addLog("🧟","第 "+S.day+" 天有 "+zombieCount+" 只僵尸入侵！天气：" + getWeatherIcon(S.weather.today).name); } else { lines.push("🛡️ 没有僵尸来袭，花园平安无事！"); }
   var gardenPlants = []; for(var gi=0; gi<S.garden.length; gi++){ if(S.garden[gi]){ var p = getPlant(S.garden[gi].p); var lv = S.garden[gi].lv || 1; var actualDmg = p.dmg || 0; var actualFreeze = p.freeze || 0; var actualHp = p.hp; if(p.id === 'wallnut' && lv >= 2) actualHp = 6; if(p.id === 'peashooter' && lv >= 2) actualDmg = 2; if(p.id === 'snowpea' && lv >= 2) actualFreeze = 2; gardenPlants.push({ idx: gi, cell: S.garden[gi], plant: p, lv: lv, dmg: actualDmg, freeze: actualFreeze, hp: actualHp, isOneShot: p.oneshot || false, kill: p.kill || 0, taunt: p.taunt || false }); } }
   var battleLog = []; var zombies = zombieQueue.map(function(z){ return { ...z, id: 'z'+Math.random().toString(36).slice(2,6), alive: true, frozen: false }; });
-  // 一次性植物（土豆地雷、樱桃炸弹）先引爆
+  // 一次性植物
   var oneShotPlants = gardenPlants.filter(function(gp){ return gp.isOneShot; }); for(var os=0; os<oneShotPlants.length && zombies.some(function(z){ return z.alive; }); os++){ var gp = oneShotPlants[os]; var killCount = gp.kill || 1; var killed = 0; for(var zi=0; zi<zombies.length && killed<killCount; zi++){ if(zombies[zi].alive){ zombies[zi].alive = false; killed++; battleLog.push('💥 ' + gp.plant.icon + gp.plant.name + ' 秒杀了 ' + zombies[zi].icon + zombies[zi].name); } } S.garden[gp.idx] = null; battleLog.push('💥 ' + gp.plant.icon + gp.plant.name + ' 引爆消失'); addLog('💥', gp.plant.icon + gp.plant.name + ' 引爆，秒杀 ' + killed + ' 只僵尸'); }
-  // 攻击性植物（豌豆、寒冰）攻击僵尸
+  // 攻击性植物
   var attackPlants = gardenPlants.filter(function(gp){ return !gp.isOneShot && gp.dmg > 0; }); attackPlants.sort(function(a, b){ return a.idx - b.idx; });
   var zombiesAlive = function(){ return zombies.filter(function(z){ return z.alive; }); };
   for(var ap=0; ap<attackPlants.length && zombiesAlive().length > 0; ap++){ var gp2 = attackPlants[ap]; var target = null; for(var zi2=0; zi2<zombies.length; zi2++){ if(zombies[zi2].alive){ target = zombies[zi2]; break; } } if(!target) continue; var freezeCount = gp2.freeze; if(S.weather.today === 'frost') freezeCount = (gp2.freeze || 0) + 1; target.hp -= gp2.dmg; battleLog.push('🎯 ' + gp2.plant.icon + gp2.plant.name + ' 造成 ' + gp2.dmg + ' 点伤害 -> ' + target.icon + target.name + '（剩 ' + Math.max(0,target.hp)+'/'+target.maxHp+'）'); if(target.hp <= 0){ target.alive = false; battleLog.push('💀 ' + target.icon + target.name + ' 被消灭'); } else if(freezeCount > 0){ target.frozen = true; battleLog.push('❄️ ' + target.icon + target.name + ' 被冰冻，本轮不咬人'); } }
-  // ===== 僵尸啃食植物（纵向啃食 + 严厉档） =====
+  
+  // ===== 僵尸啃食植物（修复版：每只僵尸独立判断坚果墙状态） =====
   var remainingZombies = zombies.filter(function(z){ return z.alive && !z.frozen; });
-  // 先找所有存活的坚果墙
-  var nutPlants = gardenPlants.filter(function(gp){ return !gp.isOneShot && gp.taunt; });
-  var hasNut = false;
-  for(var np=0; np<nutPlants.length; np++){ if(S.garden[nutPlants[np].idx]){ hasNut = true; break; } }
-  if(!hasNut && remainingZombies.length > 0){
-    var cols = 6;
-    var rows = Math.ceil(S.plotCount / cols);
-    var minDepth = 3;
-    var maxDepth = 15;
-    var ratio = 0.5;
-    var depth = Math.max(minDepth, Math.min(maxDepth, Math.ceil(rows * ratio)));
-    for(var rz=0; rz<remainingZombies.length; rz++){
-      var zz = remainingZombies[rz];
+  // 预处理：找出所有坚果墙植物（定义 taunt 属性）
+  var allNutPlants = gardenPlants.filter(function(gp){ return !gp.isOneShot && gp.taunt; });
+  
+  // 每只僵尸独立行动
+  for(var rz=0; rz<remainingZombies.length; rz++){
+    var zz = remainingZombies[rz];
+    
+    // 1. 先检查当前是否还有存活的坚果墙
+    var hasNutNow = false;
+    var targetNut = null;
+    for(var np=0; np<allNutPlants.length; np++){
+      if(S.garden[allNutPlants[np].idx]){
+        hasNutNow = true;
+        targetNut = allNutPlants[np];
+        break;
+      }
+    }
+    
+    if(hasNutNow && targetNut){
+      // 有坚果墙 → 啃坚果墙
+      var cellData = S.garden[targetNut.idx];
+      if(cellData){
+        cellData.hp = (cellData.hp || 1) - zz.bite;
+        if(cellData.hp <= 0){
+          S.garden[targetNut.idx] = null;
+          battleLog.push('😭 ' + targetNut.plant.icon + targetNut.plant.name + ' 被 ' + zz.icon + zz.name + ' 吃掉了');
+          addLog('💀', targetNut.plant.icon + targetNut.plant.name + ' 被僵尸吃掉了');
+        } else {
+          battleLog.push('🌰 ' + targetNut.plant.icon + targetNut.plant.name + ' 被咬了一口（剩 ❤️'+cellData.hp+'）');
+          addLog('🩹', targetNut.plant.icon + targetNut.plant.name + ' 被咬了一口，剩 '+cellData.hp+' 血');
+        }
+      }
+    } else {
+      // 没有坚果墙了 → 纵向啃食（从底部向上，随机选一列）
+      var cols = 6;
+      var rows = Math.ceil(S.plotCount / cols);
+      var minDepth = 3;
+      var maxDepth = 15;
+      var ratio = 0.5;
+      var depth = Math.max(minDepth, Math.min(maxDepth, Math.ceil(rows * ratio)));
       var col = Math.floor(Math.random() * cols);
       var eaten = 0;
       for(var row = rows-1; row >= 0 && eaten < depth; row--){
@@ -976,42 +1129,14 @@ function doSettle(){
         }
       }
       if(eaten === 0){
-        battleLog.push('😐 ' + zz.icon + zz.name + ' 选中的列没有植物，悻悻离开');
+        battleLog.push('😐 ' + zz.icon + zz.name + ' 没有找到可攻击的植物，离开了');
       } else {
         battleLog.push('👹 ' + zz.icon + zz.name + ' 啃掉了 ' + eaten + ' 棵植物后离开');
       }
     }
-  } else if(hasNut){
-    for(var rz2=0; rz2<remainingZombies.length; rz2++){
-      var zz2 = remainingZombies[rz2];
-      var targetPlant = null;
-      for(var np2=0; np2<nutPlants.length; np2++){
-        if(S.garden[nutPlants[np2].idx]){
-          targetPlant = nutPlants[np2];
-          break;
-        }
-      }
-      if(targetPlant){
-        var cellData = S.garden[targetPlant.idx];
-        if(cellData){
-          cellData.hp = (cellData.hp || 1) - zz2.bite;
-          if(cellData.hp <= 0){
-            S.garden[targetPlant.idx] = null;
-            battleLog.push('😭 ' + targetPlant.plant.icon + targetPlant.plant.name + ' 被 ' + zz2.icon + zz2.name + ' 吃掉了');
-            addLog('💀', targetPlant.plant.icon + targetPlant.plant.name + ' 被僵尸吃掉了');
-          } else {
-            battleLog.push('🌰 ' + targetPlant.plant.icon + targetPlant.plant.name + ' 被咬了一口（剩 ❤️'+cellData.hp+'）');
-            addLog('🩹', targetPlant.plant.icon + targetPlant.plant.name + ' 被咬了一口，剩 '+cellData.hp+' 血');
-          }
-        }
-      } else {
-        battleLog.push('😐 ' + zz2.icon + zz2.name + ' 找不到坚果墙，离开了');
-      }
-    }
-  } else {
-    // 没有僵尸，无事发生
   }
-  // ===== 统计损失 =====
+  // ===== 啃食逻辑结束 =====
+  
   var lostCount = gardenPlants.filter(function(gp){ return !S.garden[gp.idx]; }).length;
   if(zombieCount > 0){
     S.invasions.unshift({day:S.day, undone:undone.length, lost:lostCount, t:Date.now()});
@@ -1067,31 +1192,61 @@ function deleteShopItem(idx){ var items = S.shopItems || []; if(idx < 0 || idx >
 function saveShopItem(){ var icon = $("fShopIcon").value.trim() || "🎁"; var name = $("fShopName").value.trim(); var cost = parseInt($("fShopCost").value, 10); if(!name){ toast("请输入商品名称 ✍️"); return; } if(isNaN(cost) || cost < 1){ toast("请输入有效的价格（≥1）"); return; } var items = S.shopItems || []; if(SHOP_EDIT_INDEX >= 0 && SHOP_EDIT_INDEX < items.length){ var item = items[SHOP_EDIT_INDEX]; item.icon = icon; item.name = name; item.cost = cost; addLog("✏️","家长编辑了商城商品「"+name+"」"); }else{ items.push({id:uid(), icon:icon, name:name, cost:cost}); addLog("➕","家长新增了商城商品「"+name+"」（☀️"+cost+"）"); } S.shopItems = items; save(); closeModal("shopEditModal"); renderAll(); if($("shopModal").classList.contains("show")) renderShop(); toast("商品已保存 ✅"); }
 
 /* ===== 设置 ===== */
-function openSettings() { $("fNewPwd").value = ''; $("fDayNum").value = S.day; $("fPlotCount").value = S.plotCount || 24; $("fSunAmount").value = 1; $("fRewardEasy").value = S.rewardEasy; $("fRewardMid").value = S.rewardMid; $("fRewardHard").value = S.rewardHard; $("fSunflowerProduce").value = S.sunflowerProduce || 8; openModal('setModal'); }
+function openSettings() { 
+  $("fNewPwd").value = ''; 
+  $("fDayNum").value = S.day; 
+  $("fPlotCount").value = S.plotCount || 24; 
+  $("fMaxPlot").value = S.maxPlotCount || 99;
+  $("fExpandPrice").value = S.expandPrice || 50;
+  $("fSunAmount").value = 1; 
+  $("fRewardEasy").value = S.rewardEasy; 
+  $("fRewardMid").value = S.rewardMid; 
+  $("fRewardHard").value = S.rewardHard; 
+  $("fSunflowerProduce").value = S.sunflowerProduce || 6; 
+  openModal('setModal'); 
+}
 function changePwd(){ var p = $("fNewPwd").value.trim(); if(p.length < 4 || p.length > 8){ toast("密码需 4-8 位"); return; } S.pwd = p; save(); toast("密码已更新 🔑"); $("fNewPwd").value = ''; }
 function changeDay(){ var n = parseInt($("fDayNum").value, 10); if(!n || n < 1 || n > 999){ toast("请输入 1-999"); return; } S.day = n; save(); renderAll(); toast("已调整为第 "+n+" 天"); }
 function changePlotCount(){ var n = parseInt($("fPlotCount").value, 10); if(!n || n < 1){ toast("请输入有效数字（≥1）"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); closeModal('setModal'); }
+function saveExpandParams(){
+  var max = parseInt($("fMaxPlot").value, 10);
+  var price = parseInt($("fExpandPrice").value, 10);
+  if (isNaN(max) || max < 1) { toast("请输入有效的最大地块数"); return; }
+  if (isNaN(price) || price < 1) { toast("请输入有效的扩建价格"); return; }
+  S.maxPlotCount = max;
+  S.expandPrice = price;
+  if (S.plotCount > max) {
+    // 如果当前地块超过新上限，自动缩减（警告）
+    if (!confirm("当前地块数 " + S.plotCount + " 超过新上限 " + max + "，将自动缩减，部分植物可能丢失！")) return;
+    S.plotCount = max;
+    var newGarden = new Array(max);
+    for (var i=0; i<max; i++) newGarden[i] = (i < S.garden.length) ? S.garden[i] : null;
+    S.garden = newGarden;
+  }
+  save();
+  renderAll();
+  toast("扩建参数已保存 ✅");
+}
 function resetAll(){ if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return; if(!confirm("再确认一次：真的要全部重来吗？")) return; localStorage.removeItem(LS_KEY); S = defaultState(); addLog("🌞","数据已重置，新的冒险开始！"); save(); applyRole(); renderAll(); closeModal('setModal'); toast("已重置 🌱"); }
 function addSun() { var amount = parseInt($("fSunAmount").value, 10); if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; } S.sun += amount; addLog('☀️', '家长手动增加了 ' + amount + ' 阳光（当前 ' + S.sun + '）'); save(); renderAll(); toast('已增加 ' + amount + ' 阳光'); }
 function subSun() { var amount = parseInt($("fSunAmount").value, 10); if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; } if (S.sun < amount) { toast('阳光不足，无法减少 ' + amount + '（当前仅 ' + S.sun + '）'); return; } S.sun -= amount; addLog('☀️', '家长手动减少了 ' + amount + ' 阳光（当前 ' + S.sun + '）'); save(); renderAll(); toast('已减少 ' + amount + ' 阳光'); }
-function saveRewardParams() { var easy = parseInt($("fRewardEasy").value, 10); var mid = parseInt($("fRewardMid").value, 10); var hard = parseInt($("fRewardHard").value, 10); var sunflower = parseInt($("fSunflowerProduce").value, 10); if (isNaN(easy) || easy < 0) { toast('请输入有效的简单任务奖励'); return; } if (isNaN(mid) || mid < 0) { toast('请输入有效的中等任务奖励'); return; } if (isNaN(hard) || hard < 0) { toast('请输入有效的困难任务奖励'); return; } if (isNaN(sunflower) || sunflower < 0) { toast('请输入有效的向日葵基础产出'); return; } S.rewardEasy = easy; S.rewardMid = mid; S.rewardHard = hard; S.sunflowerProduce = sunflower; DIFFS[0].sun = easy; DIFFS[1].sun = mid; DIFFS[2].sun = hard; // 更新植物描述中的产出提示
-for(var i=0; i<PLANTS.length; i++){ if(PLANTS[i].id === 'sunflower'){ PLANTS[i].produce = sunflower; } } save(); renderAll(); toast('奖励参数已保存 ✅'); }
+function saveRewardParams() { var easy = parseInt($("fRewardEasy").value, 10); var mid = parseInt($("fRewardMid").value, 10); var hard = parseInt($("fRewardHard").value, 10); var sunflower = parseInt($("fSunflowerProduce").value, 10); if (isNaN(easy) || easy < 0) { toast('请输入有效的简单任务奖励'); return; } if (isNaN(mid) || mid < 0) { toast('请输入有效的中等任务奖励'); return; } if (isNaN(hard) || hard < 0) { toast('请输入有效的困难任务奖励'); return; } if (isNaN(sunflower) || sunflower < 0) { toast('请输入有效的向日葵基础产出'); return; } S.rewardEasy = easy; S.rewardMid = mid; S.rewardHard = hard; S.sunflowerProduce = sunflower; DIFFS[0].sun = easy; DIFFS[1].sun = mid; DIFFS[2].sun = hard; for(var i=0; i<PLANTS.length; i++){ if(PLANTS[i].id === 'sunflower'){ PLANTS[i].produce = sunflower; } } save(); renderAll(); toast('奖励参数已保存 ✅'); }
 
 function resetDailyExchange() { var today = new Date().toDateString(); if (S.wheel.lastExchangeDate !== today) { S.wheel.todayExchangeCount = 0; S.wheel.lastExchangeDate = today; } }
 
 /* ===== 转盘 ===== */
 function openWheelModal() { resetDailyExchange(); renderWheelStatus(); drawWheel(); openModal('wheelModal'); $("wheelResult").textContent = '🎯 点击下方按钮试试手气'; }
-function renderWheelStatus() { $("wheelSpinsDisplay").textContent = S.wheelSpins || 0; $("wheelCostDisplay").textContent = S.wheel.cost || 50; $("wheelSunDisplay").textContent = S.sun; var freeInfo = ''; if (S.wheel.freeStreakEnabled && S.wheel.freeStreakDays > 0) { freeInfo = '连续达标 ' + S.wheel.freeStreakDays + ' 天送 1 次'; } else { freeInfo = '免费赠送已关闭'; } $("wheelFreeInfo").textContent = freeInfo; }
+function renderWheelStatus() { $("wheelSpinsDisplay").textContent = S.wheelSpins || 0; $("wheelCostDisplay").textContent = S.wheel.cost || 30; $("wheelSunDisplay").textContent = S.sun; var freeInfo = ''; if (S.wheel.freeStreakEnabled && S.wheel.freeStreakDays > 0) { freeInfo = '连续达标 ' + S.wheel.freeStreakDays + ' 天送 1 次'; } else { freeInfo = '免费赠送已关闭'; } $("wheelFreeInfo").textContent = freeInfo; }
 function drawWheel() { var canvas = $("wheelCanvas"); if (!canvas) return; var ctx = canvas.getContext('2d'); var w = canvas.width, h = canvas.height; var cx = w/2, cy = h/2, r = Math.min(w,h)/2 * 0.85; ctx.clearRect(0, 0, w, h); var prizes = S.wheel.prizes || []; var count = prizes.length; if (count === 0) { ctx.fillStyle = '#ddd'; ctx.font = '16px "PingFang SC",sans-serif'; ctx.textAlign = 'center'; ctx.fillText('请配置奖品', cx, cy); return; } var colors = ['#FF6B6B','#4ECDC4','#FFE66D','#A8E6CF','#FFB7B2','#B5B8C3','#F7DC6F','#BB8FCE','#85C1E9','#F8C471','#82E0AA','#F1948A']; var angleStep = (2 * Math.PI) / count; var startAngle = Math.PI/2 - angleStep/2; prizes.forEach(function(p, i) { var endAngle = startAngle + angleStep; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, startAngle, endAngle); ctx.closePath(); ctx.fillStyle = colors[i % colors.length]; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke(); var midAngle = startAngle + angleStep/2; var textR = r * 0.65; var tx = cx + Math.cos(midAngle) * textR; var ty = cy + Math.sin(midAngle) * textR; ctx.fillStyle = '#2c3e50'; ctx.font = '12px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; var name = p.name || '奖品'; if (name.length <= 4) { ctx.fillText(name, tx, ty); } else { var first = name.substring(0, Math.ceil(name.length/2)); var second = name.substring(Math.ceil(name.length/2)); ctx.fillText(first, tx, ty-8); ctx.fillText(second, tx, ty+8); } startAngle = endAngle; }); ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 2*Math.PI); ctx.fillStyle = '#fff'; ctx.fill(); ctx.shadowColor = 'rgba(0,0,0,0.1)'; ctx.shadowBlur = 8; ctx.strokeStyle = '#ddd'; ctx.lineWidth = 2; ctx.stroke(); ctx.shadowBlur = 0; ctx.fillStyle = '#2c3e50'; ctx.font = '12px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('幸运', cx, cy-8); ctx.fillText('转盘', cx, cy+10); }
 var isSpinning = false;
 function spinWheel() { if (isSpinning) return; var spins = S.wheelSpins || 0; if (spins <= 0) { toast('没有转盘机会，请兑换或等待赠送'); return; } var prizes = S.wheel.prizes || []; var totalProb = prizes.reduce(function(s, p) { return s + (p.prob || 0); }, 0); if (totalProb === 0) { toast('转盘奖品未配置'); return; } isSpinning = true; $("wheelSpinBtn").disabled = true; var rand = Math.random() * totalProb; var cumulative = 0; var selectedIndex = 0; for (var i=0; i<prizes.length; i++) { cumulative += (prizes[i].prob || 0); if (rand <= cumulative) { selectedIndex = i; break; } } var angleStep = (2 * Math.PI) / prizes.length; var startAngle = Math.PI/2 - angleStep/2; var selectedMidAngle = startAngle + selectedIndex * angleStep + angleStep/2; var extraSpins = 5 + Math.floor(Math.random() * 5); var targetAngle = Math.PI/2 - selectedMidAngle + extraSpins * 2 * Math.PI; var canvas = $("wheelCanvas"); var duration = 4000; var startTime = null; var startAngleCurrent = 0; function animate(timestamp) { if (!startTime) startTime = timestamp; var progress = Math.min((timestamp - startTime) / duration, 1); var ease = 1 - Math.pow(1 - progress, 3); var currentAngle = startAngleCurrent + (targetAngle - startAngleCurrent) * ease; canvas.style.transform = 'rotate(' + currentAngle + 'rad)'; if (progress < 1) { requestAnimationFrame(animate); } else { isSpinning = false; $("wheelSpinBtn").disabled = false; S.wheelSpins = (S.wheelSpins || 0) - 1; S.wheel.totalSpins = (S.wheel.totalSpins || 0) + 1; save(); var prize = prizes[selectedIndex]; handlePrize(prize); $("wheelResult").textContent = '🎯 点击下方按钮试试手气'; } } requestAnimationFrame(animate); }
 function handlePrize(prize) { var name = prize.name || '未知奖品'; switch (prize.type) { case 'sun': S.sun = (S.sun || 0) + (prize.value || 0); addLog('🎰', '转盘抽中 ' + name + '，获得 ' + prize.value + ' 阳光'); break; case 'coupon': if (!S.inventory) S.inventory = { coupons: 0, rewards: {} }; S.inventory.coupons = (S.inventory.coupons || 0) + 1; addLog('🎫', '转盘抽中 ' + name + '，库存 +1（当前 ' + S.inventory.coupons + ' 张）'); toast('获得 1 张8折券！当前库存 ' + S.inventory.coupons + ' 张'); break; case 'reward': if (!S.inventory) S.inventory = { coupons: 0, rewards: {} }; if (!S.inventory.rewards) S.inventory.rewards = {}; var rName = prize.name || '奖励'; S.inventory.rewards[rName] = (S.inventory.rewards[rName] || 0) + 1; addLog('🎁', '转盘抽中 ' + rName + '，库存 +1（当前 ' + S.inventory.rewards[rName] + ' 份）'); toast('获得 1 份 ' + rName + '！当前库存 ' + S.inventory.rewards[rName] + ' 份'); break; case 'retry': S.wheelSpins = (S.wheelSpins || 0) + 1; addLog('🔄', '转盘抽中 ' + name + '，返还1次机会'); toast('再来一次！已返还 1 次机会'); break; default: addLog('🎰', '转盘抽中 ' + name + '（谢谢参与）'); toast('谢谢参与，下次好运！'); break; } save(); renderAll(); renderWheelStatus(); drawWheel(); }
-function buyWheelSpin() { resetDailyExchange(); var cost = S.wheel.cost || 50; var limit = S.wheel.dailyLimit || 0; var todayCount = S.wheel.todayExchangeCount || 0; if (limit > 0 && todayCount >= limit) { toast('今日兑换已达上限（' + limit + '次），明天再来吧'); return; } if (S.sun < cost) { toast('阳光不足，需要 ' + cost + ' ☀️'); return; } if (!confirm('消耗 ' + cost + ' 阳光兑换 1 次转盘机会？')) return; S.sun -= cost; S.wheelSpins = (S.wheelSpins || 0) + 1; S.wheel.todayExchangeCount = (S.wheel.todayExchangeCount || 0) + 1; S.wheel.lastExchangeDate = new Date().toDateString(); addLog('☀️', '用 ' + cost + ' 阳光兑换了 1 次转盘机会（今日已兑 ' + S.wheel.todayExchangeCount + ' 次）'); save(); renderAll(); renderWheelStatus(); toast('兑换成功！现在有 ' + S.wheelSpins + ' 次机会'); }
+function buyWheelSpin() { resetDailyExchange(); var cost = S.wheel.cost || 30; var limit = S.wheel.dailyLimit || 5; var todayCount = S.wheel.todayExchangeCount || 0; if (limit > 0 && todayCount >= limit) { toast('今日兑换已达上限（' + limit + '次），明天再来吧'); return; } if (S.sun < cost) { toast('阳光不足，需要 ' + cost + ' ☀️'); return; } if (!confirm('消耗 ' + cost + ' 阳光兑换 1 次转盘机会？')) return; S.sun -= cost; S.wheelSpins = (S.wheelSpins || 0) + 1; S.wheel.todayExchangeCount = (S.wheel.todayExchangeCount || 0) + 1; S.wheel.lastExchangeDate = new Date().toDateString(); addLog('☀️', '用 ' + cost + ' 阳光兑换了 1 次转盘机会（今日已兑 ' + S.wheel.todayExchangeCount + ' 次）'); save(); renderAll(); renderWheelStatus(); toast('兑换成功！现在有 ' + S.wheelSpins + ' 次机会'); }
 function checkWheelFreeSpin() { if (!S.wheel.freeStreakEnabled || S.wheel.freeStreakDays <= 0) return; if (S.streak > 0 && S.streak % S.wheel.freeStreakDays === 0) { S.wheelSpins = (S.wheelSpins || 0) + 1; addLog('🎁', '连续达标 ' + S.wheel.freeStreakDays + ' 天，赠送 1 次转盘机会！'); toast('连续达标奖励：获得 1 次转盘机会 🎉'); } }
 
 /* 转盘配置 */
 function openWheelConfig() { openModal('wheelConfigModal'); renderWheelConfig(); }
-function renderWheelConfig() { $("wCost").value = S.wheel.cost || 50; $("wDailyLimit").value = S.wheel.dailyLimit || 0; $("wFreeDays").value = S.wheel.freeStreakDays || 0; renderPrizeList(); }
+function renderWheelConfig() { $("wCost").value = S.wheel.cost || 30; $("wDailyLimit").value = S.wheel.dailyLimit || 5; $("wFreeDays").value = S.wheel.freeStreakDays || 3; renderPrizeList(); }
 function renderPrizeList() { var container = $("wheelPrizeList"); var prizes = S.wheel.prizes || []; var html = ''; var total = 0; prizes.forEach(function(p, idx) { total += (p.prob || 0); html += '<div style="display:flex; align-items:center; gap:6px; margin-bottom:4px; background:#f5f5f5; border-radius:8px; padding:6px 8px;"><span style="flex:1; font-size:13px;">' + p.name + '</span><span style="font-size:12px; color:#888;">' + (p.prob||0) + '%</span><button class="btn xs blue" onclick="openPrizeEditor('+idx+')">✏️</button></div>'; }); container.innerHTML = html || '<div class="empty-hint">暂无奖品，点击下方添加</div>'; $("probSumDisplay").textContent = '总和：' + total + '%' + (total === 100 ? ' ✅' : ' ⚠️ 需等于100%'); }
 var editingPrizeIndex = -1;
 function openPrizeEditor(idx) { editingPrizeIndex = idx; var prizes = S.wheel.prizes || []; var p = (idx >= 0 && idx < prizes.length) ? prizes[idx] : { name:'', type:'sun', value:0, prob:0 }; $("peName").value = p.name || ''; $("peType").value = p.type || 'sun'; $("peValue").value = p.value || 0; $("peProb").value = p.prob || 0; $("prizeEditorTitle").firstChild.textContent = idx >= 0 ? '✏️ 编辑奖品' : '➕ 添加奖品'; $("peDeleteBtn").style.display = (idx >= 0) ? 'block' : 'none'; openModal('prizeEditorModal'); }
