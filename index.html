@@ -327,6 +327,13 @@ body.role-child .role-tip.parent-tip{display:none;}
 
 <!-- ===== 花园页面 ===== -->
 <div class="page" id="page-garden">
+  <!-- 1️⃣ 天气卡片（移到最上面，更醒目） -->
+  <div class="card" id="weatherZombieCard">
+    <div class="card-title">🌤️ 战地气象</div>
+    <div id="weatherZombieInfo"></div>
+  </div>
+
+  <!-- 2️⃣ 花园卡片 -->
   <div class="card">
     <div class="card-title">🌱 阳光花园 <small>点击空地种植 · 点击植物查看</small></div>
     <div class="garden-grid" id="gardenGrid"></div>
@@ -335,12 +342,8 @@ body.role-child .role-tip.parent-tip{display:none;}
       <button class="btn gray sm parent-only" onclick="shovelMode()" id="shovelBtn">🪏 铲子</button>
     </div>
   </div>
-  <!-- 天气 & 僵尸威胁卡片 -->
-  <div class="card" id="weatherZombieCard">
-    <div class="card-title">🌤️ 今日气象 & 🧟 僵尸威胁</div>
-    <div id="weatherZombieInfo"></div>
-  </div>
-  <!-- ===== 玩法提示（已更新） ===== -->
+
+  <!-- 3️⃣ 玩法提示 -->
   <div class="card">
     <div class="card-title">📖 玩法规则</div>
     <div style="font-size:12.5px; color:var(--ink-light); line-height:1.9;">
