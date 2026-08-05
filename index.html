@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🌻 我的阳光花园保卫战 · 优化版</title>
+<title>🌻 我的阳光花园保卫战 · 完全版</title>
 <style>
 :root{
   --green:#5cb85c; --green-deep:#3e8e41; --green-light:#a8e063;
@@ -122,8 +122,8 @@ header{
 .btn.xs{padding:4px 8px; font-size:11px; border-radius:9px; min-width:28px;}
 .btn-row{display:flex; gap:8px; flex-wrap:wrap;}
 .btn-row .btn{flex:1; min-width:96px;}
-.setting-row{display:flex; gap:8px; align-items:center;}
-.setting-row .form-group{flex:1; margin-bottom:0;}
+.setting-row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+.setting-row .form-group{flex:1; margin-bottom:0; min-width:80px;}
 .setting-row .btn{flex-shrink:0; min-width:72px; padding:8px 12px; font-size:13px;}
 .setting-divider{height:1px; background:linear-gradient(to right, transparent, #dcead0, transparent); margin:14px 0;}
 .setting-section-title{font-size:12px; color:var(--ink-light); font-weight:700; margin-bottom:8px; letter-spacing:1px;}
@@ -163,7 +163,7 @@ nav{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; 
 .modal h3 .close-x{margin-left:auto; font-size:20px; color:#aab8a2; cursor:pointer; border:none; background:none;}
 .form-group{margin-bottom:12px;}
 .form-group label{display:block; font-size:12.5px; font-weight:700; color:var(--ink-light); margin-bottom:6px;}
-.form-group input[type=text],.form-group input[type=password],.form-group input[type=number]{width:100%; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; font-family:inherit; background:#fafdf6; color:var(--ink); outline:none;}
+.form-group input[type=text],.form-group input[type=password],.form-group input[type=number],.form-group select{width:100%; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; font-family:inherit; background:#fafdf6; color:var(--ink); outline:none;}
 .form-group input:focus{border-color:var(--green);}
 .chip-row{display:flex; gap:7px; flex-wrap:wrap;}
 .chip{padding:8px 14px; border-radius:999px; border:2px solid #dcead0; background:#fff; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; color:var(--ink-light);}
@@ -338,7 +338,6 @@ body.role-child .role-tip.parent-tip{display:none;}
       <button class="btn sm" onclick="openDex()">📖 植物图鉴</button>
       <button class="btn gray sm parent-only" onclick="shovelMode()" id="shovelBtn">🪏 铲子</button>
     </div>
-    <!-- 扩建栏将由 JS 动态插入 -->
   </div>
   <div class="card">
     <div class="card-title">📖 玩法规则</div>
@@ -506,10 +505,13 @@ body.role-child .role-tip.parent-tip{display:none;}
     <button class="btn" style="width:100%;" onclick="saveShopItem()">💾 保存商品</button>
   </div>
 </div>
-<!-- 家长设置弹窗 -->
+
+<!-- ===== 家长设置弹窗（全新布局） ===== -->
 <div class="mask" id="setModal">
   <div class="modal">
     <h3>⚙️ 家长设置 <button class="close-x" onclick="closeModal('setModal')">✕</button></h3>
+    
+    <!-- 账户安全 -->
     <div class="setting-section-title">🔐 账户安全</div>
     <div class="form-group">
       <label>修改家长密码</label>
@@ -519,78 +521,126 @@ body.role-child .role-tip.parent-tip{display:none;}
       </div>
     </div>
     <div class="setting-divider"></div>
-    <div class="setting-section-title">🎮 游戏参数</div>
-    <div class="setting-row" style="gap:8px;">
-      <div class="form-group" style="flex:1; margin-bottom:0;">
-        <label>保卫战天数</label>
-        <input type="number" id="fDayNum" min="1" max="999">
-      </div>
-      <div class="form-group" style="flex:1; margin-bottom:0;">
+
+    <!-- 游戏基础 -->
+  <div class="setting-section-title">🎮 游戏基础</div>
+<div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:8px 12px; align-items:center;">
+  <label style="font-size:12.5px; font-weight:700; color:var(--ink-light);">当前天数</label>
+  <label style="font-size:12.5px; font-weight:700; color:var(--ink-light);">初始阳光</label>
+  <span></span> <!-- 占位保持网格对齐 -->
+  <input type="number" id="fDayNum" min="1" max="999" style="width:100%; height:48px; box-sizing:border-box; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; background:#fafdf6; outline:none;">
+  <input type="number" id="fInitialSun" min="0" max="999" style="width:100%; height:48px; box-sizing:border-box; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; background:#fafdf6; outline:none;">
+  <button class="btn sm" onclick="changeDay()" style="height:48px; box-sizing:border-box; padding:0 12px; display:flex; align-items:center; justify-content:center; min-width:72px; font-size:14px;">📅 保存天数</button>
+</div>
+
+    <!-- 花园与扩建 -->
+    <div class="setting-section-title">🌱 花园与扩建</div>
+    <div class="setting-row" style="gap:8px; flex-wrap:wrap;">
+      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
         <label>花园地块数</label>
-        <input type="number" id="fPlotCount" min="1" max="999">
+        <input type="number" id="fPlotCount" min="1" max="999" style="width:100%;">
       </div>
-    </div>
-    <div class="btn-row" style="margin-top:6px;">
-      <button class="btn sm" onclick="changeDay()" style="flex:1;">📅 保存天数</button>
-      <button class="btn sm" onclick="changePlotCount()" style="flex:1;">🌱 调整地块</button>
-    </div>
-    <div class="setting-divider"></div>
-    <div class="setting-section-title">🏗️ 扩建参数（孩子模式）</div>
-    <div class="setting-row" style="gap:8px;">
-      <div class="form-group" style="flex:1; margin-bottom:0;">
+      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
         <label>最大地块数</label>
-        <input type="number" id="fMaxPlot" min="1" max="999" value="99">
+        <input type="number" id="fMaxPlot" min="1" max="999" style="width:100%;">
       </div>
-      <div class="form-group" style="flex:1; margin-bottom:0;">
-        <label>每块地价格（☀️）</label>
-        <input type="number" id="fExpandPrice" min="1" max="999" value="50">
+      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
+        <label>每块扩建价格</label>
+        <input type="number" id="fExpandPrice" min="1" max="999" style="width:100%;">
       </div>
     </div>
     <div class="btn-row" style="margin-top:6px;">
-      <button class="btn blue sm" onclick="saveExpandParams()" style="flex:1;">💾 保存扩建参数</button>
+      <button class="btn blue sm" onclick="saveExpandParams()" style="flex:1;">💾 保存花园参数</button>
     </div>
     <div class="setting-divider"></div>
-    <div class="setting-section-title">🌞 阳光管理</div>
-    <div class="form-group" style="margin-bottom:0;">
-      <label>数量</label>
-      <div class="setting-row" style="gap:8px;">
-        <input type="number" id="fSunAmount" min="1" max="999" value="1" style="flex:1;">
-        <div style="display:flex; gap:6px; align-items:center;">
-          <button class="btn blue sm" onclick="addSun()" style="min-width:72px;">➕ 增加</button>
-          <button class="btn warn sm" onclick="subSun()" style="min-width:72px;">➖ 减少</button>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:12px;"></div>
-    <div class="setting-section-title" style="margin-top:4px;">🎯 奖励参数</div>
+
+    <!-- 经济与奖励 -->
+    <div class="setting-section-title">💰 经济与奖励</div>
     <div class="setting-row" style="gap:8px; flex-wrap:wrap;">
       <div class="form-group" style="flex:1; min-width:80px; margin-bottom:0;">
-        <label>简单</label>
-        <input type="number" id="fRewardEasy" min="0" max="999" value="15">
+        <label>简单任务</label>
+        <input type="number" id="fRewardEasy" min="0" max="999" style="width:100%;">
       </div>
       <div class="form-group" style="flex:1; min-width:80px; margin-bottom:0;">
-        <label>中等</label>
-        <input type="number" id="fRewardMid" min="0" max="999" value="20">
+        <label>中等任务</label>
+        <input type="number" id="fRewardMid" min="0" max="999" style="width:100%;">
       </div>
       <div class="form-group" style="flex:1; min-width:80px; margin-bottom:0;">
-        <label>困难</label>
-        <input type="number" id="fRewardHard" min="0" max="999" value="30">
+        <label>困难任务</label>
+        <input type="number" id="fRewardHard" min="0" max="999" style="width:100%;">
       </div>
     </div>
-    <div class="setting-row" style="gap:8px; margin-top:6px;">
-      <div class="form-group" style="flex:1; margin-bottom:0;">
-        <label>🌻 向日葵基础产出（第1档）</label>
-        <input type="number" id="fSunflowerProduce" min="0" max="999" value="6">
+    <div class="setting-row" style="gap:8px; margin-top:6px; flex-wrap:wrap;">
+      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
+        <label>🌻 向日葵基础产出</label>
+        <input type="number" id="fSunflowerProduce" min="0" max="999" style="width:100%;">
       </div>
-      <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; align-self:flex-end;">💾 保存</button>
+      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
+        <label>🌱 植物价格系数</label>
+        <input type="number" id="fPlantPriceFactor" min="0.5" max="2.0" step="0.05" style="width:100%;">
+      </div>
     </div>
-    <div style="font-size:11px; color:var(--ink-light); margin-top:4px; text-align:right;">
-      分档：1~20棵×基础，21~40×基础/2，41~60×基础/4，61+×基础/10（雨天×1.5）
+    <div class="btn-row" style="margin-top:6px;">
+      <button class="btn blue sm" onclick="saveRewardParams()" style="flex:1;">💾 保存经济参数</button>
     </div>
     <div class="setting-divider"></div>
+
+    <!-- 战斗与僵尸 -->
+    <div class="setting-section-title">⚔️ 战斗与僵尸</div>
+    <div class="setting-row" style="gap:8px; flex-wrap:wrap;">
+      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
+        <label>僵尸最少数量</label>
+        <input type="number" id="fMinZombies" min="0" max="8" style="width:100%;">
+      </div>
+      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
+        <label>僵尸强度系数</label>
+        <input type="number" id="fZombieStrength" min="0.5" max="2.0" step="0.05" style="width:100%;">
+      </div>
+      <div class="form-group" style="flex:1; min-width:120px; margin-bottom:0;">
+        <label>连续达标中断惩罚</label>
+        <select id="fStreakPenalty" style="width:100%; padding:8px; border-radius:10px; border:2px solid #dcead0; background:#fafdf6;">
+          <option value="0">归零</option>
+          <option value="1">减 1 天</option>
+        </select>
+      </div>
+    </div>
+    <div class="setting-divider"></div>
+
+    <!-- 天气权重 -->
+    <div class="setting-section-title">🌤️ 天气权重（总和必须 100%）</div>
+    <div class="setting-row" style="gap:8px; flex-wrap:wrap;">
+      <div class="form-group" style="flex:1; min-width:60px; margin-bottom:0;">
+        <label>☀️ 晴天</label>
+        <input type="number" id="fWeatherSunny" min="0" max="100" step="1" style="width:100%;">
+      </div>
+      <div class="form-group" style="flex:1; min-width:60px; margin-bottom:0;">
+        <label>🌧️ 雨天</label>
+        <input type="number" id="fWeatherRainy" min="0" max="100" step="1" style="width:100%;">
+      </div>
+      <div class="form-group" style="flex:1; min-width:60px; margin-bottom:0;">
+        <label>❄️ 霜冻</label>
+        <input type="number" id="fWeatherFrost" min="0" max="100" step="1" style="width:100%;">
+      </div>
+      <div class="form-group" style="flex:1; min-width:60px; margin-bottom:0;">
+        <label>🌫️ 大雾</label>
+        <input type="number" id="fWeatherFog" min="0" max="100" step="1" style="width:100%;">
+      </div>
+    </div>
+    <div style="text-align:right; font-size:12px; color:var(--ink-light); margin-bottom:8px;">
+      总和：<span id="weatherSumDisplay">100</span>%
+      <span id="weatherSumStatus" style="font-weight:bold;"></span>
+    </div>
+    <div class="btn-row" style="margin-top:6px;">
+      <button class="btn blue sm" onclick="saveGameParams()" style="flex:1;">💾 保存战斗/天气参数</button>
+    </div>
+    <div class="setting-divider"></div>
+
+    <!-- 转盘管理 -->
     <div class="setting-section-title">🎰 转盘管理</div>
-    <button class="btn" style="width:100%;" onclick="openWheelConfig()">🎰 转盘配置</button>
+    <button class="btn" style="width:100%;" onclick="openWheelConfig()">🎰 打开转盘配置</button>
     <div class="setting-divider"></div>
+
+    <!-- 数据管理 -->
     <div class="setting-section-title">💾 数据管理</div>
     <div class="btn-row" style="margin-bottom:4px;">
       <button class="btn blue sm" onclick="exportData()" style="flex:1;">📤 导出数据</button>
@@ -598,10 +648,13 @@ body.role-child .role-tip.parent-tip{display:none;}
     </div>
     <input type="file" id="importFileSettings" accept=".json" style="display:none" onchange="importData(this)">
     <div class="setting-divider"></div>
+
+    <!-- 危险操作 -->
     <div class="setting-section-title" style="color:var(--red);">⚠️ 危险操作</div>
     <button class="btn red" style="width:100%;" onclick="resetAll()">🗑️ 清空全部数据</button>
   </div>
 </div>
+
 <!-- 转盘弹窗 -->
 <div class="mask" id="wheelModal">
   <div class="modal" style="max-height:90vh;">
@@ -725,7 +778,7 @@ function uid(){ return Date.now().toString(36) + Math.random().toString(36).slic
 
 function defaultState(){
   return {
-    ver:2, day:1, sun:50, streak:0, role:"child", pwd:"8888",
+    ver:3, day:1, sun:50, streak:0, role:"child", pwd:"8888",
     totalDoneAll:0,
     tasks:[
       {id:uid(), name:"口算练习 20 题", cat:"study", diff:"easy", done:false, skip:false},
@@ -735,8 +788,14 @@ function defaultState(){
     ],
     garden:new Array(24).fill(null),
     plotCount:24,
-    maxPlotCount:99,          // 扩建上限
-    expandPrice:50,           // 每块地固定价格
+    maxPlotCount:99,
+    expandPrice:50,
+    initialSun:50,
+    minZombies:1,
+    zombieStrengthFactor:1.0,
+    plantPriceFactor:1.0,
+    streakPenalty:0,
+    weatherWeights: { sunny:25, rainy:25, frost:25, fog:25 },
     logs:[], invasions:[],
     shopItems: JSON.parse(JSON.stringify(DEFAULT_SHOP)),
     inventory: { coupons: 0, rewards: {} },
@@ -774,52 +833,18 @@ function load(){
     var raw = localStorage.getItem(LS_KEY);
     if(raw){
       S = JSON.parse(raw);
-      // 自动迁移旧版本数据
-      if(!S.ver || S.ver < 2){
-        S.rewardEasy = 15;
-        S.rewardMid = 20;
-        S.rewardHard = 30;
-        S.sunflowerProduce = 6;
-        if(S.plotCount < 24) S.plotCount = 24;
-        if(!S.garden || S.garden.length < 24){
-          var oldGarden = S.garden || [];
-          S.garden = new Array(24);
-          for(var i=0; i<24; i++) S.garden[i] = (i < oldGarden.length) ? oldGarden[i] : null;
-        }
-        if(S.shopItems && Array.isArray(S.shopItems)){
-          for(var j=0; j<S.shopItems.length; j++){
-            var item = S.shopItems[j];
-            if(item.name.indexOf('冰淇淋') !== -1) item.cost = 60;
-            else if(item.name.indexOf('小玩具') !== -1) item.cost = 250;
-            else if(item.name.indexOf('动画片') !== -1) item.cost = 120;
-            else if(item.name.indexOf('游戏时间') !== -1) item.cost = 150;
-            else if(item.name.indexOf('游乐园') !== -1) item.cost = 800;
-          }
-        }
-        if(S.wheel){
-          S.wheel.cost = 30;
-          S.wheel.dailyLimit = 5;
-          if(!S.wheel.prizes || S.wheel.prizes.length === 0){
-            S.wheel.prizes = defaultState().wheel.prizes;
-          } else {
-            var newPrizes = defaultState().wheel.prizes;
-            for(var k=0; k<newPrizes.length; k++){
-              var existing = S.wheel.prizes.find(function(p){ return p.name === newPrizes[k].name; });
-              if(existing){
-                existing.prob = newPrizes[k].prob;
-                existing.value = newPrizes[k].value;
-              } else {
-                S.wheel.prizes.push(newPrizes[k]);
-              }
-            }
-          }
-        }
-        S.ver = 2;
+      // 版本迁移
+      if(!S.ver || S.ver < 3){
+        // 新增字段
+        if(S.initialSun === undefined) S.initialSun = 50;
+        if(S.minZombies === undefined) S.minZombies = 1;
+        if(S.zombieStrengthFactor === undefined) S.zombieStrengthFactor = 1.0;
+        if(S.plantPriceFactor === undefined) S.plantPriceFactor = 1.0;
+        if(S.streakPenalty === undefined) S.streakPenalty = 0;
+        if(!S.weatherWeights || typeof S.weatherWeights !== 'object') S.weatherWeights = { sunny:25, rainy:25, frost:25, fog:25 };
+        S.ver = 3;
       }
-      // 新增扩建参数（如果不存在）
-      if(S.maxPlotCount === undefined) S.maxPlotCount = 99;
-      if(S.expandPrice === undefined) S.expandPrice = 50;
-      // 其余原有加载逻辑
+      // 原有字段兼容
       if(!S.shopItems || !Array.isArray(S.shopItems)){ S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP)); }else{ S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); }); }
       if(!S.plotCount || typeof S.plotCount !== "number" || S.plotCount < 1) S.plotCount = 24;
       if(!S.garden || !Array.isArray(S.garden)){ S.garden = new Array(S.plotCount).fill(null); }
@@ -853,6 +878,8 @@ function load(){
       }
       if(S.wheelSpins === undefined) S.wheelSpins = 0;
       if(S.tasks && Array.isArray(S.tasks)) { S.tasks.forEach(function(t){ if(t.skip === undefined) t.skip = false; }); }
+      if(S.maxPlotCount === undefined) S.maxPlotCount = 99;
+      if(S.expandPrice === undefined) S.expandPrice = 50;
       if(S.garden.length !== S.plotCount){
         var old = S.garden;
         S.garden = new Array(S.plotCount);
@@ -885,7 +912,20 @@ document.querySelectorAll(".mask").forEach(function(m){ m.addEventListener("clic
 
 function getWeatherIcon(id){ for(var i=0;i<WEATHERS.length;i++) if(WEATHERS[i].id===id) return WEATHERS[i]; return WEATHERS[0]; }
 function renderWeather(){ var el = $('weatherText'); if(!el) return; var w = getWeatherIcon(S.weather.today); el.textContent = w.icon + ' ' + w.name; }
-function generateTomorrowWeather(){ var idx = Math.floor(Math.random() * WEATHERS.length); S.weather.tomorrow = WEATHERS[idx].id; save(); }
+function generateTomorrowWeather(){
+  var w = S.weatherWeights || { sunny:25, rainy:25, frost:25, fog:25 };
+  var total = w.sunny + w.rainy + w.frost + w.fog;
+  if (total <= 0) { var idx = Math.floor(Math.random() * WEATHERS.length); S.weather.tomorrow = WEATHERS[idx].id; save(); return; }
+  var rand = Math.random() * total;
+  var cum = 0;
+  var map = { sunny:'sunny', rainy:'rainy', frost:'frost', fog:'fog' };
+  for (var key in map) {
+    cum += w[key];
+    if (rand <= cum) { S.weather.tomorrow = map[key]; save(); return; }
+  }
+  S.weather.tomorrow = 'sunny';
+  save();
+}
 function applyWeatherEffect(weatherId, zombieCount, sunflowerCount){ var w = getWeatherIcon(weatherId); var result = { count: zombieCount, sunMultiplier: 1, freezeExtra: 0 }; switch(w.effect){ case 'zombieMinus': result.count = Math.max(0, zombieCount - 1); break; case 'zombiePlus': result.count = Math.min(8, zombieCount + 1); break; case 'sunflowerDouble': result.sunMultiplier = 1.5; break; case 'freezePlus': result.freezeExtra = 1; break; } return result; }
 
 function go(btn){ document.querySelectorAll(".nav-item").forEach(function(n){ n.classList.remove("on"); }); btn.classList.add("on"); document.querySelectorAll(".page").forEach(function(p){ p.classList.remove("active"); }); $(btn.dataset.page).classList.add("active"); renderAll(); }
@@ -923,7 +963,6 @@ var pickPlotIdx = -1, shovel = false, selectedPlotForDetail = -1;
 function renderGarden(){
   var el = $("gardenGrid");
   if(!el) return;
-  // 移除旧的扩建栏
   var oldExt = document.getElementById('plotExpandBar');
   if (oldExt) oldExt.remove();
 
@@ -942,7 +981,7 @@ function renderGarden(){
   }
   el.innerHTML = html;
 
-  // ---- 扩建栏 ----
+  // 扩建栏
   var extEl = document.createElement('div');
   extEl.id = 'plotExpandBar';
   extEl.style.cssText = 'margin-top:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; background:#f5faf3; padding:8px 12px; border-radius:14px;';
@@ -985,13 +1024,13 @@ function buyPlot(){
   toast("扩建成功！当前 " + S.plotCount + " 块地 🌱");
 }
 
-function renderPlantDetail(idx){ var el = $("plantDetailBody"); if(!el) return; var cell = S.garden[idx]; if(!cell) return; var p = getPlant(cell.p); var lv = cell.lv || 1; var isParent = S.role === 'parent'; var canUpgrade = isParent && p.maxLv > 1 && lv < p.maxLv && S.sun >= (p.upgradeCost || 50); var upgradeInfo = ''; if(p.maxLv > 1 && lv < p.maxLv){ var cost = p.upgradeCost || 50; var desc = ''; if(p.id === 'peashooter') desc = '伤害 1→2'; else if(p.id === 'snowpea') desc = '冰冻范围 1→2'; else if(p.id === 'wallnut') desc = '生命 4→6'; else if(p.id === 'sunflower') desc = '产出 6→12/晚（第1档）'; upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f0f8f0;border-radius:8px;"><span style="font-weight:700;">⬆️ 升级 → Lv' + (lv+1) + '</span><br><span style="font-size:12px;color:var(--ink-light);">' + desc + ' · 费用 ☀️' + cost + '</span><br>' + (canUpgrade ? '<button class="btn sm" style="margin-top:4px;" onclick="upgradePlant('+idx+')">升级</button>' : '<span style="color:var(--red);font-size:12px;">' + (S.sun < cost ? '阳光不足' : '已满级') + '</span>') + '</div>'; } else if(lv >= p.maxLv && p.maxLv > 1){ upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f5f5f5;border-radius:8px;font-size:12px;color:#888;">⭐ 已满级</div>'; }
+function renderPlantDetail(idx){ var el = $("plantDetailBody"); if(!el) return; var cell = S.garden[idx]; if(!cell) return; var p = getPlant(cell.p); var lv = cell.lv || 1; var isParent = S.role === 'parent'; var costFactor = S.plantPriceFactor || 1.0; var upgradeBase = p.upgradeCost || 50; var upgradeCost = Math.round(upgradeBase * costFactor); var canUpgrade = isParent && p.maxLv > 1 && lv < p.maxLv && S.sun >= upgradeCost; var upgradeInfo = ''; if(p.maxLv > 1 && lv < p.maxLv){ var desc = ''; if(p.id === 'peashooter') desc = '伤害 1→2'; else if(p.id === 'snowpea') desc = '冰冻范围 1→2'; else if(p.id === 'wallnut') desc = '生命 4→6'; else if(p.id === 'sunflower') desc = '产出 6→12/晚（第1档）'; upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f0f8f0;border-radius:8px;"><span style="font-weight:700;">⬆️ 升级 → Lv' + (lv+1) + '</span><br><span style="font-size:12px;color:var(--ink-light);">' + desc + ' · 费用 ☀️' + upgradeCost + '</span><br>' + (canUpgrade ? '<button class="btn sm" style="margin-top:4px;" onclick="upgradePlant('+idx+')">升级</button>' : '<span style="color:var(--red);font-size:12px;">' + (S.sun < upgradeCost ? '阳光不足' : '已满级') + '</span>') + '</div>'; } else if(lv >= p.maxLv && p.maxLv > 1){ upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f5f5f5;border-radius:8px;font-size:12px;color:#888;">⭐ 已满级</div>'; }
 var stats = []; if(p.dmg > 0) stats.push('⚔️ 伤害 ' + (p.id === 'peashooter' ? (lv>=2?'2':'1') : (p.id==='snowpea'?(lv>=2?'2':'1'):p.dmg))); if(p.freeze > 0) stats.push('❄️ 冰冻 ' + (lv>=2 ? 2 : 1) + ' 只'); if(p.hp > 1) stats.push('❤️ 生命 ' + (p.id==='wallnut' ? (lv>=2?6:4) : p.hp)); if(p.taunt) stats.push('🛡️ 吸引仇恨'); if(p.oneshot) stats.push('💥 秒杀 ' + p.kill + ' 只');
 var html = '<div style="text-align:center;"><div style="font-size:48px;margin:8px 0;">' + p.icon + '</div><div style="font-size:18px;font-weight:700;">' + p.name + ' <span style="font-size:14px;color:#888;">Lv' + lv + '</span></div><div style="font-size:13px;color:var(--ink-light);margin:4px 0;">' + p.desc + '</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0;font-size:12px;">'; stats.forEach(function(s){ html += '<span style="background:#f0f4ec;padding:0 8px;border-radius:4px;">'+s+'</span>'; }); html += '</div><div style="font-size:12px;color:var(--ink-light);">❤️ ' + cell.hp + '/' + (p.id==='wallnut' ? (lv>=2?6:4) : p.hp) + '</div>' + upgradeInfo + (isParent ? '<button class="btn red sm" style="margin-top:6px;" onclick="removePlant('+idx+')">🗑️ 铲除</button>' : '') + '</div>'; el.innerHTML = html; document.getElementById('plantDetailTitle').firstChild.textContent = '🌱 ' + p.name + ' 详情'; }
-function upgradePlant(idx){ var cell = S.garden[idx]; if(!cell) return; var p = getPlant(cell.p); var lv = cell.lv || 1; if(lv >= p.maxLv){ toast('已满级'); return; } var cost = p.upgradeCost || 50; if(S.sun < cost){ toast('阳光不足，需要 ☀️' + cost); return; } S.sun -= cost; cell.lv = (cell.lv || 1) + 1; addLog('⬆️', '将 ' + p.icon + p.name + ' 升级到 Lv' + cell.lv + '（消耗 ☀️' + cost + '）'); save(); closeModal('plantDetailModal'); renderAll(); toast('升级成功！Lv' + cell.lv); }
+function upgradePlant(idx){ var cell = S.garden[idx]; if(!cell) return; var p = getPlant(cell.p); var lv = cell.lv || 1; if(lv >= p.maxLv){ toast('已满级'); return; } var costFactor = S.plantPriceFactor || 1.0; var cost = Math.round((p.upgradeCost || 50) * costFactor); if(S.sun < cost){ toast('阳光不足，需要 ☀️' + cost); return; } S.sun -= cost; cell.lv = (cell.lv || 1) + 1; addLog('⬆️', '将 ' + p.icon + p.name + ' 升级到 Lv' + cell.lv + '（消耗 ☀️' + cost + '）'); save(); closeModal('plantDetailModal'); renderAll(); toast('升级成功！Lv' + cell.lv); }
 function removePlant(idx){ if(!confirm('确定铲除这棵植物吗？不返还阳光')) return; S.garden[idx] = null; addLog('🪏', '铲除了一棵植物'); save(); closeModal('plantDetailModal'); renderAll(); toast('已铲除'); }
-function renderPlantPick(){ var el = $("plantPickBox"); if(!el) return; var html = ""; PLANTS.forEach(function(p){ var un = isUnlocked(p); var can = un && S.sun >= p.cost; var lockedText = (p.streak > 0) ? '🔒 连续达标 ' + p.streak + ' 天' : ''; var stats = []; if(p.dmg > 0) stats.push('⚔️'+p.dmg); if(p.freeze > 0) stats.push('❄️'+p.freeze); if(p.taunt) stats.push('🛡️'); if(p.oneshot) stats.push('💥×'+p.kill); html += '<div class="dex-item'+(un?"":" locked")+'"><div class="dex-icon">'+p.icon+'</div><div class="dex-info"><div class="dex-name">'+p.name+' <span class="tag tag-sun">☀️'+p.cost+'</span></div><div class="dex-desc">'+(un ? p.desc : lockedText)+'</div><div class="dex-stats">'+stats.map(function(s){return '<span>'+s+'</span>';}).join('')+'</div></div>' + (un ? '<button class="btn sm'+(can?"":" gray")+'" onclick="plantAt(\''+p.id+'\')">'+(can?"种植":"阳光不足")+'</button>' : '') + '</div>'; }); el.innerHTML = html; }
-function plantAt(pid){ var p = getPlant(pid); if(S.sun < p.cost){ toast("阳光不够啦 ☀️ 快去完成任务！"); return; } if(pickPlotIdx < 0 || pickPlotIdx >= S.garden.length || S.garden[pickPlotIdx]){ closeModal("plantModal"); return; } S.sun -= p.cost; S.garden[pickPlotIdx] = {p:pid, hp:p.hp, lv:1}; addLog("🌱","种下了一棵 "+p.icon+p.name+"（消耗 ☀️"+p.cost+"）"); save(); closeModal("plantModal"); renderAll(); toast("种植成功！"+p.icon); }
+function renderPlantPick(){ var el = $("plantPickBox"); if(!el) return; var html = ""; var costFactor = S.plantPriceFactor || 1.0; PLANTS.forEach(function(p){ var un = isUnlocked(p); var cost = Math.round(p.cost * costFactor); var can = un && S.sun >= cost; var lockedText = (p.streak > 0) ? '🔒 连续达标 ' + p.streak + ' 天' : ''; var stats = []; if(p.dmg > 0) stats.push('⚔️'+p.dmg); if(p.freeze > 0) stats.push('❄️'+p.freeze); if(p.taunt) stats.push('🛡️'); if(p.oneshot) stats.push('💥×'+p.kill); html += '<div class="dex-item'+(un?"":" locked")+'"><div class="dex-icon">'+p.icon+'</div><div class="dex-info"><div class="dex-name">'+p.name+' <span class="tag tag-sun">☀️'+cost+'</span></div><div class="dex-desc">'+(un ? p.desc : lockedText)+'</div><div class="dex-stats">'+stats.map(function(s){return '<span>'+s+'</span>';}).join('')+'</div></div>' + (un ? '<button class="btn sm'+(can?"":" gray")+'" onclick="plantAt(\''+p.id+'\')">'+(can?"种植":"阳光不足")+'</button>' : '') + '</div>'; }); el.innerHTML = html; }
+function plantAt(pid){ var p = getPlant(pid); var costFactor = S.plantPriceFactor || 1.0; var cost = Math.round(p.cost * costFactor); if(S.sun < cost){ toast("阳光不够啦 ☀️ 快去完成任务！"); return; } if(pickPlotIdx < 0 || pickPlotIdx >= S.garden.length || S.garden[pickPlotIdx]){ closeModal("plantModal"); return; } S.sun -= cost; S.garden[pickPlotIdx] = {p:pid, hp:p.hp, lv:1}; addLog("🌱","种下了一棵 "+p.icon+p.name+"（消耗 ☀️"+cost+"）"); save(); closeModal("plantModal"); renderAll(); toast("种植成功！"+p.icon); }
 function openDex(){ var el = $("dexBox"); if(!el) return; var html = ""; PLANTS.forEach(function(p){ var un = isUnlocked(p); var stats = []; if(p.dmg > 0) stats.push('⚔️ 伤害 '+p.dmg); if(p.freeze > 0) stats.push('❄️ 冰冻 '+p.freeze+' 只'); if(p.hp > 1) stats.push('❤️ 生命 '+p.hp); if(p.taunt) stats.push('🛡️ 吸引仇恨'); if(p.oneshot) stats.push('💥 秒杀 '+p.kill+' 只'); html += '<div class="dex-item'+(un?"":" locked")+'"><div class="dex-icon">'+p.icon+'</div><div class="dex-info"><div class="dex-name">'+p.name+' <span class="tag tag-sun">☀️'+p.cost+'</span> ' + (un ? '<span class="tag" style="background:#e8f5e9;color:#2e7d32;">已解锁</span>' : '<span class="tag" style="background:#eee;color:#888;">🔒 连续 '+p.streak+' 天</span>') + '</div><div class="dex-desc">'+p.desc+'</div><div class="dex-stats">'+stats.map(function(s){return '<span>'+s+'</span>';}).join('')+'</div></div></div>'; }); el.innerHTML = html; openModal("dexModal"); }
 
 // ===== 渲染天气与僵尸威胁信息 =====
@@ -1039,7 +1078,7 @@ function calcSunflowerTotal(count, baseProduce, multiplier){
 }
 
 /* ============================================================
-   🌙 核心结算函数
+   🌙 核心结算函数（已修复坚果墙切换逻辑）
    ============================================================ */
 function doSettle(){
   var tasks = S.tasks || [];
@@ -1062,8 +1101,10 @@ function doSettle(){
   var zombieCount = undone.length;
   var wEffect = applyWeatherEffect(S.weather.today, zombieCount, sfCount);
   zombieCount = wEffect.count;
-  zombieCount = Math.max(1, Math.min(8, zombieCount));
-  var zombieQueue = []; var day = S.day; for(var z=0; z<zombieCount; z++){ var available = ZOMBIE_TYPES.filter(function(zt){ return day >= zt.minDay; }); if(!available.length) available = [ZOMBIE_TYPES[0]]; var totalWeight = available.reduce(function(s, a){ return s + a.weight; }, 0); var rand = Math.random() * totalWeight; var cum = 0; var selected = available[0]; for(var a=0; a<available.length; a++){ cum += available[a].weight; if(rand <= cum){ selected = available[a]; break; } } zombieQueue.push({ type: selected, hp: selected.hp, maxHp: selected.hp, icon: selected.icon, name: selected.name, bite: selected.bite }); }
+  var minZ = S.minZombies !== undefined ? S.minZombies : 1;
+  zombieCount = Math.max(minZ, Math.min(8, zombieCount));
+  var zombieQueue = []; var day = S.day; var strength = S.zombieStrengthFactor || 1.0;
+  for(var z=0; z<zombieCount; z++){ var available = ZOMBIE_TYPES.filter(function(zt){ return day >= zt.minDay; }); if(!available.length) available = [ZOMBIE_TYPES[0]]; var totalWeight = available.reduce(function(s, a){ return s + a.weight; }, 0); var rand = Math.random() * totalWeight; var cum = 0; var selected = available[0]; for(var a=0; a<available.length; a++){ cum += available[a].weight; if(rand <= cum){ selected = available[a]; break; } } zombieQueue.push({ type: selected, hp: Math.round(selected.hp * strength), maxHp: Math.round(selected.hp * strength), icon: selected.icon, name: selected.name, bite: Math.round(selected.bite * strength) }); }
   if(zombieCount > 0){ lines.push("🧟 来袭 " + zombieCount + " 只僵尸：" + zombieQueue.map(function(z){ return z.icon; }).join(' ')); addLog("🧟","第 "+S.day+" 天有 "+zombieCount+" 只僵尸入侵！天气：" + getWeatherIcon(S.weather.today).name); } else { lines.push("🛡️ 没有僵尸来袭，花园平安无事！"); }
   var gardenPlants = []; for(var gi=0; gi<S.garden.length; gi++){ if(S.garden[gi]){ var p = getPlant(S.garden[gi].p); var lv = S.garden[gi].lv || 1; var actualDmg = p.dmg || 0; var actualFreeze = p.freeze || 0; var actualHp = p.hp; if(p.id === 'wallnut' && lv >= 2) actualHp = 6; if(p.id === 'peashooter' && lv >= 2) actualDmg = 2; if(p.id === 'snowpea' && lv >= 2) actualFreeze = 2; gardenPlants.push({ idx: gi, cell: S.garden[gi], plant: p, lv: lv, dmg: actualDmg, freeze: actualFreeze, hp: actualHp, isOneShot: p.oneshot || false, kill: p.kill || 0, taunt: p.taunt || false }); } }
   var battleLog = []; var zombies = zombieQueue.map(function(z){ return { ...z, id: 'z'+Math.random().toString(36).slice(2,6), alive: true, frozen: false }; });
@@ -1076,14 +1117,9 @@ function doSettle(){
   
   // ===== 僵尸啃食植物（修复版：每只僵尸独立判断坚果墙状态） =====
   var remainingZombies = zombies.filter(function(z){ return z.alive && !z.frozen; });
-  // 预处理：找出所有坚果墙植物（定义 taunt 属性）
   var allNutPlants = gardenPlants.filter(function(gp){ return !gp.isOneShot && gp.taunt; });
-  
-  // 每只僵尸独立行动
   for(var rz=0; rz<remainingZombies.length; rz++){
     var zz = remainingZombies[rz];
-    
-    // 1. 先检查当前是否还有存活的坚果墙
     var hasNutNow = false;
     var targetNut = null;
     for(var np=0; np<allNutPlants.length; np++){
@@ -1093,9 +1129,7 @@ function doSettle(){
         break;
       }
     }
-    
     if(hasNutNow && targetNut){
-      // 有坚果墙 → 啃坚果墙
       var cellData = S.garden[targetNut.idx];
       if(cellData){
         cellData.hp = (cellData.hp || 1) - zz.bite;
@@ -1109,7 +1143,6 @@ function doSettle(){
         }
       }
     } else {
-      // 没有坚果墙了 → 纵向啃食（从底部向上，随机选一列）
       var cols = 6;
       var rows = Math.ceil(S.plotCount / cols);
       var minDepth = 3;
@@ -1135,7 +1168,6 @@ function doSettle(){
       }
     }
   }
-  // ===== 啃食逻辑结束 =====
   
   var lostCount = gardenPlants.filter(function(gp){ return !S.garden[gp.idx]; }).length;
   if(zombieCount > 0){
@@ -1144,7 +1176,17 @@ function doSettle(){
   }
   var anyZombieSurvived = zombies.some(function(z){ return z.alive; });
   var safe = (zombieCount === 0) || (!anyZombieSurvived);
-  if(safe){ S.streak++; checkWheelFreeSpin(); lines.push("🎉 花园防线成功！"); lines.push("🔥 连续达标 "+S.streak+" 天"); addLog("🛡️","第 "+S.day+" 天花园安然无恙！连续达标 "+S.streak+" 天"); PLANTS.forEach(function(p){ if(p.streak > 0 && oldStreak < p.streak && S.streak >= p.streak){ lines.push("🎁 解锁新植物："+p.icon+" "+p.name+"！"); addLog("🎁","连续达标 "+S.streak+" 天，解锁新植物 "+p.icon+p.name+"！"); } }); } else { S.streak = 0; lines.push("😱 花园失守，有僵尸存活！"); addLog("💀","花园被僵尸突破，连续达标中断"); }
+  if(safe){ S.streak++; checkWheelFreeSpin(); lines.push("🎉 花园防线成功！"); lines.push("🔥 连续达标 "+S.streak+" 天"); addLog("🛡️","第 "+S.day+" 天花园安然无恙！连续达标 "+S.streak+" 天"); PLANTS.forEach(function(p){ if(p.streak > 0 && oldStreak < p.streak && S.streak >= p.streak){ lines.push("🎁 解锁新植物："+p.icon+" "+p.name+"！"); addLog("🎁","连续达标 "+S.streak+" 天，解锁新植物 "+p.icon+p.name+"！"); } }); } else { 
+    // 连续达标中断惩罚
+    if (S.streakPenalty === 1) {
+      S.streak = Math.max(0, S.streak - 1);
+      lines.push("😱 花园失守，连续达标减少 1 天（当前 " + S.streak + " 天）");
+    } else {
+      S.streak = 0;
+      lines.push("😱 花园失守，连续达标归零");
+    }
+    addLog("💀","花园被僵尸突破，连续达标" + (S.streakPenalty===1?"减少1天":"归零"));
+  }
   var tomorrow = getWeatherIcon(S.weather.tomorrow);
   lines.push("📅 明日天气：" + tomorrow.icon + ' ' + tomorrow.name + '（' + tomorrow.desc + '）');
   var stage = '<div>🌙 第 '+S.day+' 天 · 夜幕降临</div><div class="big">' + (safe ? '🌻🛡️✨' : '🧟🧟‍♂️🧟‍♀️') + '</div>';
@@ -1191,23 +1233,51 @@ function openShopEdit(idx){ SHOP_EDIT_INDEX = idx; var items = S.shopItems || []
 function deleteShopItem(idx){ var items = S.shopItems || []; if(idx < 0 || idx >= items.length){ toast("商品不存在 🥲"); return; } var item = items[idx]; if(!confirm("确定删除商品「"+item.name+"」吗？")) return; items.splice(idx, 1); S.shopItems = items; addLog("🗑️","家长删除了商城商品「"+item.name+"」"); save(); renderAll(); if($("shopModal").classList.contains("show")) renderShop(); toast("已删除商品"); }
 function saveShopItem(){ var icon = $("fShopIcon").value.trim() || "🎁"; var name = $("fShopName").value.trim(); var cost = parseInt($("fShopCost").value, 10); if(!name){ toast("请输入商品名称 ✍️"); return; } if(isNaN(cost) || cost < 1){ toast("请输入有效的价格（≥1）"); return; } var items = S.shopItems || []; if(SHOP_EDIT_INDEX >= 0 && SHOP_EDIT_INDEX < items.length){ var item = items[SHOP_EDIT_INDEX]; item.icon = icon; item.name = name; item.cost = cost; addLog("✏️","家长编辑了商城商品「"+name+"」"); }else{ items.push({id:uid(), icon:icon, name:name, cost:cost}); addLog("➕","家长新增了商城商品「"+name+"」（☀️"+cost+"）"); } S.shopItems = items; save(); closeModal("shopEditModal"); renderAll(); if($("shopModal").classList.contains("show")) renderShop(); toast("商品已保存 ✅"); }
 
-/* ===== 设置 ===== */
+/* ===== 设置相关 ===== */
 function openSettings() { 
   $("fNewPwd").value = ''; 
   $("fDayNum").value = S.day; 
   $("fPlotCount").value = S.plotCount || 24; 
   $("fMaxPlot").value = S.maxPlotCount || 99;
   $("fExpandPrice").value = S.expandPrice || 50;
-  $("fSunAmount").value = 1; 
+  $("fInitialSun").value = S.initialSun !== undefined ? S.initialSun : 50;
+  $("fMinZombies").value = S.minZombies !== undefined ? S.minZombies : 1;
+  $("fZombieStrength").value = S.zombieStrengthFactor !== undefined ? S.zombieStrengthFactor : 1.0;
+  $("fPlantPriceFactor").value = S.plantPriceFactor !== undefined ? S.plantPriceFactor : 1.0;
+  $("fStreakPenalty").value = S.streakPenalty !== undefined ? S.streakPenalty : 0;
+  var w = S.weatherWeights || { sunny:25, rainy:25, frost:25, fog:25 };
+  $("fWeatherSunny").value = w.sunny;
+  $("fWeatherRainy").value = w.rainy;
+  $("fWeatherFrost").value = w.frost;
+  $("fWeatherFog").value = w.fog;
   $("fRewardEasy").value = S.rewardEasy; 
   $("fRewardMid").value = S.rewardMid; 
   $("fRewardHard").value = S.rewardHard; 
   $("fSunflowerProduce").value = S.sunflowerProduce || 6; 
+  updateWeatherSum();
   openModal('setModal'); 
 }
-function changePwd(){ var p = $("fNewPwd").value.trim(); if(p.length < 4 || p.length > 8){ toast("密码需 4-8 位"); return; } S.pwd = p; save(); toast("密码已更新 🔑"); $("fNewPwd").value = ''; }
+function updateWeatherSum(){
+  var sunny = parseInt($("fWeatherSunny").value) || 0;
+  var rainy = parseInt($("fWeatherRainy").value) || 0;
+  var frost = parseInt($("fWeatherFrost").value) || 0;
+  var fog = parseInt($("fWeatherFog").value) || 0;
+  var total = sunny + rainy + frost + fog;
+  $("weatherSumDisplay").textContent = total;
+  var status = $("weatherSumStatus");
+  if (total === 100) { status.textContent = '✅'; status.style.color = 'var(--green)'; } else { status.textContent = '⚠️ 需等于100%'; status.style.color = 'var(--red)'; }
+}
+// 监听天气输入变化
+document.addEventListener('DOMContentLoaded', function(){
+  ['fWeatherSunny','fWeatherRainy','fWeatherFrost','fWeatherFog'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('input', updateWeatherSum);
+  });
+});
+
 function changeDay(){ var n = parseInt($("fDayNum").value, 10); if(!n || n < 1 || n > 999){ toast("请输入 1-999"); return; } S.day = n; save(); renderAll(); toast("已调整为第 "+n+" 天"); }
-function changePlotCount(){ var n = parseInt($("fPlotCount").value, 10); if(!n || n < 1){ toast("请输入有效数字（≥1）"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); closeModal('setModal'); }
+function changePwd(){ var p = $("fNewPwd").value.trim(); if(p.length < 4 || p.length > 8){ toast("密码需 4-8 位"); return; } S.pwd = p; save(); toast("密码已更新 🔑"); $("fNewPwd").value = ''; }
+function changePlotCount(){ var n = parseInt($("fPlotCount").value, 10); if(!n || n < 1){ toast("请输入有效数字（≥1）"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); }
 function saveExpandParams(){
   var max = parseInt($("fMaxPlot").value, 10);
   var price = parseInt($("fExpandPrice").value, 10);
@@ -1216,7 +1286,6 @@ function saveExpandParams(){
   S.maxPlotCount = max;
   S.expandPrice = price;
   if (S.plotCount > max) {
-    // 如果当前地块超过新上限，自动缩减（警告）
     if (!confirm("当前地块数 " + S.plotCount + " 超过新上限 " + max + "，将自动缩减，部分植物可能丢失！")) return;
     S.plotCount = max;
     var newGarden = new Array(max);
@@ -1227,10 +1296,71 @@ function saveExpandParams(){
   renderAll();
   toast("扩建参数已保存 ✅");
 }
-function resetAll(){ if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return; if(!confirm("再确认一次：真的要全部重来吗？")) return; localStorage.removeItem(LS_KEY); S = defaultState(); addLog("🌞","数据已重置，新的冒险开始！"); save(); applyRole(); renderAll(); closeModal('setModal'); toast("已重置 🌱"); }
+function saveRewardParams() { 
+  var easy = parseInt($("fRewardEasy").value, 10); 
+  var mid = parseInt($("fRewardMid").value, 10); 
+  var hard = parseInt($("fRewardHard").value, 10); 
+  var sunflower = parseInt($("fSunflowerProduce").value, 10);
+  var initialSun = parseInt($("fInitialSun").value, 10);
+  var priceFactor = parseFloat($("fPlantPriceFactor").value);
+  if (isNaN(easy) || easy < 0) { toast('请输入有效的简单任务奖励'); return; } 
+  if (isNaN(mid) || mid < 0) { toast('请输入有效的中等任务奖励'); return; } 
+  if (isNaN(hard) || hard < 0) { toast('请输入有效的困难任务奖励'); return; } 
+  if (isNaN(sunflower) || sunflower < 0) { toast('请输入有效的向日葵基础产出'); return; } 
+  if (isNaN(initialSun) || initialSun < 0) { toast('请输入有效的初始阳光'); return; }
+  if (isNaN(priceFactor) || priceFactor < 0.5 || priceFactor > 2.0) { toast('植物价格系数应在0.5~2.0之间'); return; }
+  S.rewardEasy = easy; 
+  S.rewardMid = mid; 
+  S.rewardHard = hard; 
+  S.sunflowerProduce = sunflower; 
+  S.initialSun = initialSun;
+  S.plantPriceFactor = priceFactor;
+  DIFFS[0].sun = easy; 
+  DIFFS[1].sun = mid; 
+  DIFFS[2].sun = hard; 
+  for(var i=0; i<PLANTS.length; i++){ if(PLANTS[i].id === 'sunflower'){ PLANTS[i].produce = sunflower; } } 
+  save(); 
+  renderAll(); 
+  toast('经济参数已保存 ✅'); 
+}
+function saveGameParams(){
+  var minZombies = parseInt($("fMinZombies").value, 10);
+  var strength = parseFloat($("fZombieStrength").value);
+  var penalty = parseInt($("fStreakPenalty").value, 10);
+  if (isNaN(minZombies) || minZombies < 0) { toast("请输入有效的僵尸最少数量（≥0）"); return; }
+  if (isNaN(strength) || strength < 0.5 || strength > 2.0) { toast("僵尸强度系数应在 0.5~2.0 之间"); return; }
+  var sunny = parseInt($("fWeatherSunny").value) || 0;
+  var rainy = parseInt($("fWeatherRainy").value) || 0;
+  var frost = parseInt($("fWeatherFrost").value) || 0;
+  var fog = parseInt($("fWeatherFog").value) || 0;
+  var total = sunny + rainy + frost + fog;
+  if (total !== 100) {
+    toast("天气权重总和必须等于 100% (当前 " + total + "%)");
+    return;
+  }
+  S.minZombies = minZombies;
+  S.zombieStrengthFactor = strength;
+  S.streakPenalty = penalty;
+  S.weatherWeights = { sunny: sunny, rainy: rainy, frost: frost, fog: fog };
+  save();
+  renderAll();
+  toast("战斗/天气参数已保存 ✅");
+}
+function resetAll(){ 
+  if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return; 
+  if(!confirm("再确认一次：真的要全部重来吗？")) return; 
+  localStorage.removeItem(LS_KEY); 
+  S = defaultState(); 
+  S.sun = S.initialSun || 50; 
+  addLog("🌞","数据已重置，新的冒险开始！"); 
+  save(); 
+  applyRole(); 
+  renderAll(); 
+  closeModal('setModal'); 
+  toast("已重置 🌱"); 
+}
 function addSun() { var amount = parseInt($("fSunAmount").value, 10); if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; } S.sun += amount; addLog('☀️', '家长手动增加了 ' + amount + ' 阳光（当前 ' + S.sun + '）'); save(); renderAll(); toast('已增加 ' + amount + ' 阳光'); }
 function subSun() { var amount = parseInt($("fSunAmount").value, 10); if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; } if (S.sun < amount) { toast('阳光不足，无法减少 ' + amount + '（当前仅 ' + S.sun + '）'); return; } S.sun -= amount; addLog('☀️', '家长手动减少了 ' + amount + ' 阳光（当前 ' + S.sun + '）'); save(); renderAll(); toast('已减少 ' + amount + ' 阳光'); }
-function saveRewardParams() { var easy = parseInt($("fRewardEasy").value, 10); var mid = parseInt($("fRewardMid").value, 10); var hard = parseInt($("fRewardHard").value, 10); var sunflower = parseInt($("fSunflowerProduce").value, 10); if (isNaN(easy) || easy < 0) { toast('请输入有效的简单任务奖励'); return; } if (isNaN(mid) || mid < 0) { toast('请输入有效的中等任务奖励'); return; } if (isNaN(hard) || hard < 0) { toast('请输入有效的困难任务奖励'); return; } if (isNaN(sunflower) || sunflower < 0) { toast('请输入有效的向日葵基础产出'); return; } S.rewardEasy = easy; S.rewardMid = mid; S.rewardHard = hard; S.sunflowerProduce = sunflower; DIFFS[0].sun = easy; DIFFS[1].sun = mid; DIFFS[2].sun = hard; for(var i=0; i<PLANTS.length; i++){ if(PLANTS[i].id === 'sunflower'){ PLANTS[i].produce = sunflower; } } save(); renderAll(); toast('奖励参数已保存 ✅'); }
 
 function resetDailyExchange() { var today = new Date().toDateString(); if (S.wheel.lastExchangeDate !== today) { S.wheel.todayExchangeCount = 0; S.wheel.lastExchangeDate = today; } }
 
@@ -1290,6 +1420,12 @@ renderAll();
 pomoLeft = 20*60;
 updatePomoUI();
 $("fPwd").addEventListener("keydown", function(e){ if(e.key==="Enter") checkPwd(); });
+// 天气权重实时更新
+document.addEventListener('input', function(e){
+  if (e.target.id && ['fWeatherSunny','fWeatherRainy','fWeatherFrost','fWeatherFog'].includes(e.target.id)) {
+    updateWeatherSum();
+  }
+});
 </script>
 </body>
 </html>
