@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🌻 我的阳光花园保卫战 · 完整版</title>
+<title>🌻 我的阳光花园保卫战</title>
 <style>
 :root{
   --green:#5cb85c; --green-deep:#3e8e41; --green-light:#a8e063;
@@ -347,34 +347,33 @@ body.role-child .role-tip.parent-tip{display:none;}
       🌧️ 雨天：向日葵产出 ×1.5<br>
       ❄️ 霜冻：寒冰射手额外冻 1 只<br>
       🌫️ 大雾：僵尸数量 +1<br><br>
-      <b>🌻 向日葵产出规则（分段累加）：</b><br>
-      基础产出可在家长设置中调整，各档倍率也可调：<br>
-      · 1~20 棵：每棵产出 = 基础产出<br>
-      · 21~40 棵：这20棵每棵产出 = 基础产出 × 0.5<br>
-      · 41~60 棵：这20棵每棵产出 = 基础产出 × 0.25<br>
-      · 61 棵及以上：每棵产出 = 基础产出 × 0.1<br>
-      总产出 = 各段之和，雨天再乘以 1.5，种得越多总产出仍越高（但边际递减）<br><br>
+      <b>🌻 向日葵产出规则：</b><br>
+      每个向日葵产出 = 基础产出 + (等级 - 1)，再乘以分档倍率（按总数量分段）和天气倍率。<br>
+      分档倍率可在家长设置中调整，默认：1~20棵 ×1.0，21~40 ×0.5，41~60 ×0.25，61+ ×0.1。<br>
+      升级向日葵可提高单个产出，种得越多总产出仍越高（但边际递减）。<br><br>
       <b>🧟 僵尸攻击规则：</b><br>
       ① 优先啃咬 <b>🌰 坚果墙</b>（保护后排）。<br>
-	  每只僵尸每晚只攻击 1 次，若目标未死，则会在后续夜晚持续攻击同一目标，直至被消灭（如“咬伤1”即每次攻击造成1点伤害）。<br>
+      每只僵尸每晚只攻击 1 次，若目标未死，则后续夜晚持续攻击同一目标，直至被消灭。<br>
       ② 无坚果墙时，随机选<b>一列</b>，从<b>底部向上</b>啃食<br>
-      ③ 啃食深度随花园行数增加（严厉档：最少3个，最多15个）<br>
+      ③ 啃食深度随花园行数增加（最少3个，最多15个）<br>
       ④ 每只僵尸独立选列，选到空列则直接离开<br>
       ⑤ 无论天气，至少 1 只僵尸来袭（保持压力）<br><br>
+      <b>🧟 僵尸成长机制（已平衡）：</b><br>
+      僵尸血量随天数缓慢增长，但<b>最多成长至初始血量的 3 倍</b>（第50天左右达到上限）。<br>
+      植物可通过升级至 Lv.10 来应对，满级攻击力可达 10 点，轻松应对最强僵尸。<br>
+      家长可在设置中调整“僵尸成长速度”，控制达到上限的快慢（默认1.0）。<br><br>
       <b>🏆 连续达标与未完成任务惩罚：</b><br>
       连续达标天数取决于当晚的“防御结果”，而非任务完成数量：<br>
       · 若当晚所有来袭僵尸全部被消灭 → 连续达标天数 +1<br>
       · 若当晚有僵尸存活（突破防线） → 连续达标天数中断（归零或减1天，由家长设置决定）<br>
-      ⚠️ 但请注意：若连续多天未全部完成任务，每2天额外增加 1 只来袭僵尸（上限5只）。<br>
-      · 全部完成任务可重置此惩罚计数。<br>
-      · 所以即使花园防御很强，长期偷懒也会让僵尸越积越多，形成僵尸潮，最终防线难保！<br><br>
-      <b>🌱 植物特性：</b><br>
-      🌻 向日葵：每晚结算产出阳光（见上规则）<br>
-      🌰 坚果墙：吸引僵尸攻击，保护后排<br>
-      🫛 豌豆射手：造成 1 点伤害<br>
-      ❄️ 寒冰射手：造成 1 点伤害 + 冰冻（被冻住的僵尸本轮不咬人）<br>
-      🥔 土豆地雷：秒杀 1 只僵尸（无视血量）<br>
-      🍒 樱桃炸弹：秒杀 3 只僵尸（无视血量）
+      ⚠️ 若连续多天未全部完成任务，每2天额外增加 1 只来袭僵尸（上限5只）。<br>
+      · 全部完成任务可重置此惩罚计数。<br><br>
+      <b>🌱 植物特性与升级（上限 Lv.10）：</b><br>
+      🌻 向日葵：基础产出随等级提升（每级 +1），夜间产出阳光<br>
+      🌰 坚果墙：血量 = 基础 + 等级 - 1（Lv.10 时比基础多9血）<br>
+      🫛 豌豆射手：伤害 = 等级（Lv.10 攻击10）<br>
+      ❄️ 寒冰射手：伤害 = 等级，冰冻 1 只（不变）<br>
+      💡 点击已种植的植物可查看详情并升级（孩子模式也可升级）
     </div>
   </div>
 </div>
@@ -530,7 +529,7 @@ body.role-child .role-tip.parent-tip{display:none;}
     </div>
     <div class="setting-divider"></div>
 
-    <!-- 游戏基础（Grid对齐） -->
+    <!-- 游戏基础 -->
     <div class="setting-section-title">🎮 游戏基础</div>
     <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:8px 12px; align-items:center;">
       <label style="font-size:12.5px; font-weight:700; color:var(--ink-light);">当前天数</label>
@@ -563,6 +562,20 @@ body.role-child .role-tip.parent-tip{display:none;}
       <div class="setting-row">
         <input type="number" id="fExpandPrice" min="1" max="999" style="flex:1;">
         <button class="btn blue sm" onclick="saveExpandParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+      </div>
+    </div>
+    <div class="setting-divider"></div>
+
+    <!-- 阳光管理 -->
+    <div class="setting-section-title">🌞 阳光管理</div>
+    <div class="form-group">
+      <label>数量</label>
+      <div class="setting-row" style="gap:8px;">
+        <input type="number" id="fSunAmount" min="1" max="999" value="1" style="flex:1;">
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="btn blue sm" onclick="addSun()" style="min-width:72px;">➕ 增加</button>
+          <button class="btn warn sm" onclick="subSun()" style="min-width:72px;">➖ 减少</button>
+        </div>
       </div>
     </div>
     <div class="setting-divider"></div>
@@ -626,6 +639,13 @@ body.role-child .role-tip.parent-tip{display:none;}
     <!-- 战斗与僵尸 -->
     <div class="setting-section-title">⚔️ 战斗与僵尸</div>
     <div class="form-group">
+      <label>🌰 坚果墙基础血量</label>
+      <div class="setting-row">
+        <input type="number" id="fWallnutHp" min="1" max="10" style="flex:1;">
+        <button class="btn blue sm" onclick="saveWallnutHp()" style="flex-shrink:0; min-width:72px;">保存</button>
+      </div>
+    </div>
+    <div class="form-group">
       <label>僵尸最少数量</label>
       <div class="setting-row">
         <input type="number" id="fMinZombies" min="0" max="8" style="flex:1;">
@@ -636,6 +656,13 @@ body.role-child .role-tip.parent-tip{display:none;}
       <label>僵尸强度系数</label>
       <div class="setting-row">
         <input type="number" id="fZombieStrength" min="0.5" max="2.0" step="0.05" style="flex:1;">
+        <button class="btn blue sm" onclick="saveGameParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>僵尸成长速度</label>
+      <div class="setting-row">
+        <input type="number" id="fZombieGrowth" min="0" max="0.1" step="0.002" style="flex:1;">
         <button class="btn blue sm" onclick="saveGameParams()" style="flex-shrink:0; min-width:72px;">保存</button>
       </div>
     </div>
@@ -791,13 +818,14 @@ var DIFFS = [
   {id:"mid",  name:"中等", sun:20},
   {id:"hard", name:"困难", sun:30}
 ];
+// 植物定义：基础属性，升级费用和等级上限（已提高至10级）
 var PLANTS = [
-  {id:"sunflower", name:"向日葵",  icon:"🌻", cost:50,  streak:0,  hp:1, dmg:0, freeze:0, upgradeCost:50, maxLv:3, desc:"每晚结算产出阳光（分档递减）", produce:6},
-  {id:"wallnut",   name:"坚果墙",  icon:"🌰", cost:50,  streak:0,  hp:4, dmg:0, freeze:0, upgradeCost:50, maxLv:3, desc:"吸引仇恨 · 保护后排植物", taunt:true},
-  {id:"peashooter",name:"豌豆射手",icon:"🫛", cost:80, streak:3,  hp:1, dmg:1, freeze:0, upgradeCost:100, maxLv:3, desc:"造成 1 点伤害"},
-  {id:"snowpea",   name:"寒冰射手",icon:"❄️", cost:150, streak:5,  hp:1, dmg:1, freeze:1, upgradeCost:150, maxLv:3, desc:"1 伤害 + 冰冻（被冻住本轮不咬人）"},
-  {id:"potatomine",name:"土豆地雷",icon:"🥔", cost:50,  streak:7,  hp:1, dmg:999, freeze:0, upgradeCost:0, maxLv:1, desc:"一次性：秒杀 1 只僵尸", oneshot:true, kill:1},
-  {id:"cherrybomb",name:"樱桃炸弹",icon:"🍒", cost:150, streak:10, hp:1, dmg:999, freeze:0, upgradeCost:0, maxLv:1, desc:"一次性：秒杀 3 只僵尸", oneshot:true, kill:3}
+  {id:"sunflower", name:"向日葵", icon:"🌻", cost:50, streak:0, hp:1, dmg:0, freeze:0, upgradeCost:50, maxLv:10, desc:"每晚结算产出阳光，等级每级 +1 基础产出", produce:6},
+  {id:"wallnut",   name:"坚果墙", icon:"🌰", cost:50, streak:0, hp:4, dmg:0, freeze:0, upgradeCost:50, maxLv:10, desc:"吸引仇恨 · 保护后排，血量 = 基础 + 等级 - 1", taunt:true},
+  {id:"peashooter",name:"豌豆射手", icon:"🫛", cost:80, streak:3, hp:1, dmg:1, freeze:0, upgradeCost:100, maxLv:10, desc:"伤害 = 等级（最高10）"},
+  {id:"snowpea",   name:"寒冰射手", icon:"❄️", cost:150, streak:5, hp:1, dmg:1, freeze:1, upgradeCost:150, maxLv:10, desc:"伤害 = 等级，冰冻 1 只（不变）"},
+  {id:"potatomine",name:"土豆地雷", icon:"🥔", cost:50, streak:7, hp:1, dmg:999, freeze:0, upgradeCost:0, maxLv:1, desc:"一次性：秒杀 1 只僵尸", oneshot:true, kill:1},
+  {id:"cherrybomb",name:"樱桃炸弹", icon:"🍒", cost:150, streak:10, hp:1, dmg:999, freeze:0, upgradeCost:0, maxLv:1, desc:"一次性：秒杀 3 只僵尸", oneshot:true, kill:3}
 ];
 var DEFAULT_SHOP = [
   {id:uid(), icon:"🍦", name:"冰淇淋一支", cost:60},
@@ -825,9 +853,9 @@ function uid(){ return Date.now().toString(36) + Math.random().toString(36).slic
 
 function defaultState(){
   return {
-    ver:4, day:1, sun:50, streak:0, role:"child", pwd:"8888",
+    ver:6, day:1, sun:50, streak:0, role:"child", pwd:"8888",
     totalDoneAll:0,
-    consecutiveIncomplete: 0,  // 连续未全部完成任务的天数
+    consecutiveIncomplete:0,
     tasks:[
       {id:uid(), name:"口算练习 20 题", cat:"study", diff:"easy", done:false, skip:false},
       {id:uid(), name:"阅读课外书 30 分钟", cat:"read", diff:"mid", done:false, skip:false},
@@ -841,6 +869,8 @@ function defaultState(){
     initialSun:50,
     minZombies:1,
     zombieStrengthFactor:1.0,
+    zombieGrowth:0.02,
+    wallnutBaseHp:4,
     plantPriceFactor:1.0,
     streakPenalty:0,
     weatherWeights: { sunny:25, rainy:25, frost:25, fog:25 },
@@ -888,20 +918,46 @@ function load(){
     var raw = localStorage.getItem(LS_KEY);
     if(raw){
       S = JSON.parse(raw);
-      // 版本迁移
-      if(!S.ver || S.ver < 4){
+      if(!S.ver || S.ver < 6){
+        // 升级旧版本：提高植物等级上限
+        if(!S.ver) S.ver = 6;
+        // 确保 maxLv 被覆盖为10（旧版本可能是3）
+        for(var i=0; i<PLANTS.length; i++){
+          var found = false;
+          for(var j=0; j<S.garden.length; j++){
+            if(S.garden[j] && S.garden[j].p === PLANTS[i].id){
+              found = true;
+              break;
+            }
+          }
+          // 仅当花园中有该植物时，我们才需要调整已种植的等级？但直接修改maxLv不影响已有等级，只是限制上限。
+          // 我们不修改已有等级，只修改定义。
+        }
+        // 将PLANTS定义中的maxLv设为10，但保留旧数据中的等级可能大于3？需要截断？
+        if(S.garden) {
+          S.garden.forEach(function(cell){
+            if(cell) {
+              var plantDef = getPlant(cell.p);
+              if(plantDef && cell.lv > plantDef.maxLv) {
+                cell.lv = plantDef.maxLv;
+              }
+            }
+          });
+        }
+        // 其他旧字段补齐
         if(S.initialSun === undefined) S.initialSun = 50;
         if(S.minZombies === undefined) S.minZombies = 1;
         if(S.zombieStrengthFactor === undefined) S.zombieStrengthFactor = 1.0;
+        if(S.zombieGrowth === undefined) S.zombieGrowth = 0.02;
+        if(S.wallnutBaseHp === undefined) S.wallnutBaseHp = 4;
         if(S.plantPriceFactor === undefined) S.plantPriceFactor = 1.0;
         if(S.streakPenalty === undefined) S.streakPenalty = 0;
         if(!S.weatherWeights || typeof S.weatherWeights !== 'object') S.weatherWeights = { sunny:25, rainy:25, frost:25, fog:25 };
         if(!S.sunflowerTiers || !Array.isArray(S.sunflowerTiers)) S.sunflowerTiers = defaultState().sunflowerTiers;
         if(S.pomoDuration === undefined) S.pomoDuration = 20;
         if(S.consecutiveIncomplete === undefined) S.consecutiveIncomplete = 0;
-        S.ver = 4;
+        S.ver = 6;
       }
-      // 原有字段兼容
       if(!S.shopItems || !Array.isArray(S.shopItems)){ S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP)); }else{ S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); }); }
       if(!S.plotCount || typeof S.plotCount !== "number" || S.plotCount < 1) S.plotCount = 24;
       if(!S.garden || !Array.isArray(S.garden)){ S.garden = new Array(S.plotCount).fill(null); }
@@ -1084,10 +1140,69 @@ function buyPlot(){
   toast("扩建成功！当前 " + S.plotCount + " 块地 🌱");
 }
 
-function renderPlantDetail(idx){ var el = $("plantDetailBody"); if(!el) return; var cell = S.garden[idx]; if(!cell) return; var p = getPlant(cell.p); var lv = cell.lv || 1; var isParent = S.role === 'parent'; var costFactor = S.plantPriceFactor || 1.0; var upgradeBase = p.upgradeCost || 50; var upgradeCost = Math.round(upgradeBase * costFactor); var canUpgrade = isParent && p.maxLv > 1 && lv < p.maxLv && S.sun >= upgradeCost; var upgradeInfo = ''; if(p.maxLv > 1 && lv < p.maxLv){ var desc = ''; if(p.id === 'peashooter') desc = '伤害 1→2'; else if(p.id === 'snowpea') desc = '冰冻范围 1→2'; else if(p.id === 'wallnut') desc = '生命 4→6'; else if(p.id === 'sunflower') desc = '产出 6→12/晚（第1档）'; upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f0f8f0;border-radius:8px;"><span style="font-weight:700;">⬆️ 升级 → Lv' + (lv+1) + '</span><br><span style="font-size:12px;color:var(--ink-light);">' + desc + ' · 费用 ☀️' + upgradeCost + '</span><br>' + (canUpgrade ? '<button class="btn sm" style="margin-top:4px;" onclick="upgradePlant('+idx+')">升级</button>' : '<span style="color:var(--red);font-size:12px;">' + (S.sun < upgradeCost ? '阳光不足' : '已满级') + '</span>') + '</div>'; } else if(lv >= p.maxLv && p.maxLv > 1){ upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f5f5f5;border-radius:8px;font-size:12px;color:#888;">⭐ 已满级</div>'; }
-var stats = []; if(p.dmg > 0) stats.push('⚔️ 伤害 ' + (p.id === 'peashooter' ? (lv>=2?'2':'1') : (p.id==='snowpea'?(lv>=2?'2':'1'):p.dmg))); if(p.freeze > 0) stats.push('❄️ 冰冻 ' + (lv>=2 ? 2 : 1) + ' 只'); if(p.hp > 1) stats.push('❤️ 生命 ' + (p.id==='wallnut' ? (lv>=2?6:4) : p.hp)); if(p.taunt) stats.push('🛡️ 吸引仇恨'); if(p.oneshot) stats.push('💥 秒杀 ' + p.kill + ' 只');
-var html = '<div style="text-align:center;"><div style="font-size:48px;margin:8px 0;">' + p.icon + '</div><div style="font-size:18px;font-weight:700;">' + p.name + ' <span style="font-size:14px;color:#888;">Lv' + lv + '</span></div><div style="font-size:13px;color:var(--ink-light);margin:4px 0;">' + p.desc + '</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0;font-size:12px;">'; stats.forEach(function(s){ html += '<span style="background:#f0f4ec;padding:0 8px;border-radius:4px;">'+s+'</span>'; }); html += '</div><div style="font-size:12px;color:var(--ink-light);">❤️ ' + cell.hp + '/' + (p.id==='wallnut' ? (lv>=2?6:4) : p.hp) + '</div>' + upgradeInfo + (isParent ? '<button class="btn red sm" style="margin-top:6px;" onclick="removePlant('+idx+')">🗑️ 铲除</button>' : '') + '</div>'; el.innerHTML = html; document.getElementById('plantDetailTitle').firstChild.textContent = '🌱 ' + p.name + ' 详情'; }
-function upgradePlant(idx){ var cell = S.garden[idx]; if(!cell) return; var p = getPlant(cell.p); var lv = cell.lv || 1; if(lv >= p.maxLv){ toast('已满级'); return; } var costFactor = S.plantPriceFactor || 1.0; var cost = Math.round((p.upgradeCost || 50) * costFactor); if(S.sun < cost){ toast('阳光不足，需要 ☀️' + cost); return; } S.sun -= cost; cell.lv = (cell.lv || 1) + 1; addLog('⬆️', '将 ' + p.icon + p.name + ' 升级到 Lv' + cell.lv + '（消耗 ☀️' + cost + '）'); save(); closeModal('plantDetailModal'); renderAll(); toast('升级成功！Lv' + cell.lv); }
+function renderPlantDetail(idx){
+  var el = $("plantDetailBody");
+  if(!el) return;
+  var cell = S.garden[idx];
+  if(!cell) return;
+  var p = getPlant(cell.p);
+  var lv = cell.lv || 1;
+  var costFactor = S.plantPriceFactor || 1.0;
+  // 升级费用 = 50 * (lv ^ 1.5) * costFactor，指数增长
+  var upgradeCost = Math.round(50 * Math.pow(lv, 1.5) * costFactor);
+  var canUpgrade = p.maxLv > 1 && lv < p.maxLv && S.sun >= upgradeCost;
+  var upgradeInfo = '';
+  if(p.maxLv > 1 && lv < p.maxLv){
+    var desc = '';
+    if(p.id === 'peashooter') desc = '伤害 = 等级（每级+1）';
+    else if(p.id === 'snowpea') desc = '伤害 = 等级，冰冻1只';
+    else if(p.id === 'wallnut') desc = '血量 = 基础 + 等级 - 1';
+    else if(p.id === 'sunflower') desc = '产出 = 基础 + 等级 - 1';
+    upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f0f8f0;border-radius:8px;"><span style="font-weight:700;">⬆️ 升级 → Lv' + (lv+1) + '</span><br><span style="font-size:12px;color:var(--ink-light);">' + desc + ' · 费用 ☀️' + upgradeCost + '</span><br>' + (canUpgrade ? '<button class="btn sm" style="margin-top:4px;" onclick="upgradePlant('+idx+')">升级</button>' : '<span style="color:var(--red);font-size:12px;">' + (S.sun < upgradeCost ? '阳光不足' : '已满级') + '</span>') + '</div>';
+  } else if(lv >= p.maxLv && p.maxLv > 1){
+    upgradeInfo = '<div style="margin-top:8px;padding:8px;background:#f5f5f5;border-radius:8px;font-size:12px;color:#888;">⭐ 已满级（Lv.' + p.maxLv + '）</div>';
+  }
+  var stats = [];
+  var actualDmg = p.dmg;
+  var actualFreeze = p.freeze;
+  var actualHp = p.hp;
+  if(p.id === 'wallnut'){
+    actualHp = S.wallnutBaseHp + lv - 1;
+  }
+  if(p.id === 'peashooter'){
+    actualDmg = lv;
+  }
+  if(p.id === 'snowpea'){
+    actualDmg = lv;
+    actualFreeze = 1;
+  }
+  if(p.id === 'sunflower'){
+    actualHp = 1; // 向日葵不显示血量
+  }
+  if(p.dmg > 0) stats.push('⚔️ 伤害 ' + actualDmg);
+  if(actualFreeze > 0) stats.push('❄️ 冰冻 ' + actualFreeze + ' 只');
+  if(p.hp > 1 || p.id === 'wallnut') stats.push('❤️ 生命 ' + actualHp);
+  if(p.taunt) stats.push('🛡️ 吸引仇恨');
+  if(p.oneshot) stats.push('💥 秒杀 ' + p.kill + ' 只');
+  var html = '<div style="text-align:center;"><div style="font-size:48px;margin:8px 0;">' + p.icon + '</div><div style="font-size:18px;font-weight:700;">' + p.name + ' <span style="font-size:14px;color:#888;">Lv' + lv + '</span></div><div style="font-size:13px;color:var(--ink-light);margin:4px 0;">' + p.desc + '</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0;font-size:12px;">'; stats.forEach(function(s){ html += '<span style="background:#f0f4ec;padding:0 8px;border-radius:4px;">'+s+'</span>'; }); html += '</div><div style="font-size:12px;color:var(--ink-light);">❤️ ' + cell.hp + '/' + actualHp + '</div>' + upgradeInfo + (S.role === 'parent' ? '<button class="btn red sm" style="margin-top:6px;" onclick="removePlant('+idx+')">🗑️ 铲除</button>' : '') + '</div>'; el.innerHTML = html; document.getElementById('plantDetailTitle').firstChild.textContent = '🌱 ' + p.name + ' 详情';
+}
+function upgradePlant(idx){
+  var cell = S.garden[idx];
+  if(!cell) return;
+  var p = getPlant(cell.p);
+  var lv = cell.lv || 1;
+  if(lv >= p.maxLv){ toast('已满级'); return; }
+  var costFactor = S.plantPriceFactor || 1.0;
+  var cost = Math.round(40 * Math.pow(lv, 1.2) * costFactor);
+  if(S.sun < cost){ toast('阳光不足，需要 ☀️' + cost); return; }
+  S.sun -= cost;
+  cell.lv = (cell.lv || 1) + 1;
+  // 升级后血量恢复满值（如果是坚果墙或一般植物）
+  var actualHp = p.id === 'wallnut' ? (S.wallnutBaseHp + cell.lv - 1) : p.hp;
+  cell.hp = actualHp;
+  addLog('⬆️', '将 ' + p.icon + p.name + ' 升级到 Lv' + cell.lv + '（消耗 ☀️' + cost + '）');
+  save(); closeModal('plantDetailModal'); renderAll(); toast('升级成功！Lv' + cell.lv);
+}
 function removePlant(idx){ if(!confirm('确定铲除这棵植物吗？不返还阳光')) return; S.garden[idx] = null; addLog('🪏', '铲除了一棵植物'); save(); closeModal('plantDetailModal'); renderAll(); toast('已铲除'); }
 function renderPlantPick(){ var el = $("plantPickBox"); if(!el) return; var html = ""; var costFactor = S.plantPriceFactor || 1.0; PLANTS.forEach(function(p){ var un = isUnlocked(p); var cost = Math.round(p.cost * costFactor); var can = un && S.sun >= cost; var lockedText = (p.streak > 0) ? '🔒 连续达标 ' + p.streak + ' 天' : ''; var stats = []; if(p.dmg > 0) stats.push('⚔️'+p.dmg); if(p.freeze > 0) stats.push('❄️'+p.freeze); if(p.taunt) stats.push('🛡️'); if(p.oneshot) stats.push('💥×'+p.kill); html += '<div class="dex-item'+(un?"":" locked")+'"><div class="dex-icon">'+p.icon+'</div><div class="dex-info"><div class="dex-name">'+p.name+' <span class="tag tag-sun">☀️'+cost+'</span></div><div class="dex-desc">'+(un ? p.desc : lockedText)+'</div><div class="dex-stats">'+stats.map(function(s){return '<span>'+s+'</span>';}).join('')+'</div></div>' + (un ? '<button class="btn sm'+(can?"":" gray")+'" onclick="plantAt(\''+p.id+'\')">'+(can?"种植":"阳光不足")+'</button>' : '') + '</div>'; }); el.innerHTML = html; }
 function plantAt(pid){ var p = getPlant(pid); var costFactor = S.plantPriceFactor || 1.0; var cost = Math.round(p.cost * costFactor); if(S.sun < cost){ toast("阳光不够啦 ☀️ 快去完成任务！"); return; } if(pickPlotIdx < 0 || pickPlotIdx >= S.garden.length || S.garden[pickPlotIdx]){ closeModal("plantModal"); return; } S.sun -= cost; S.garden[pickPlotIdx] = {p:pid, hp:p.hp, lv:1}; addLog("🌱","种下了一棵 "+p.icon+p.name+"（消耗 ☀️"+cost+"）"); save(); closeModal("plantModal"); renderAll(); toast("种植成功！"+p.icon); }
@@ -1108,33 +1223,50 @@ function renderWeatherZombieInfo(){
   var available = ZOMBIE_TYPES.filter(function(zt){ return day >= zt.minDay; });
   if(available.length === 0) available = [ZOMBIE_TYPES[0]];
   available.forEach(function(zt){
-    html += '<span style="display:inline-block; margin-right:12px; font-size:12px;">' + zt.icon + ' ' + zt.name + '（' + zt.hp + '血，咬伤' + zt.bite + '）</span>';
+    html += '<span style="display:inline-block; margin-right:12px; font-size:12px;">' + zt.icon + ' ' + zt.name + '（基础' + zt.hp + '血，咬伤' + zt.bite + '，随天数成长但有上限）</span>';
   });
   html += '</div>';
   el.innerHTML = html;
 }
 
-// ===== 计算向日葵总产出（使用动态分档倍率） =====
-function calcSunflowerTotal(count, baseProduce, multiplier){
-  if(count <= 0) return 0;
-  var tiers = S.sunflowerTiers || defaultState().sunflowerTiers;
-  var total = 0;
-  var remaining = count;
-  var prev = 0;
-  for(var i=0; i<tiers.length; i++){
-    var limit = tiers[i].limit;
-    var tierCount = Math.min(remaining, limit - prev);
-    if(tierCount <= 0) continue;
-    total += tierCount * baseProduce * tiers[i].rate;
-    remaining -= tierCount;
-    prev = limit;
-    if(remaining <= 0) break;
+// ===== 计算向日葵总产出（使用动态分档倍率 + 等级加成） =====
+function calcSunflowerTotal(gardenArray, baseProduce, weatherMultiplier){
+  // 遍历所有向日葵，累加每个的产出（基础 + 等级 - 1），然后乘以分档倍率（基于总数）
+  var sunflowers = [];
+  for(var i=0; i<gardenArray.length; i++){
+    var cell = gardenArray[i];
+    if(cell && cell.p === "sunflower"){
+      var lv = cell.lv || 1;
+      var produce = baseProduce + lv - 1;
+      sunflowers.push(produce);
+    }
   }
-  return Math.round(total * multiplier);
+  var count = sunflowers.length;
+  if(count === 0) return 0;
+  var totalBase = sunflowers.reduce(function(a,b){ return a+b; }, 0);
+  // 计算分档倍率
+  var tiers = S.sunflowerTiers || defaultState().sunflowerTiers;
+  var rate = 1.0;
+  for(var j=0; j<tiers.length; j++){
+    if(count <= tiers[j].limit){
+      rate = tiers[j].rate;
+      break;
+    }
+  }
+  return Math.round(totalBase * rate * weatherMultiplier);
+}
+
+// ===== 计算僵尸实际血量（随天数成长，但限制最大3倍） =====
+function getZombieHp(baseHp, day, growthFactor){
+  var factor = growthFactor || 0.02;
+  var multiplier = 1 + day * factor;
+  // 限制最大3倍
+  multiplier = Math.min(multiplier, 3.0);
+  return Math.round(baseHp * multiplier * (S.zombieStrengthFactor || 1.0));
 }
 
 /* ============================================================
-   🌙 核心结算函数
+   🌙 核心结算函数（已适配等级上限和僵尸成长上限）
    ============================================================ */
 function doSettle(){
   var tasks = S.tasks || [];
@@ -1144,23 +1276,24 @@ function doSettle(){
   var msg = total === 0 ? "今天没有需要完成的任务，直接进入下一天？" : (undone.length === 0 ? "今日 "+total+" 个任务全部完成！确认结算进入下一天？" : "还有 "+undone.length+" 个任务没完成，结算会引来僵尸！确定要结算吗？");
   if(!confirm("🌙 "+msg)) return;
   var lines = [], oldStreak = S.streak;
-  var sfCount = 0; for(var i=0; i<S.garden.length; i++){ var c = S.garden[i]; if(c && c.p==="sunflower") sfCount++; }
+  
+  // --- 向日葵产出（带等级和分档倍率） ---
   var baseProduce = S.sunflowerProduce || 6;
-  var weatherEffect = applyWeatherEffect(S.weather.today, undone.length, sfCount);
+  var weatherEffect = applyWeatherEffect(S.weather.today, undone.length, 0);
   var sunMultiplier = weatherEffect.sunMultiplier;
-  if(sfCount > 0){
-    var produced = calcSunflowerTotal(sfCount, baseProduce, sunMultiplier);
+  var produced = calcSunflowerTotal(S.garden, baseProduce, sunMultiplier);
+  if(produced > 0){
     S.sun += produced;
-    lines.push("🌻 "+sfCount+" 棵向日葵产出 ☀️"+produced+" 阳光" + (sunMultiplier>1 ? '（雨天×1.5）' : ''));
+    lines.push("🌻 花园中向日葵产出 ☀️"+produced+" 阳光" + (sunMultiplier>1 ? '（雨天×1.5）' : ''));
     addLog("🌻","向日葵们产出了 ☀️"+produced+" 阳光" + (sunMultiplier>1 ? '（雨天×1.5）' : ''));
   }
-
-  // ===== 计算僵尸数量（含连续未完成惩罚） =====
+  
+  // 基础僵尸数量 = 未完成任务数 + 天气修正
   var zombieCount = undone.length;
-  var wEffect = applyWeatherEffect(S.weather.today, zombieCount, sfCount);
+  var wEffect = applyWeatherEffect(S.weather.today, zombieCount, 0);
   zombieCount = wEffect.count;
-
-  // 连续未完成惩罚
+  
+  // 连续未完成惩罚：每2天未完成额外+1只僵尸
   if (undone.length > 0) {
     S.consecutiveIncomplete = (S.consecutiveIncomplete || 0) + 1;
     var extraZombies = Math.min(5, Math.floor(S.consecutiveIncomplete / 2));
@@ -1172,24 +1305,120 @@ function doSettle(){
   } else {
     S.consecutiveIncomplete = 0;
   }
-
+  
   var minZ = S.minZombies !== undefined ? S.minZombies : 1;
   zombieCount = Math.max(minZ, Math.min(8, zombieCount));
-
-  // 生成僵尸队列
-  var zombieQueue = []; var day = S.day; var strength = S.zombieStrengthFactor || 1.0;
-  for(var z=0; z<zombieCount; z++){ var available = ZOMBIE_TYPES.filter(function(zt){ return day >= zt.minDay; }); if(!available.length) available = [ZOMBIE_TYPES[0]]; var totalWeight = available.reduce(function(s, a){ return s + a.weight; }, 0); var rand = Math.random() * totalWeight; var cum = 0; var selected = available[0]; for(var a=0; a<available.length; a++){ cum += available[a].weight; if(rand <= cum){ selected = available[a]; break; } } zombieQueue.push({ type: selected, hp: Math.round(selected.hp * strength), maxHp: Math.round(selected.hp * strength), icon: selected.icon, name: selected.name, bite: Math.round(selected.bite * strength) }); }
-  if(zombieCount > 0){ lines.push("🧟 来袭 " + zombieCount + " 只僵尸：" + zombieQueue.map(function(z){ return z.icon; }).join(' ')); addLog("🧟","第 "+S.day+" 天有 "+zombieCount+" 只僵尸入侵！天气：" + getWeatherIcon(S.weather.today).name); } else { lines.push("🛡️ 没有僵尸来袭，花园平安无事！"); }
-
-  // 植物准备
-  var gardenPlants = []; for(var gi=0; gi<S.garden.length; gi++){ if(S.garden[gi]){ var p = getPlant(S.garden[gi].p); var lv = S.garden[gi].lv || 1; var actualDmg = p.dmg || 0; var actualFreeze = p.freeze || 0; var actualHp = p.hp; if(p.id === 'wallnut' && lv >= 2) actualHp = 6; if(p.id === 'peashooter' && lv >= 2) actualDmg = 2; if(p.id === 'snowpea' && lv >= 2) actualFreeze = 2; gardenPlants.push({ idx: gi, cell: S.garden[gi], plant: p, lv: lv, dmg: actualDmg, freeze: actualFreeze, hp: actualHp, isOneShot: p.oneshot || false, kill: p.kill || 0, taunt: p.taunt || false }); } }
-  var battleLog = []; var zombies = zombieQueue.map(function(z){ return { ...z, id: 'z'+Math.random().toString(36).slice(2,6), alive: true, frozen: false }; });
+  
+  // 生成僵尸队列（血量随天数成长但有上限）
+  var zombieQueue = []; var day = S.day; var growth = S.zombieGrowth || 0.02;
+  for(var z=0; z<zombieCount; z++){
+    var available = ZOMBIE_TYPES.filter(function(zt){ return day >= zt.minDay; });
+    if(!available.length) available = [ZOMBIE_TYPES[0]];
+    var totalWeight = available.reduce(function(s, a){ return s + a.weight; }, 0);
+    var rand = Math.random() * totalWeight;
+    var cum = 0;
+    var selected = available[0];
+    for(var a=0; a<available.length; a++){
+      cum += available[a].weight;
+      if(rand <= cum){ selected = available[a]; break; }
+    }
+    var realHp = getZombieHp(selected.hp, day, growth);
+    zombieQueue.push({
+      type: selected,
+      hp: realHp,
+      maxHp: realHp,
+      icon: selected.icon,
+      name: selected.name,
+      bite: Math.round(selected.bite * (S.zombieStrengthFactor || 1.0))
+    });
+  }
+  
+  if(zombieCount > 0){
+    lines.push("🧟 来袭 " + zombieCount + " 只僵尸：" + zombieQueue.map(function(z){ return z.icon + '('+z.hp+'血)'; }).join(' '));
+    addLog("🧟","第 "+S.day+" 天有 "+zombieCount+" 只僵尸入侵！天气：" + getWeatherIcon(S.weather.today).name);
+  } else {
+    lines.push("🛡️ 没有僵尸来袭，花园平安无事！");
+  }
+  
+  // 收集花园植物属性（含等级成长）
+  var gardenPlants = [];
+  for(var gi=0; gi<S.garden.length; gi++){
+    if(S.garden[gi]){
+      var p = getPlant(S.garden[gi].p);
+      var lv = S.garden[gi].lv || 1;
+      var actualDmg = p.dmg || 0;
+      var actualFreeze = p.freeze || 0;
+      var actualHp = p.hp;
+      if(p.id === 'wallnut'){
+        var base = S.wallnutBaseHp || 4;
+        actualHp = base + lv - 1;
+      }
+      if(p.id === 'peashooter'){
+        actualDmg = lv;
+      }
+      if(p.id === 'snowpea'){
+        actualDmg = lv;
+        actualFreeze = 1; // 冰冻始终为1
+      }
+      gardenPlants.push({
+        idx: gi,
+        cell: S.garden[gi],
+        plant: p,
+        lv: lv,
+        dmg: actualDmg,
+        freeze: actualFreeze,
+        hp: actualHp,
+        isOneShot: p.oneshot || false,
+        kill: p.kill || 0,
+        taunt: p.taunt || false
+      });
+    }
+  }
+  
+  var battleLog = [];
+  var zombies = zombieQueue.map(function(z){ return { ...z, id: 'z'+Math.random().toString(36).slice(2,6), alive: true, frozen: false }; });
+  
   // 一次性植物
-  var oneShotPlants = gardenPlants.filter(function(gp){ return gp.isOneShot; }); for(var os=0; os<oneShotPlants.length && zombies.some(function(z){ return z.alive; }); os++){ var gp = oneShotPlants[os]; var killCount = gp.kill || 1; var killed = 0; for(var zi=0; zi<zombies.length && killed<killCount; zi++){ if(zombies[zi].alive){ zombies[zi].alive = false; killed++; battleLog.push('💥 ' + gp.plant.icon + gp.plant.name + ' 秒杀了 ' + zombies[zi].icon + zombies[zi].name); } } S.garden[gp.idx] = null; battleLog.push('💥 ' + gp.plant.icon + gp.plant.name + ' 引爆消失'); addLog('💥', gp.plant.icon + gp.plant.name + ' 引爆，秒杀 ' + killed + ' 只僵尸'); }
+  var oneShotPlants = gardenPlants.filter(function(gp){ return gp.isOneShot; });
+  for(var os=0; os<oneShotPlants.length && zombies.some(function(z){ return z.alive; }); os++){
+    var gp = oneShotPlants[os];
+    var killCount = gp.kill || 1;
+    var killed = 0;
+    for(var zi=0; zi<zombies.length && killed<killCount; zi++){
+      if(zombies[zi].alive){
+        zombies[zi].alive = false;
+        killed++;
+        battleLog.push('💥 ' + gp.plant.icon + gp.plant.name + ' 秒杀了 ' + zombies[zi].icon + zombies[zi].name);
+      }
+    }
+    S.garden[gp.idx] = null;
+    battleLog.push('💥 ' + gp.plant.icon + gp.plant.name + ' 引爆消失');
+    addLog('💥', gp.plant.icon + gp.plant.name + ' 引爆，秒杀 ' + killed + ' 只僵尸');
+  }
+  
   // 攻击性植物
-  var attackPlants = gardenPlants.filter(function(gp){ return !gp.isOneShot && gp.dmg > 0; }); attackPlants.sort(function(a, b){ return a.idx - b.idx; });
+  var attackPlants = gardenPlants.filter(function(gp){ return !gp.isOneShot && gp.dmg > 0; });
+  attackPlants.sort(function(a, b){ return a.idx - b.idx; });
   var zombiesAlive = function(){ return zombies.filter(function(z){ return z.alive; }); };
-  for(var ap=0; ap<attackPlants.length && zombiesAlive().length > 0; ap++){ var gp2 = attackPlants[ap]; var target = null; for(var zi2=0; zi2<zombies.length; zi2++){ if(zombies[zi2].alive){ target = zombies[zi2]; break; } } if(!target) continue; var freezeCount = gp2.freeze; if(S.weather.today === 'frost') freezeCount = (gp2.freeze || 0) + 1; target.hp -= gp2.dmg; battleLog.push('🎯 ' + gp2.plant.icon + gp2.plant.name + ' 造成 ' + gp2.dmg + ' 点伤害 -> ' + target.icon + target.name + '（剩 ' + Math.max(0,target.hp)+'/'+target.maxHp+'）'); if(target.hp <= 0){ target.alive = false; battleLog.push('💀 ' + target.icon + target.name + ' 被消灭'); } else if(freezeCount > 0){ target.frozen = true; battleLog.push('❄️ ' + target.icon + target.name + ' 被冰冻，本轮不咬人'); } }
+  for(var ap=0; ap<attackPlants.length && zombiesAlive().length > 0; ap++){
+    var gp2 = attackPlants[ap];
+    var target = null;
+    for(var zi2=0; zi2<zombies.length; zi2++){
+      if(zombies[zi2].alive){ target = zombies[zi2]; break; }
+    }
+    if(!target) continue;
+    var freezeCount = gp2.freeze;
+    if(S.weather.today === 'frost') freezeCount = (gp2.freeze || 0) + 1;
+    target.hp -= gp2.dmg;
+    battleLog.push('🎯 ' + gp2.plant.icon + gp2.plant.name + ' 造成 ' + gp2.dmg + ' 点伤害 -> ' + target.icon + target.name + '（剩 ' + Math.max(0,target.hp)+'/'+target.maxHp+'）');
+    if(target.hp <= 0){
+      target.alive = false;
+      battleLog.push('💀 ' + target.icon + target.name + ' 被消灭');
+    } else if(freezeCount > 0){
+      target.frozen = true;
+      battleLog.push('❄️ ' + target.icon + target.name + ' 被冰冻，本轮不咬人');
+    }
+  }
   
   // ===== 僵尸啃食植物（修复版：每只僵尸独立判断坚果墙状态） =====
   var remainingZombies = zombies.filter(function(z){ return z.alive && !z.frozen; });
@@ -1252,7 +1481,19 @@ function doSettle(){
   }
   var anyZombieSurvived = zombies.some(function(z){ return z.alive; });
   var safe = (zombieCount === 0) || (!anyZombieSurvived);
-  if(safe){ S.streak++; checkWheelFreeSpin(); lines.push("🎉 花园防线成功！"); lines.push("🔥 连续达标 "+S.streak+" 天"); addLog("🛡️","第 "+S.day+" 天花园安然无恙！连续达标 "+S.streak+" 天"); PLANTS.forEach(function(p){ if(p.streak > 0 && oldStreak < p.streak && S.streak >= p.streak){ lines.push("🎁 解锁新植物："+p.icon+" "+p.name+"！"); addLog("🎁","连续达标 "+S.streak+" 天，解锁新植物 "+p.icon+p.name+"！"); } }); } else { 
+  if(safe){
+    S.streak++;
+    checkWheelFreeSpin();
+    lines.push("🎉 花园防线成功！");
+    lines.push("🔥 连续达标 "+S.streak+" 天");
+    addLog("🛡️","第 "+S.day+" 天花园安然无恙！连续达标 "+S.streak+" 天");
+    PLANTS.forEach(function(p){
+      if(p.streak > 0 && oldStreak < p.streak && S.streak >= p.streak){
+        lines.push("🎁 解锁新植物："+p.icon+" "+p.name+"！");
+        addLog("🎁","连续达标 "+S.streak+" 天，解锁新植物 "+p.icon+p.name+"！");
+      }
+    });
+  } else {
     if (S.streakPenalty === 1) {
       S.streak = Math.max(0, S.streak - 1);
       lines.push("😱 花园失守，连续达标减少 1 天（当前 " + S.streak + " 天）");
@@ -1318,8 +1559,11 @@ function openSettings() {
   $("fInitialSun").value = S.initialSun !== undefined ? S.initialSun : 50;
   $("fMinZombies").value = S.minZombies !== undefined ? S.minZombies : 1;
   $("fZombieStrength").value = S.zombieStrengthFactor !== undefined ? S.zombieStrengthFactor : 1.0;
+  $("fZombieGrowth").value = S.zombieGrowth !== undefined ? S.zombieGrowth : 0.02;
+  $("fWallnutHp").value = S.wallnutBaseHp !== undefined ? S.wallnutBaseHp : 4;
   $("fPlantPriceFactor").value = S.plantPriceFactor !== undefined ? S.plantPriceFactor : 1.0;
   $("fStreakPenalty").value = S.streakPenalty !== undefined ? S.streakPenalty : 0;
+  $("fSunAmount").value = 1;
   var w = S.weatherWeights || { sunny:25, rainy:25, frost:25, fog:25 };
   $("fWeatherSunny").value = w.sunny;
   $("fWeatherRainy").value = w.rainy;
@@ -1329,13 +1573,11 @@ function openSettings() {
   $("fRewardMid").value = S.rewardMid; 
   $("fRewardHard").value = S.rewardHard; 
   $("fSunflowerProduce").value = S.sunflowerProduce || 6; 
-  // 分档倍率
   var tiers = S.sunflowerTiers || defaultState().sunflowerTiers;
   $("fTierRate1").value = tiers[0].rate;
   $("fTierRate2").value = tiers[1].rate;
   $("fTierRate3").value = tiers[2].rate;
   $("fTierRate4").value = tiers[3].rate;
-  // 番茄钟
   $("fPomoDuration").value = S.pomoDuration || 20;
   updateWeatherSum();
   openModal('setModal'); 
@@ -1350,7 +1592,6 @@ function updateWeatherSum(){
   var status = $("weatherSumStatus");
   if (total === 100) { status.textContent = '✅'; status.style.color = 'var(--green)'; } else { status.textContent = '⚠️ 需等于100%'; status.style.color = 'var(--red)'; }
 }
-// 监听天气输入变化
 document.addEventListener('DOMContentLoaded', function(){
   ['fWeatherSunny','fWeatherRainy','fWeatherFrost','fWeatherFog'].forEach(function(id){
     var el = document.getElementById(id);
@@ -1404,7 +1645,6 @@ function savePomoDuration() {
     pomoMin = val;
     pomoLeft = val * 60;
     updatePomoUI();
-    // 更新默认高亮
     document.querySelectorAll("#pomoChips .chip").forEach(function(c){
       c.classList.remove("on");
       if (parseInt(c.dataset.min) === val) c.classList.add("on");
@@ -1412,6 +1652,14 @@ function savePomoDuration() {
   }
   save();
   toast("番茄钟默认时长已保存 ✅");
+}
+function saveWallnutHp() {
+  var val = parseInt($("fWallnutHp").value, 10);
+  if (isNaN(val) || val < 1 || val > 10) { toast("请输入 1~10 之间的数值"); return; }
+  S.wallnutBaseHp = val;
+  save();
+  renderAll();
+  toast("坚果墙基础血量已保存 ✅（仅对新种植的生效）");
 }
 function saveRewardParams() { 
   var easy = parseInt($("fRewardEasy").value, 10); 
@@ -1435,7 +1683,6 @@ function saveRewardParams() {
   DIFFS[0].sun = easy; 
   DIFFS[1].sun = mid; 
   DIFFS[2].sun = hard; 
-  for(var i=0; i<PLANTS.length; i++){ if(PLANTS[i].id === 'sunflower'){ PLANTS[i].produce = sunflower; } } 
   save(); 
   renderAll(); 
   toast('经济参数已保存 ✅'); 
@@ -1443,9 +1690,11 @@ function saveRewardParams() {
 function saveGameParams(){
   var minZombies = parseInt($("fMinZombies").value, 10);
   var strength = parseFloat($("fZombieStrength").value);
+  var growth = parseFloat($("fZombieGrowth").value);
   var penalty = parseInt($("fStreakPenalty").value, 10);
   if (isNaN(minZombies) || minZombies < 0) { toast("请输入有效的僵尸最少数量（≥0）"); return; }
   if (isNaN(strength) || strength < 0.5 || strength > 2.0) { toast("僵尸强度系数应在 0.5~2.0 之间"); return; }
+  if (isNaN(growth) || growth < 0 || growth > 0.1) { toast("僵尸成长速度应在 0~0.1 之间"); return; }
   var sunny = parseInt($("fWeatherSunny").value) || 0;
   var rainy = parseInt($("fWeatherRainy").value) || 0;
   var frost = parseInt($("fWeatherFrost").value) || 0;
@@ -1457,11 +1706,31 @@ function saveGameParams(){
   }
   S.minZombies = minZombies;
   S.zombieStrengthFactor = strength;
+  S.zombieGrowth = growth;
   S.streakPenalty = penalty;
   S.weatherWeights = { sunny: sunny, rainy: rainy, frost: frost, fog: fog };
   save();
   renderAll();
   toast("战斗/天气参数已保存 ✅");
+}
+function addSun() {
+  var amount = parseInt($("fSunAmount").value, 10);
+  if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; }
+  S.sun += amount;
+  addLog('☀️', '家长手动增加了 ' + amount + ' 阳光（当前 ' + S.sun + '）');
+  save();
+  renderAll();
+  toast('已增加 ' + amount + ' 阳光');
+}
+function subSun() {
+  var amount = parseInt($("fSunAmount").value, 10);
+  if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; }
+  if (S.sun < amount) { toast('阳光不足，无法减少 ' + amount + '（当前仅 ' + S.sun + '）'); return; }
+  S.sun -= amount;
+  addLog('☀️', '家长手动减少了 ' + amount + ' 阳光（当前 ' + S.sun + '）');
+  save();
+  renderAll();
+  toast('已减少 ' + amount + ' 阳光');
 }
 function resetAll(){ 
   if(!confirm("⚠️ 将清空全部任务、花园、阳光和记录，确定吗？")) return; 
@@ -1476,8 +1745,6 @@ function resetAll(){
   closeModal('setModal'); 
   toast("已重置 🌱"); 
 }
-function addSun() { var amount = parseInt($("fSunAmount").value, 10); if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; } S.sun += amount; addLog('☀️', '家长手动增加了 ' + amount + ' 阳光（当前 ' + S.sun + '）'); save(); renderAll(); toast('已增加 ' + amount + ' 阳光'); }
-function subSun() { var amount = parseInt($("fSunAmount").value, 10); if (isNaN(amount) || amount < 1) { toast('请输入有效的正数'); return; } if (S.sun < amount) { toast('阳光不足，无法减少 ' + amount + '（当前仅 ' + S.sun + '）'); return; } S.sun -= amount; addLog('☀️', '家长手动减少了 ' + amount + ' 阳光（当前 ' + S.sun + '）'); save(); renderAll(); toast('已减少 ' + amount + ' 阳光'); }
 
 function resetDailyExchange() { var today = new Date().toDateString(); if (S.wheel.lastExchangeDate !== today) { S.wheel.todayExchangeCount = 0; S.wheel.lastExchangeDate = today; } }
 
@@ -1534,17 +1801,14 @@ function renderAll(){
 load();
 applyRole();
 renderAll();
-// 使用保存的番茄钟时长
 pomoMin = S.pomoDuration || 20;
 pomoLeft = pomoMin * 60;
 updatePomoUI();
-// 高亮对应chip
 document.querySelectorAll("#pomoChips .chip").forEach(function(c){
   c.classList.remove("on");
   if (parseInt(c.dataset.min) === pomoMin) c.classList.add("on");
 });
 $("fPwd").addEventListener("keydown", function(e){ if(e.key==="Enter") checkPwd(); });
-// 天气权重实时更新
 document.addEventListener('input', function(e){
   if (e.target.id && ['fWeatherSunny','fWeatherRainy','fWeatherFrost','fWeatherFog'].includes(e.target.id)) {
     updateWeatherSum();
