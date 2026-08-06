@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🌻 我的阳光花园保卫战 · 完全版</title>
+<title>🌻 我的阳光花园保卫战 · 完整版</title>
 <style>
 :root{
   --green:#5cb85c; --green-deep:#3e8e41; --green-light:#a8e063;
@@ -123,8 +123,8 @@ header{
 .btn-row{display:flex; gap:8px; flex-wrap:wrap;}
 .btn-row .btn{flex:1; min-width:96px;}
 .setting-row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
-.setting-row .form-group{flex:1; margin-bottom:0; min-width:80px;}
-.setting-row .btn{flex-shrink:0; min-width:72px; padding:8px 12px; font-size:13px;}
+.setting-row input, .setting-row select, .setting-row button { height:48px; box-sizing:border-box; }
+.setting-row .btn{flex-shrink:0; min-width:72px; padding:0 12px; font-size:14px; border-radius:12px; line-height:1; display:inline-flex; align-items:center; justify-content:center;}
 .setting-divider{height:1px; background:linear-gradient(to right, transparent, #dcead0, transparent); margin:14px 0;}
 .setting-section-title{font-size:12px; color:var(--ink-light); font-weight:700; margin-bottom:8px; letter-spacing:1px;}
 .garden-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:6px; background:linear-gradient(160deg,#8bc34a33,#68a03733); border:3px dashed #9ccc65; border-radius:16px; padding:8px;}
@@ -347,19 +347,27 @@ body.role-child .role-tip.parent-tip{display:none;}
       🌧️ 雨天：向日葵产出 ×1.5<br>
       ❄️ 霜冻：寒冰射手额外冻 1 只<br>
       🌫️ 大雾：僵尸数量 +1<br><br>
-      <b>🌻 向日葵产出规则：</b><br>
-      基础 6 阳光/棵，数量越多单棵产出递减：<br>
-      · 1~20 棵：6 /棵<br>
-      · 21~40 棵：3 /棵<br>
-      · 41~60 棵：1.5 /棵<br>
-      · 61+ 棵：0.6 /棵<br>
-      雨天产出 ×1.5，种得越多总产出仍越高（但边际递减）<br><br>
+      <b>🌻 向日葵产出规则（分段累加）：</b><br>
+      基础产出可在家长设置中调整，各档倍率也可调：<br>
+      · 1~20 棵：每棵产出 = 基础产出<br>
+      · 21~40 棵：这20棵每棵产出 = 基础产出 × 0.5<br>
+      · 41~60 棵：这20棵每棵产出 = 基础产出 × 0.25<br>
+      · 61 棵及以上：每棵产出 = 基础产出 × 0.1<br>
+      总产出 = 各段之和，雨天再乘以 1.5，种得越多总产出仍越高（但边际递减）<br><br>
       <b>🧟 僵尸攻击规则：</b><br>
-      ① 优先啃咬 <b>🌰 坚果墙</b>（保护后排）<br>
+      ① 优先啃咬 <b>🌰 坚果墙</b>（保护后排）。<br>
+	  每只僵尸每晚只攻击 1 次，若目标未死，则会在后续夜晚持续攻击同一目标，直至被消灭（如“咬伤1”即每次攻击造成1点伤害）。<br>
       ② 无坚果墙时，随机选<b>一列</b>，从<b>底部向上</b>啃食<br>
       ③ 啃食深度随花园行数增加（严厉档：最少3个，最多15个）<br>
       ④ 每只僵尸独立选列，选到空列则直接离开<br>
       ⑤ 无论天气，至少 1 只僵尸来袭（保持压力）<br><br>
+      <b>🏆 连续达标与未完成任务惩罚：</b><br>
+      连续达标天数取决于当晚的“防御结果”，而非任务完成数量：<br>
+      · 若当晚所有来袭僵尸全部被消灭 → 连续达标天数 +1<br>
+      · 若当晚有僵尸存活（突破防线） → 连续达标天数中断（归零或减1天，由家长设置决定）<br>
+      ⚠️ 但请注意：若连续多天未全部完成任务，每2天额外增加 1 只来袭僵尸（上限5只）。<br>
+      · 全部完成任务可重置此惩罚计数。<br>
+      · 所以即使花园防御很强，长期偷懒也会让僵尸越积越多，形成僵尸潮，最终防线难保！<br><br>
       <b>🌱 植物特性：</b><br>
       🌻 向日葵：每晚结算产出阳光（见上规则）<br>
       🌰 坚果墙：吸引僵尸攻击，保护后排<br>
@@ -506,7 +514,7 @@ body.role-child .role-tip.parent-tip{display:none;}
   </div>
 </div>
 
-<!-- ===== 家长设置弹窗（全新布局） ===== -->
+<!-- ===== 家长设置弹窗 ===== -->
 <div class="mask" id="setModal">
   <div class="modal">
     <h3>⚙️ 家长设置 <button class="close-x" onclick="closeModal('setModal')">✕</button></h3>
@@ -522,116 +530,155 @@ body.role-child .role-tip.parent-tip{display:none;}
     </div>
     <div class="setting-divider"></div>
 
-    <!-- 游戏基础 -->
-  <div class="setting-section-title">🎮 游戏基础</div>
-<div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:8px 12px; align-items:center;">
-  <label style="font-size:12.5px; font-weight:700; color:var(--ink-light);">当前天数</label>
-  <label style="font-size:12.5px; font-weight:700; color:var(--ink-light);">初始阳光</label>
-  <span></span> <!-- 占位保持网格对齐 -->
-  <input type="number" id="fDayNum" min="1" max="999" style="width:100%; height:48px; box-sizing:border-box; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; background:#fafdf6; outline:none;">
-  <input type="number" id="fInitialSun" min="0" max="999" style="width:100%; height:48px; box-sizing:border-box; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; background:#fafdf6; outline:none;">
-  <button class="btn sm" onclick="changeDay()" style="height:48px; box-sizing:border-box; padding:0 12px; display:flex; align-items:center; justify-content:center; min-width:72px; font-size:14px;">📅 保存天数</button>
-</div>
+    <!-- 游戏基础（Grid对齐） -->
+    <div class="setting-section-title">🎮 游戏基础</div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:8px 12px; align-items:center;">
+      <label style="font-size:12.5px; font-weight:700; color:var(--ink-light);">当前天数</label>
+      <label style="font-size:12.5px; font-weight:700; color:var(--ink-light);">初始阳光</label>
+      <span></span>
+      <input type="number" id="fDayNum" min="1" max="999" style="width:100%; height:48px; box-sizing:border-box; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; background:#fafdf6; outline:none;">
+      <input type="number" id="fInitialSun" min="0" max="999" style="width:100%; height:48px; box-sizing:border-box; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; background:#fafdf6; outline:none;">
+      <button class="btn sm" onclick="changeDay()" style="height:48px; box-sizing:border-box; padding:0 12px; display:flex; align-items:center; justify-content:center; min-width:72px; font-size:14px;">📅 保存天数</button>
+    </div>
+    <div class="setting-divider"></div>
 
     <!-- 花园与扩建 -->
     <div class="setting-section-title">🌱 花园与扩建</div>
-    <div class="setting-row" style="gap:8px; flex-wrap:wrap;">
-      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
-        <label>花园地块数</label>
-        <input type="number" id="fPlotCount" min="1" max="999" style="width:100%;">
-      </div>
-      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
-        <label>最大地块数</label>
-        <input type="number" id="fMaxPlot" min="1" max="999" style="width:100%;">
-      </div>
-      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
-        <label>每块扩建价格</label>
-        <input type="number" id="fExpandPrice" min="1" max="999" style="width:100%;">
+    <div class="form-group">
+      <label>花园地块数</label>
+      <div class="setting-row">
+        <input type="number" id="fPlotCount" min="1" max="999" style="flex:1;">
+        <button class="btn sm" onclick="changePlotCount()" style="flex-shrink:0; min-width:72px;">🌱 调整地块</button>
       </div>
     </div>
-    <div class="btn-row" style="margin-top:6px;">
-      <button class="btn blue sm" onclick="saveExpandParams()" style="flex:1;">💾 保存花园参数</button>
+    <div class="form-group">
+      <label>最大地块数</label>
+      <div class="setting-row">
+        <input type="number" id="fMaxPlot" min="1" max="999" style="flex:1;">
+        <button class="btn blue sm" onclick="saveExpandParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>每块扩建价格</label>
+      <div class="setting-row">
+        <input type="number" id="fExpandPrice" min="1" max="999" style="flex:1;">
+        <button class="btn blue sm" onclick="saveExpandParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+      </div>
     </div>
     <div class="setting-divider"></div>
 
     <!-- 经济与奖励 -->
     <div class="setting-section-title">💰 经济与奖励</div>
-    <div class="setting-row" style="gap:8px; flex-wrap:wrap;">
-      <div class="form-group" style="flex:1; min-width:80px; margin-bottom:0;">
-        <label>简单任务</label>
-        <input type="number" id="fRewardEasy" min="0" max="999" style="width:100%;">
-      </div>
-      <div class="form-group" style="flex:1; min-width:80px; margin-bottom:0;">
-        <label>中等任务</label>
-        <input type="number" id="fRewardMid" min="0" max="999" style="width:100%;">
-      </div>
-      <div class="form-group" style="flex:1; min-width:80px; margin-bottom:0;">
-        <label>困难任务</label>
-        <input type="number" id="fRewardHard" min="0" max="999" style="width:100%;">
+    <div class="form-group">
+      <label>简单任务奖励</label>
+      <div class="setting-row">
+        <input type="number" id="fRewardEasy" min="0" max="999" style="flex:1;">
+        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
       </div>
     </div>
-    <div class="setting-row" style="gap:8px; margin-top:6px; flex-wrap:wrap;">
-      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
-        <label>🌻 向日葵基础产出</label>
-        <input type="number" id="fSunflowerProduce" min="0" max="999" style="width:100%;">
-      </div>
-      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
-        <label>🌱 植物价格系数</label>
-        <input type="number" id="fPlantPriceFactor" min="0.5" max="2.0" step="0.05" style="width:100%;">
+    <div class="form-group">
+      <label>中等任务奖励</label>
+      <div class="setting-row">
+        <input type="number" id="fRewardMid" min="0" max="999" style="flex:1;">
+        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
       </div>
     </div>
-    <div class="btn-row" style="margin-top:6px;">
-      <button class="btn blue sm" onclick="saveRewardParams()" style="flex:1;">💾 保存经济参数</button>
+    <div class="form-group">
+      <label>困难任务奖励</label>
+      <div class="setting-row">
+        <input type="number" id="fRewardHard" min="0" max="999" style="flex:1;">
+        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>🌻 向日葵基础产出</label>
+      <div class="setting-row">
+        <input type="number" id="fSunflowerProduce" min="0" max="999" style="flex:1;">
+        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>🌱 植物价格系数</label>
+      <div class="setting-row">
+        <input type="number" id="fPlantPriceFactor" min="0.5" max="2.0" step="0.05" style="flex:1;">
+        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+      </div>
+    </div>
+    <div class="setting-divider"></div>
+
+    <!-- 向日葵分档倍率 -->
+    <div class="setting-section-title">🌻 向日葵分档倍率</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; gap:8px; align-items:end;">
+      <div style="grid-column:span 5; font-size:12px; color:var(--ink-light); margin-bottom:4px;">每档倍率（产量 = 基础 × 倍率，雨天再 ×1.5）</div>
+      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">1~20棵</label>
+      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">21~40棵</label>
+      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">41~60棵</label>
+      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">61+棵</label>
+      <span></span>
+      <input type="number" id="fTierRate1" min="0" max="2" step="0.05" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
+      <input type="number" id="fTierRate2" min="0" max="2" step="0.05" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
+      <input type="number" id="fTierRate3" min="0" max="2" step="0.05" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
+      <input type="number" id="fTierRate4" min="0" max="2" step="0.05" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
+      <button class="btn blue sm" onclick="saveSunflowerTiers()" style="height:44px; padding:0 12px; display:flex; align-items:center; justify-content:center; min-width:60px; font-size:13px;">💾 保存</button>
     </div>
     <div class="setting-divider"></div>
 
     <!-- 战斗与僵尸 -->
     <div class="setting-section-title">⚔️ 战斗与僵尸</div>
-    <div class="setting-row" style="gap:8px; flex-wrap:wrap;">
-      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
-        <label>僵尸最少数量</label>
-        <input type="number" id="fMinZombies" min="0" max="8" style="width:100%;">
+    <div class="form-group">
+      <label>僵尸最少数量</label>
+      <div class="setting-row">
+        <input type="number" id="fMinZombies" min="0" max="8" style="flex:1;">
+        <button class="btn blue sm" onclick="saveGameParams()" style="flex-shrink:0; min-width:72px;">保存</button>
       </div>
-      <div class="form-group" style="flex:1; min-width:100px; margin-bottom:0;">
-        <label>僵尸强度系数</label>
-        <input type="number" id="fZombieStrength" min="0.5" max="2.0" step="0.05" style="width:100%;">
+    </div>
+    <div class="form-group">
+      <label>僵尸强度系数</label>
+      <div class="setting-row">
+        <input type="number" id="fZombieStrength" min="0.5" max="2.0" step="0.05" style="flex:1;">
+        <button class="btn blue sm" onclick="saveGameParams()" style="flex-shrink:0; min-width:72px;">保存</button>
       </div>
-      <div class="form-group" style="flex:1; min-width:120px; margin-bottom:0;">
-        <label>连续达标中断惩罚</label>
-        <select id="fStreakPenalty" style="width:100%; padding:8px; border-radius:10px; border:2px solid #dcead0; background:#fafdf6;">
+    </div>
+    <div class="form-group">
+      <label>连续达标中断惩罚</label>
+      <div class="setting-row">
+        <select id="fStreakPenalty" style="flex:1; height:48px; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; background:#fafdf6; font-size:15px;">
           <option value="0">归零</option>
           <option value="1">减 1 天</option>
         </select>
+        <button class="btn blue sm" onclick="saveGameParams()" style="flex-shrink:0; min-width:72px;">保存</button>
       </div>
     </div>
     <div class="setting-divider"></div>
 
     <!-- 天气权重 -->
     <div class="setting-section-title">🌤️ 天气权重（总和必须 100%）</div>
-    <div class="setting-row" style="gap:8px; flex-wrap:wrap;">
-      <div class="form-group" style="flex:1; min-width:60px; margin-bottom:0;">
-        <label>☀️ 晴天</label>
-        <input type="number" id="fWeatherSunny" min="0" max="100" step="1" style="width:100%;">
-      </div>
-      <div class="form-group" style="flex:1; min-width:60px; margin-bottom:0;">
-        <label>🌧️ 雨天</label>
-        <input type="number" id="fWeatherRainy" min="0" max="100" step="1" style="width:100%;">
-      </div>
-      <div class="form-group" style="flex:1; min-width:60px; margin-bottom:0;">
-        <label>❄️ 霜冻</label>
-        <input type="number" id="fWeatherFrost" min="0" max="100" step="1" style="width:100%;">
-      </div>
-      <div class="form-group" style="flex:1; min-width:60px; margin-bottom:0;">
-        <label>🌫️ 大雾</label>
-        <input type="number" id="fWeatherFog" min="0" max="100" step="1" style="width:100%;">
-      </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr auto; gap:8px; align-items:center;">
+      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">☀️ 晴天</label>
+      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">🌧️ 雨天</label>
+      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">❄️ 霜冻</label>
+      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">🌫️ 大雾</label>
+      <span></span>
+      <input type="number" id="fWeatherSunny" min="0" max="100" step="1" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
+      <input type="number" id="fWeatherRainy" min="0" max="100" step="1" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
+      <input type="number" id="fWeatherFrost" min="0" max="100" step="1" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
+      <input type="number" id="fWeatherFog" min="0" max="100" step="1" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
+      <button class="btn blue sm" onclick="saveGameParams()" style="height:44px; padding:0 12px; display:flex; align-items:center; justify-content:center; min-width:60px; font-size:13px;">💾 保存</button>
     </div>
-    <div style="text-align:right; font-size:12px; color:var(--ink-light); margin-bottom:8px;">
+    <div style="text-align:right; font-size:12px; color:var(--ink-light); margin-top:6px;">
       总和：<span id="weatherSumDisplay">100</span>%
       <span id="weatherSumStatus" style="font-weight:bold;"></span>
     </div>
-    <div class="btn-row" style="margin-top:6px;">
-      <button class="btn blue sm" onclick="saveGameParams()" style="flex:1;">💾 保存战斗/天气参数</button>
+    <div class="setting-divider"></div>
+
+    <!-- 番茄钟 -->
+    <div class="setting-section-title">🍅 番茄钟</div>
+    <div class="form-group">
+      <label>默认专注时长（分钟）</label>
+      <div class="setting-row">
+        <input type="number" id="fPomoDuration" min="1" max="120" style="flex:1;">
+        <button class="btn blue sm" onclick="savePomoDuration()" style="flex-shrink:0; min-width:72px;">💾 保存</button>
+      </div>
     </div>
     <div class="setting-divider"></div>
 
@@ -778,8 +825,9 @@ function uid(){ return Date.now().toString(36) + Math.random().toString(36).slic
 
 function defaultState(){
   return {
-    ver:3, day:1, sun:50, streak:0, role:"child", pwd:"8888",
+    ver:4, day:1, sun:50, streak:0, role:"child", pwd:"8888",
     totalDoneAll:0,
+    consecutiveIncomplete: 0,  // 连续未全部完成任务的天数
     tasks:[
       {id:uid(), name:"口算练习 20 题", cat:"study", diff:"easy", done:false, skip:false},
       {id:uid(), name:"阅读课外书 30 分钟", cat:"read", diff:"mid", done:false, skip:false},
@@ -796,6 +844,13 @@ function defaultState(){
     plantPriceFactor:1.0,
     streakPenalty:0,
     weatherWeights: { sunny:25, rainy:25, frost:25, fog:25 },
+    sunflowerTiers: [
+      { limit: 20, rate: 1.0 },
+      { limit: 40, rate: 0.5 },
+      { limit: 60, rate: 0.25 },
+      { limit: Infinity, rate: 0.1 }
+    ],
+    pomoDuration: 20,
     logs:[], invasions:[],
     shopItems: JSON.parse(JSON.stringify(DEFAULT_SHOP)),
     inventory: { coupons: 0, rewards: {} },
@@ -834,15 +889,17 @@ function load(){
     if(raw){
       S = JSON.parse(raw);
       // 版本迁移
-      if(!S.ver || S.ver < 3){
-        // 新增字段
+      if(!S.ver || S.ver < 4){
         if(S.initialSun === undefined) S.initialSun = 50;
         if(S.minZombies === undefined) S.minZombies = 1;
         if(S.zombieStrengthFactor === undefined) S.zombieStrengthFactor = 1.0;
         if(S.plantPriceFactor === undefined) S.plantPriceFactor = 1.0;
         if(S.streakPenalty === undefined) S.streakPenalty = 0;
         if(!S.weatherWeights || typeof S.weatherWeights !== 'object') S.weatherWeights = { sunny:25, rainy:25, frost:25, fog:25 };
-        S.ver = 3;
+        if(!S.sunflowerTiers || !Array.isArray(S.sunflowerTiers)) S.sunflowerTiers = defaultState().sunflowerTiers;
+        if(S.pomoDuration === undefined) S.pomoDuration = 20;
+        if(S.consecutiveIncomplete === undefined) S.consecutiveIncomplete = 0;
+        S.ver = 4;
       }
       // 原有字段兼容
       if(!S.shopItems || !Array.isArray(S.shopItems)){ S.shopItems = JSON.parse(JSON.stringify(DEFAULT_SHOP)); }else{ S.shopItems.forEach(function(item){ if(!item.id) item.id = uid(); }); }
@@ -880,6 +937,9 @@ function load(){
       if(S.tasks && Array.isArray(S.tasks)) { S.tasks.forEach(function(t){ if(t.skip === undefined) t.skip = false; }); }
       if(S.maxPlotCount === undefined) S.maxPlotCount = 99;
       if(S.expandPrice === undefined) S.expandPrice = 50;
+      if(!S.sunflowerTiers || !Array.isArray(S.sunflowerTiers)) S.sunflowerTiers = defaultState().sunflowerTiers;
+      if(S.pomoDuration === undefined) S.pomoDuration = 20;
+      if(S.consecutiveIncomplete === undefined) S.consecutiveIncomplete = 0;
       if(S.garden.length !== S.plotCount){
         var old = S.garden;
         S.garden = new Array(S.plotCount);
@@ -1054,31 +1114,27 @@ function renderWeatherZombieInfo(){
   el.innerHTML = html;
 }
 
-// ===== 计算向日葵总产出 =====
+// ===== 计算向日葵总产出（使用动态分档倍率） =====
 function calcSunflowerTotal(count, baseProduce, multiplier){
   if(count <= 0) return 0;
+  var tiers = S.sunflowerTiers || defaultState().sunflowerTiers;
   var total = 0;
-  var tiers = [
-    { limit: 20, rate: 1.0 },
-    { limit: 40, rate: 0.5 },
-    { limit: 60, rate: 0.25 },
-    { limit: Infinity, rate: 0.1 }
-  ];
   var remaining = count;
   var prev = 0;
   for(var i=0; i<tiers.length; i++){
-    var tierCount = Math.min(remaining, tiers[i].limit - prev);
+    var limit = tiers[i].limit;
+    var tierCount = Math.min(remaining, limit - prev);
     if(tierCount <= 0) continue;
     total += tierCount * baseProduce * tiers[i].rate;
     remaining -= tierCount;
-    prev = tiers[i].limit;
+    prev = limit;
     if(remaining <= 0) break;
   }
   return Math.round(total * multiplier);
 }
 
 /* ============================================================
-   🌙 核心结算函数（已修复坚果墙切换逻辑）
+   🌙 核心结算函数
    ============================================================ */
 function doSettle(){
   var tasks = S.tasks || [];
@@ -1098,14 +1154,34 @@ function doSettle(){
     lines.push("🌻 "+sfCount+" 棵向日葵产出 ☀️"+produced+" 阳光" + (sunMultiplier>1 ? '（雨天×1.5）' : ''));
     addLog("🌻","向日葵们产出了 ☀️"+produced+" 阳光" + (sunMultiplier>1 ? '（雨天×1.5）' : ''));
   }
+
+  // ===== 计算僵尸数量（含连续未完成惩罚） =====
   var zombieCount = undone.length;
   var wEffect = applyWeatherEffect(S.weather.today, zombieCount, sfCount);
   zombieCount = wEffect.count;
+
+  // 连续未完成惩罚
+  if (undone.length > 0) {
+    S.consecutiveIncomplete = (S.consecutiveIncomplete || 0) + 1;
+    var extraZombies = Math.min(5, Math.floor(S.consecutiveIncomplete / 2));
+    zombieCount += extraZombies;
+    if (extraZombies > 0) {
+      lines.push("⚠️ 连续 " + S.consecutiveIncomplete + " 天未完成任务，额外增加 " + extraZombies + " 只僵尸");
+      addLog("⚠️", "连续 " + S.consecutiveIncomplete + " 天未完成任务，额外增加 " + extraZombies + " 只僵尸");
+    }
+  } else {
+    S.consecutiveIncomplete = 0;
+  }
+
   var minZ = S.minZombies !== undefined ? S.minZombies : 1;
   zombieCount = Math.max(minZ, Math.min(8, zombieCount));
+
+  // 生成僵尸队列
   var zombieQueue = []; var day = S.day; var strength = S.zombieStrengthFactor || 1.0;
   for(var z=0; z<zombieCount; z++){ var available = ZOMBIE_TYPES.filter(function(zt){ return day >= zt.minDay; }); if(!available.length) available = [ZOMBIE_TYPES[0]]; var totalWeight = available.reduce(function(s, a){ return s + a.weight; }, 0); var rand = Math.random() * totalWeight; var cum = 0; var selected = available[0]; for(var a=0; a<available.length; a++){ cum += available[a].weight; if(rand <= cum){ selected = available[a]; break; } } zombieQueue.push({ type: selected, hp: Math.round(selected.hp * strength), maxHp: Math.round(selected.hp * strength), icon: selected.icon, name: selected.name, bite: Math.round(selected.bite * strength) }); }
   if(zombieCount > 0){ lines.push("🧟 来袭 " + zombieCount + " 只僵尸：" + zombieQueue.map(function(z){ return z.icon; }).join(' ')); addLog("🧟","第 "+S.day+" 天有 "+zombieCount+" 只僵尸入侵！天气：" + getWeatherIcon(S.weather.today).name); } else { lines.push("🛡️ 没有僵尸来袭，花园平安无事！"); }
+
+  // 植物准备
   var gardenPlants = []; for(var gi=0; gi<S.garden.length; gi++){ if(S.garden[gi]){ var p = getPlant(S.garden[gi].p); var lv = S.garden[gi].lv || 1; var actualDmg = p.dmg || 0; var actualFreeze = p.freeze || 0; var actualHp = p.hp; if(p.id === 'wallnut' && lv >= 2) actualHp = 6; if(p.id === 'peashooter' && lv >= 2) actualDmg = 2; if(p.id === 'snowpea' && lv >= 2) actualFreeze = 2; gardenPlants.push({ idx: gi, cell: S.garden[gi], plant: p, lv: lv, dmg: actualDmg, freeze: actualFreeze, hp: actualHp, isOneShot: p.oneshot || false, kill: p.kill || 0, taunt: p.taunt || false }); } }
   var battleLog = []; var zombies = zombieQueue.map(function(z){ return { ...z, id: 'z'+Math.random().toString(36).slice(2,6), alive: true, frozen: false }; });
   // 一次性植物
@@ -1177,7 +1253,6 @@ function doSettle(){
   var anyZombieSurvived = zombies.some(function(z){ return z.alive; });
   var safe = (zombieCount === 0) || (!anyZombieSurvived);
   if(safe){ S.streak++; checkWheelFreeSpin(); lines.push("🎉 花园防线成功！"); lines.push("🔥 连续达标 "+S.streak+" 天"); addLog("🛡️","第 "+S.day+" 天花园安然无恙！连续达标 "+S.streak+" 天"); PLANTS.forEach(function(p){ if(p.streak > 0 && oldStreak < p.streak && S.streak >= p.streak){ lines.push("🎁 解锁新植物："+p.icon+" "+p.name+"！"); addLog("🎁","连续达标 "+S.streak+" 天，解锁新植物 "+p.icon+p.name+"！"); } }); } else { 
-    // 连续达标中断惩罚
     if (S.streakPenalty === 1) {
       S.streak = Math.max(0, S.streak - 1);
       lines.push("😱 花园失守，连续达标减少 1 天（当前 " + S.streak + " 天）");
@@ -1254,6 +1329,14 @@ function openSettings() {
   $("fRewardMid").value = S.rewardMid; 
   $("fRewardHard").value = S.rewardHard; 
   $("fSunflowerProduce").value = S.sunflowerProduce || 6; 
+  // 分档倍率
+  var tiers = S.sunflowerTiers || defaultState().sunflowerTiers;
+  $("fTierRate1").value = tiers[0].rate;
+  $("fTierRate2").value = tiers[1].rate;
+  $("fTierRate3").value = tiers[2].rate;
+  $("fTierRate4").value = tiers[3].rate;
+  // 番茄钟
+  $("fPomoDuration").value = S.pomoDuration || 20;
   updateWeatherSum();
   openModal('setModal'); 
 }
@@ -1295,6 +1378,40 @@ function saveExpandParams(){
   save();
   renderAll();
   toast("扩建参数已保存 ✅");
+}
+function saveSunflowerTiers() {
+  var rates = [
+    parseFloat($("fTierRate1").value),
+    parseFloat($("fTierRate2").value),
+    parseFloat($("fTierRate3").value),
+    parseFloat($("fTierRate4").value)
+  ];
+  if (rates.some(r => isNaN(r) || r < 0)) { toast("请输入有效的正数"); return; }
+  S.sunflowerTiers = [
+    { limit: 20, rate: rates[0] },
+    { limit: 40, rate: rates[1] },
+    { limit: 60, rate: rates[2] },
+    { limit: Infinity, rate: rates[3] }
+  ];
+  save();
+  toast("分档倍率已保存 ✅");
+}
+function savePomoDuration() {
+  var val = parseInt($("fPomoDuration").value, 10);
+  if (isNaN(val) || val < 1) { toast("请输入有效时长（≥1分钟）"); return; }
+  S.pomoDuration = val;
+  if (!pomoRunning) {
+    pomoMin = val;
+    pomoLeft = val * 60;
+    updatePomoUI();
+    // 更新默认高亮
+    document.querySelectorAll("#pomoChips .chip").forEach(function(c){
+      c.classList.remove("on");
+      if (parseInt(c.dataset.min) === val) c.classList.add("on");
+    });
+  }
+  save();
+  toast("番茄钟默认时长已保存 ✅");
 }
 function saveRewardParams() { 
   var easy = parseInt($("fRewardEasy").value, 10); 
@@ -1417,8 +1534,15 @@ function renderAll(){
 load();
 applyRole();
 renderAll();
-pomoLeft = 20*60;
+// 使用保存的番茄钟时长
+pomoMin = S.pomoDuration || 20;
+pomoLeft = pomoMin * 60;
 updatePomoUI();
+// 高亮对应chip
+document.querySelectorAll("#pomoChips .chip").forEach(function(c){
+  c.classList.remove("on");
+  if (parseInt(c.dataset.min) === pomoMin) c.classList.add("on");
+});
 $("fPwd").addEventListener("keydown", function(e){ if(e.key==="Enter") checkPwd(); });
 // 天气权重实时更新
 document.addEventListener('input', function(e){
