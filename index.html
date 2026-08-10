@@ -172,6 +172,26 @@ nav{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; 
 .settle-stage .big{font-size:44px; margin:6px 0;}
 .settle-lines{text-align:left; margin-top:10px; font-size:13px; line-height:1.9; background:rgba(255,255,255,.08); border-radius:12px; padding:10px 12px; max-height:200px; overflow-y:auto;}
 .settle-lines .highlight{color:#ffd700;}
+/* 紧凑分组设置卡片 */
+.setting-card{background:linear-gradient(180deg,#f7fbf2 0%,#f1f8e8 100%); border-radius:16px; padding:12px; margin-bottom:12px; border:1.5px solid #e3efd6;}
+.setting-section-title{font-size:13px; color:var(--green-deep); font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:5px; letter-spacing:.5px;}
+.setting-grid{display:grid; gap:10px; margin-bottom:10px;}
+.setting-grid.cols2{grid-template-columns:repeat(2,1fr);}
+.setting-grid.cols3{grid-template-columns:repeat(3,1fr);}
+.setting-grid.cols4{grid-template-columns:repeat(4,1fr);}
+.setting-grid.cols5{grid-template-columns:repeat(5,1fr);}
+.setting-field{display:flex; flex-direction:column; gap:5px;}
+.setting-field label{font-size:11.5px; font-weight:700; color:var(--ink-light); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.setting-field input[type=number],.setting-field input[type=text],.setting-field input[type=password],.setting-field select{width:100%; padding:10px; border:2px solid #dcead0; border-radius:12px; font-size:14px; font-family:inherit; background:#fff; color:var(--ink); outline:none; height:42px; box-sizing:border-box;}
+.setting-field input:focus{border-color:var(--green);}
+.setting-save-row{display:flex; justify-content:flex-end; margin-top:2px; margin-bottom:4px;}
+.setting-save-row .btn,.setting-save-row button{min-width:110px;}
+.setting-divider{height:0; margin:0; border:none;}
+@media(max-width:380px){
+  .setting-grid.cols3{grid-template-columns:repeat(2,1fr);}
+  .setting-grid.cols4{grid-template-columns:repeat(2,1fr);}
+  .setting-grid.cols5{grid-template-columns:repeat(3,1fr);}
+}
 .settle-lines .damage{color:#ff6b6b;}
 .settle-lines .freeze{color:#74b9ff;}
 .pomo-circle{width:190px; height:190px; margin:10px auto; border-radius:50%; background:conic-gradient(var(--green) 0deg, #e8f0e0 0deg); display:flex; align-items:center; justify-content:center; position:relative;}
@@ -517,215 +537,148 @@ body.role-child .role-tip.parent-tip{display:none;}
 <div class="mask" id="setModal">
   <div class="modal">
     <h3>⚙️ 家长设置 <button class="close-x" onclick="closeModal('setModal')">✕</button></h3>
-    
-    <!-- 账户安全 -->
-    <div class="setting-section-title">🔐 账户安全</div>
-    <div class="form-group">
-      <label>修改家长密码</label>
-      <div class="setting-row">
-        <input type="password" id="fNewPwd" inputmode="numeric" placeholder="输入新密码（4-8位）" style="flex:1;">
-        <button class="btn blue sm" onclick="changePwd()" style="flex-shrink:0; min-width:72px;">保存</button>
-      </div>
-    </div>
-    <div class="setting-divider"></div>
 
-    <!-- 游戏基础 -->
-    <div class="setting-section-title">🎮 游戏基础</div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:8px 12px; align-items:center;">
-      <label style="font-size:12.5px; font-weight:700; color:var(--ink-light);">当前天数</label>
-      <label style="font-size:12.5px; font-weight:700; color:var(--ink-light);">初始阳光</label>
-      <span></span>
-      <input type="number" id="fDayNum" min="1" max="999" style="width:100%; height:48px; box-sizing:border-box; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; background:#fafdf6; outline:none;">
-      <input type="number" id="fInitialSun" min="0" max="999" style="width:100%; height:48px; box-sizing:border-box; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; font-size:15px; background:#fafdf6; outline:none;">
-      <button class="btn sm" onclick="changeDay()" style="height:48px; box-sizing:border-box; padding:0 12px; display:flex; align-items:center; justify-content:center; min-width:72px; font-size:14px;">📅 保存天数</button>
-    </div>
-    <div class="setting-divider"></div>
-
-    <!-- 花园与扩建 -->
-    <div class="setting-section-title">🌱 花园与扩建</div>
-    <div class="form-group">
-      <label>花园地块数</label>
-      <div class="setting-row">
-        <input type="number" id="fPlotCount" min="1" max="999" style="flex:1;">
-        <button class="btn sm" onclick="changePlotCount()" style="flex-shrink:0; min-width:72px;">🌱 调整地块</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>最大地块数</label>
-      <div class="setting-row">
-        <input type="number" id="fMaxPlot" min="1" max="999" style="flex:1;">
-        <button class="btn blue sm" onclick="saveExpandParams()" style="flex-shrink:0; min-width:72px;">保存</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>每块扩建价格</label>
-      <div class="setting-row">
-        <input type="number" id="fExpandPrice" min="1" max="999" style="flex:1;">
-        <button class="btn blue sm" onclick="saveExpandParams()" style="flex-shrink:0; min-width:72px;">保存</button>
-      </div>
-    </div>
-    <div class="setting-divider"></div>
-
-    <!-- 阳光管理 -->
-    <div class="setting-section-title">🌞 阳光管理</div>
-    <div class="form-group">
-      <label>数量</label>
-      <div class="setting-row" style="gap:8px;">
-        <input type="number" id="fSunAmount" min="1" max="999" value="1" style="flex:1;">
-        <div style="display:flex; gap:6px; align-items:center;">
-          <button class="btn blue sm" onclick="addSun()" style="min-width:72px;">➕ 增加</button>
-          <button class="btn warn sm" onclick="subSun()" style="min-width:72px;">➖ 减少</button>
+    <div class="setting-card">
+      <div class="setting-section-title">🔐 账户安全</div>
+      <div class="setting-grid cols2">
+        <div class="setting-field" style="grid-column:span 2;">
+          <label>修改家长密码</label>
+          <div class="setting-row" style="width:100%;">
+            <input type="password" id="fNewPwd" inputmode="numeric" placeholder="输入新密码（4-8位）" style="flex:1;">
+            <button class="btn blue sm" onclick="changePwd()">保存</button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="setting-divider"></div>
 
-    <!-- 经济与奖励 -->
-    <div class="setting-section-title">💰 经济与奖励</div>
-    <div class="form-group">
-      <label>简单任务奖励</label>
-      <div class="setting-row">
-        <input type="number" id="fRewardEasy" min="0" max="999" style="flex:1;">
-        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+    <div class="setting-card">
+      <div class="setting-section-title">🎮 游戏基础</div>
+      <div class="setting-grid cols2">
+        <div class="setting-field"><label>当前天数</label><input type="number" id="fDayNum" min="1" max="999"></div>
+        <div class="setting-field"><label>初始阳光</label><input type="number" id="fInitialSun" min="0" max="999"></div>
+      </div>
+      <div class="setting-save-row">
+        <button class="btn sm" onclick="saveBaseParams()">📅 保存天数</button>
       </div>
     </div>
-    <div class="form-group">
-      <label>中等任务奖励</label>
-      <div class="setting-row">
-        <input type="number" id="fRewardMid" min="0" max="999" style="flex:1;">
-        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>困难任务奖励</label>
-      <div class="setting-row">
-        <input type="number" id="fRewardHard" min="0" max="999" style="flex:1;">
-        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>🌻 向日葵基础产出</label>
-      <div class="setting-row">
-        <input type="number" id="fSunflowerProduce" min="0" max="999" style="flex:1;">
-        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>🌱 植物价格系数</label>
-      <div class="setting-row">
-        <input type="number" id="fPlantPriceFactor" min="0.5" max="2.0" step="0.05" style="flex:1;">
-        <button class="btn blue sm" onclick="saveRewardParams()" style="flex-shrink:0; min-width:72px;">保存</button>
-      </div>
-    </div>
-    <div class="setting-divider"></div>
 
-    <!-- 向日葵分档倍率 -->
-    <div class="setting-section-title">🌻 向日葵分档倍率</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; gap:8px; align-items:end;">
-      <div style="grid-column:span 5; font-size:12px; color:var(--ink-light); margin-bottom:4px;">每档倍率（产量 = 基础 × 倍率，雨天再 ×1.5）</div>
-      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">1~20棵</label>
-      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">21~40棵</label>
-      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">41~60棵</label>
-      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">61+棵</label>
-      <span></span>
-      <input type="number" id="fTierRate1" min="0" max="2" step="0.05" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
-      <input type="number" id="fTierRate2" min="0" max="2" step="0.05" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
-      <input type="number" id="fTierRate3" min="0" max="2" step="0.05" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
-      <input type="number" id="fTierRate4" min="0" max="2" step="0.05" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
-      <button class="btn blue sm" onclick="saveSunflowerTiers()" style="height:44px; padding:0 12px; display:flex; align-items:center; justify-content:center; min-width:60px; font-size:13px;">💾 保存</button>
-    </div>
-    <div class="setting-divider"></div>
-
-    <!-- 战斗与僵尸 -->
-    <div class="setting-section-title">⚔️ 战斗与僵尸</div>
-    <div class="form-group">
-      <label>🌰 坚果墙基础血量</label>
-      <div class="setting-row">
-        <input type="number" id="fWallnutHp" min="1" max="10" style="flex:1;">
-        <button class="btn blue sm" onclick="saveWallnutHp()" style="flex-shrink:0; min-width:72px;">保存</button>
+    <div class="setting-card">
+      <div class="setting-section-title">🌱 花园与扩建</div>
+      <div class="setting-grid cols3">
+        <div class="setting-field"><label>花园地块数</label><input type="number" id="fPlotCount" min="1" max="999"></div>
+        <div class="setting-field"><label>最大地块数</label><input type="number" id="fMaxPlot" min="1" max="999"></div>
+        <div class="setting-field"><label>每块扩建价格</label><input type="number" id="fExpandPrice" min="1" max="999"></div>
+      </div>
+      <div class="setting-save-row">
+        <button class="btn blue sm" onclick="saveExpandParams()">💾 保存花园参数</button>
       </div>
     </div>
-    <div class="form-group">
-      <label>僵尸最少数量</label>
-      <div class="setting-row">
-        <input type="number" id="fMinZombies" min="0" max="8" style="flex:1;">
-        <button class="btn blue sm" onclick="saveGameParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+
+    <div class="setting-card">
+      <div class="setting-section-title">☀️ 阳光管理</div>
+      <div class="setting-grid cols2">
+        <div class="setting-field"><label>调整阳光数量</label><input type="number" id="fSunAmount" min="1" max="9999" value="1"></div>
+        <div class="setting-field" style="justify-content:flex-end; display:flex; flex-direction:row; gap:8px; align-items:flex-end;">
+          <button class="btn blue sm" onclick="addSun()">➕ 增加</button>
+          <button class="btn warn sm" onclick="subSun()">➖ 减少</button>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label>僵尸强度系数</label>
-      <div class="setting-row">
-        <input type="number" id="fZombieStrength" min="0.5" max="2.0" step="0.05" style="flex:1;">
-        <button class="btn blue sm" onclick="saveGameParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+
+    <div class="setting-card">
+      <div class="setting-section-title">💰 经济与奖励</div>
+      <div class="setting-grid cols3">
+        <div class="setting-field"><label>简单任务</label><input type="number" id="fRewardEasy" min="0" max="999"></div>
+        <div class="setting-field"><label>中等任务</label><input type="number" id="fRewardMid" min="0" max="999"></div>
+        <div class="setting-field"><label>困难任务</label><input type="number" id="fRewardHard" min="0" max="999"></div>
+      </div>
+      <div class="setting-grid cols2">
+        <div class="setting-field"><label>🌻 向日葵基础产出</label><input type="number" id="fSunflowerProduce" min="0" max="999"></div>
+        <div class="setting-field"><label>🌱 植物价格系数</label><input type="number" id="fPlantPriceFactor" min="0.5" max="2.0" step="0.05"></div>
+      </div>
+      <div class="setting-save-row">
+        <button class="btn blue sm" onclick="saveRewardParams()">💾 保存经济参数</button>
       </div>
     </div>
-    <div class="form-group">
-      <label>僵尸成长速度</label>
-      <div class="setting-row">
-        <input type="number" id="fZombieGrowth" min="0" max="0.1" step="0.002" style="flex:1;">
-        <button class="btn blue sm" onclick="saveGameParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+
+    <div class="setting-card">
+      <div class="setting-section-title">🌻 向日葵分档倍率</div>
+      <div style="font-size:11px; color:var(--ink-light); margin-bottom:8px;">每档倍率（产量 = 基础 × 倍率，雨天再 ×1.5）</div>
+      <div class="setting-grid cols5">
+        <div class="setting-field"><label>1~20棵</label><input type="number" id="fTierRate1" min="0" max="2" step="0.05"></div>
+        <div class="setting-field"><label>21~40棵</label><input type="number" id="fTierRate2" min="0" max="2" step="0.05"></div>
+        <div class="setting-field"><label>41~60棵</label><input type="number" id="fTierRate3" min="0" max="2" step="0.05"></div>
+        <div class="setting-field"><label>61+棵</label><input type="number" id="fTierRate4" min="0" max="2" step="0.05"></div>
+        <div class="setting-field" style="justify-content:flex-end; display:flex; align-items:flex-end;">
+          <button class="btn blue sm" onclick="saveSunflowerTiers()" style="width:100%;">💾 保存</button>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label>连续达标中断惩罚</label>
-      <div class="setting-row">
-        <select id="fStreakPenalty" style="flex:1; height:48px; padding:11px 12px; border:2px solid #dcead0; border-radius:13px; background:#fafdf6; font-size:15px;">
-          <option value="0">归零</option>
-          <option value="1">减 1 天</option>
-        </select>
-        <button class="btn blue sm" onclick="saveGameParams()" style="flex-shrink:0; min-width:72px;">保存</button>
+
+    <div class="setting-card">
+      <div class="setting-section-title">⚔️ 战斗与僵尸</div>
+      <div class="setting-grid cols2">
+        <div class="setting-field"><label>🌰 坚果墙基础血量</label><input type="number" id="fWallnutHp" min="1" max="10"></div>
+        <div class="setting-field"><label>僵尸最少数量</label><input type="number" id="fMinZombies" min="0" max="8"></div>
+        <div class="setting-field"><label>僵尸强度系数</label><input type="number" id="fZombieStrength" min="0.5" max="2.0" step="0.05"></div>
+        <div class="setting-field"><label>僵尸成长速度</label><input type="number" id="fZombieGrowth" min="0" max="0.1" step="0.002"></div>
+        <div class="setting-field"><label>连续达标中断惩罚</label>
+          <select id="fStreakPenalty">
+            <option value="0">归零</option>
+            <option value="1">减 1 天</option>
+          </select>
+        </div>
+      </div>
+      <div class="setting-save-row">
+        <button class="btn blue sm" onclick="saveGameParams()">💾 保存战斗参数</button>
       </div>
     </div>
-    <div class="setting-divider"></div>
 
-    <!-- 天气权重 -->
-    <div class="setting-section-title">🌤️ 天气权重（总和必须 100%）</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr auto; gap:8px; align-items:center;">
-      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">☀️ 晴天</label>
-      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">🌧️ 雨天</label>
-      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">❄️ 霜冻</label>
-      <label style="font-size:11px; font-weight:600; color:var(--ink-light); text-align:center;">🌫️ 大雾</label>
-      <span></span>
-      <input type="number" id="fWeatherSunny" min="0" max="100" step="1" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
-      <input type="number" id="fWeatherRainy" min="0" max="100" step="1" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
-      <input type="number" id="fWeatherFrost" min="0" max="100" step="1" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
-      <input type="number" id="fWeatherFog" min="0" max="100" step="1" style="width:100%; height:44px; padding:8px 10px; border:2px solid #dcead0; border-radius:13px; font-size:14px; background:#fafdf6; text-align:center;">
-      <button class="btn blue sm" onclick="saveGameParams()" style="height:44px; padding:0 12px; display:flex; align-items:center; justify-content:center; min-width:60px; font-size:13px;">💾 保存</button>
-    </div>
-    <div style="text-align:right; font-size:12px; color:var(--ink-light); margin-top:6px;">
-      总和：<span id="weatherSumDisplay">100</span>%
-      <span id="weatherSumStatus" style="font-weight:bold;"></span>
-    </div>
-    <div class="setting-divider"></div>
-
-    <!-- 番茄钟 -->
-    <div class="setting-section-title">🍅 番茄钟</div>
-    <div class="form-group">
-      <label>默认专注时长（分钟）</label>
-      <div class="setting-row">
-        <input type="number" id="fPomoDuration" min="1" max="120" style="flex:1;">
-        <button class="btn blue sm" onclick="savePomoDuration()" style="flex-shrink:0; min-width:72px;">💾 保存</button>
+    <div class="setting-card">
+      <div class="setting-section-title">🌤️ 天气权重（总和 100%）</div>
+      <div class="setting-grid cols5">
+        <div class="setting-field"><label>☀️ 晴天</label><input type="number" id="fWeatherSunny" min="0" max="100" step="1"></div>
+        <div class="setting-field"><label>🌧️ 雨天</label><input type="number" id="fWeatherRainy" min="0" max="100" step="1"></div>
+        <div class="setting-field"><label>❄️ 霜冻</label><input type="number" id="fWeatherFrost" min="0" max="100" step="1"></div>
+        <div class="setting-field"><label>🌫️ 大雾</label><input type="number" id="fWeatherFog" min="0" max="100" step="1"></div>
+        <div class="setting-field" style="justify-content:flex-end; display:flex; align-items:flex-end;">
+          <button class="btn blue sm" onclick="saveGameParams()" style="width:100%;">💾 保存</button>
+        </div>
+      </div>
+      <div style="text-align:right; font-size:12px; color:var(--ink-light); margin-top:6px;">
+        总和：<span id="weatherSumDisplay">100</span>%
+        <span id="weatherSumStatus" style="font-weight:bold;"></span>
       </div>
     </div>
-    <div class="setting-divider"></div>
 
-    <!-- 转盘管理 -->
-    <div class="setting-section-title">🎰 转盘管理</div>
-    <button class="btn" style="width:100%;" onclick="openWheelConfig()">🎰 打开转盘配置</button>
-    <div class="setting-divider"></div>
-
-    <!-- 数据管理 -->
-    <div class="setting-section-title">💾 数据管理</div>
-    <div class="btn-row" style="margin-bottom:4px;">
-      <button class="btn blue sm" onclick="exportData()" style="flex:1;">📤 导出数据</button>
-      <button class="btn blue sm" onclick="document.getElementById('importFileSettings').click()" style="flex:1;">📥 导入数据</button>
+    <div class="setting-card">
+      <div class="setting-section-title">🍅 番茄钟</div>
+      <div class="setting-grid cols2">
+        <div class="setting-field"><label>默认专注时长（分钟）</label><input type="number" id="fPomoDuration" min="1" max="120"></div>
+        <div class="setting-field" style="justify-content:flex-end; display:flex; align-items:flex-end;">
+          <button class="btn blue sm" onclick="savePomoDuration()">💾 保存</button>
+        </div>
+      </div>
     </div>
-    <input type="file" id="importFileSettings" accept=".json" style="display:none" onchange="importData(this)">
-    <div class="setting-divider"></div>
 
-    <!-- 危险操作 -->
-    <div class="setting-section-title" style="color:var(--red);">⚠️ 危险操作</div>
-    <button class="btn red" style="width:100%;" onclick="resetAll()">🗑️ 清空全部数据</button>
+    <div class="setting-card">
+      <div class="setting-section-title">🎰 转盘管理</div>
+      <button class="btn" style="width:100%;" onclick="openWheelConfig()">🎰 打开转盘配置</button>
+    </div>
+
+    <div class="setting-card">
+      <div class="setting-section-title">💾 数据管理</div>
+      <div class="btn-row" style="margin-bottom:4px;">
+        <button class="btn blue sm" onclick="exportData()" style="flex:1;">📤 导出数据</button>
+        <button class="btn blue sm" onclick="document.getElementById('importFileSettings').click()" style="flex:1;">📥 导入数据</button>
+      </div>
+      <input type="file" id="importFileSettings" accept=".json" style="display:none" onchange="importData(this)">
+    </div>
+
+    <div class="setting-card" style="background:#fff5f4; border-color:#f5d0cd;">
+      <div class="setting-section-title" style="color:var(--red);">⚠️ 危险操作</div>
+      <button class="btn red" style="width:100%;" onclick="resetAll()">🗑️ 清空全部数据</button>
+    </div>
   </div>
 </div>
 
@@ -1599,14 +1552,35 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 });
 
-function changeDay(){ var n = parseInt($("fDayNum").value, 10); if(!n || n < 1 || n > 999){ toast("请输入 1-999"); return; } S.day = n; save(); renderAll(); toast("已调整为第 "+n+" 天"); }
+function saveBaseParams(){
+  var n = parseInt($("fDayNum").value, 10);
+  var initialSun = parseInt($("fInitialSun").value, 10);
+  if(!n || n < 1 || n > 999){ toast("请输入 1-999"); return; }
+  if(isNaN(initialSun) || initialSun < 0){ toast("请输入有效的初始阳光"); return; }
+  S.day = n;
+  S.initialSun = initialSun;
+  save();
+  renderAll();
+  toast("游戏基础参数已保存 ✅");
+}
+function changeDay(){ saveBaseParams(); }
 function changePwd(){ var p = $("fNewPwd").value.trim(); if(p.length < 4 || p.length > 8){ toast("密码需 4-8 位"); return; } S.pwd = p; save(); toast("密码已更新 🔑"); $("fNewPwd").value = ''; }
 function changePlotCount(){ var n = parseInt($("fPlotCount").value, 10); if(!n || n < 1){ toast("请输入有效数字（≥1）"); return; } if(n === S.plotCount){ toast("数量未变化"); return; } var old = S.garden || []; S.plotCount = n; var newGarden = new Array(n); for(var i=0; i<n; i++){ newGarden[i] = (i < old.length) ? old[i] : null; } S.garden = newGarden; save(); renderAll(); toast("花园地块已调整为 "+n+" 块 🌱"); }
 function saveExpandParams(){
+  var plotCount = parseInt($("fPlotCount").value, 10);
   var max = parseInt($("fMaxPlot").value, 10);
   var price = parseInt($("fExpandPrice").value, 10);
+  if (isNaN(plotCount) || plotCount < 1) { toast("请输入有效的花园地块数"); return; }
   if (isNaN(max) || max < 1) { toast("请输入有效的最大地块数"); return; }
   if (isNaN(price) || price < 1) { toast("请输入有效的扩建价格"); return; }
+  if (plotCount > max) { toast("花园地块数不能超过最大地块数"); return; }
+  if (plotCount !== S.plotCount) {
+    var old = S.garden || [];
+    S.plotCount = plotCount;
+    var newGarden = new Array(plotCount);
+    for (var i=0; i<plotCount; i++) newGarden[i] = (i < old.length) ? old[i] : null;
+    S.garden = newGarden;
+  }
   S.maxPlotCount = max;
   S.expandPrice = price;
   if (S.plotCount > max) {
@@ -1666,19 +1640,16 @@ function saveRewardParams() {
   var mid = parseInt($("fRewardMid").value, 10); 
   var hard = parseInt($("fRewardHard").value, 10); 
   var sunflower = parseInt($("fSunflowerProduce").value, 10);
-  var initialSun = parseInt($("fInitialSun").value, 10);
   var priceFactor = parseFloat($("fPlantPriceFactor").value);
   if (isNaN(easy) || easy < 0) { toast('请输入有效的简单任务奖励'); return; } 
   if (isNaN(mid) || mid < 0) { toast('请输入有效的中等任务奖励'); return; } 
   if (isNaN(hard) || hard < 0) { toast('请输入有效的困难任务奖励'); return; } 
   if (isNaN(sunflower) || sunflower < 0) { toast('请输入有效的向日葵基础产出'); return; } 
-  if (isNaN(initialSun) || initialSun < 0) { toast('请输入有效的初始阳光'); return; }
   if (isNaN(priceFactor) || priceFactor < 0.5 || priceFactor > 2.0) { toast('植物价格系数应在0.5~2.0之间'); return; }
   S.rewardEasy = easy; 
   S.rewardMid = mid; 
   S.rewardHard = hard; 
   S.sunflowerProduce = sunflower; 
-  S.initialSun = initialSun;
   S.plantPriceFactor = priceFactor;
   DIFFS[0].sun = easy; 
   DIFFS[1].sun = mid; 
