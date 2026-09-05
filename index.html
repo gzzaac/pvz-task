@@ -8,16 +8,24 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --glass-bg: rgba(255, 255, 255, 0.45);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --text-main: #2d2a3a;
-    --text-sub: #6b6880;
+    /* 吉卜力配色（与课程表同套色板） */
+    --bg-mist: #eef4f0;        /* 雾绿白 */
+    --card-bg: #fbfdf9;        /* 暖白 */
+    --text-main: #5b554b;      /* 暖棕灰 */
+    --text-sub: #8b9b8f;       /* 鼠尾草灰绿 */
+    --green: #8cc1b4;          /* 吉卜力绿 */
+    --green-deep: #6aa596;     /* 深一档绿（链接/强调，保证对比度） */
+    --sky: #9fc6d8;            /* 天空蓝 */
+    --honey: #f0c98f;          /* 蜂蜜黄 */
+    --terra: #e7a78c;          /* 陶土橙 */
+    --glass-bg: rgba(251, 253, 249, 0.55);
+    --glass-border: rgba(215, 228, 219, 0.8);
   }
 
   body {
     font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
     min-height: 100vh;
-    background: linear-gradient(135deg, #a8c8f0 0%, #c8b6e8 25%, #f0c8d8 55%, #f5e3c8 80%, #c8e8d8 100%);
+    background: linear-gradient(150deg, #dcebf2 0%, #eef4f0 40%, #f6f1e3 75%, #e8f2ea 100%);
     background-attachment: fixed;
     color: var(--text-main);
     overflow-x: hidden;
@@ -34,9 +42,9 @@
     z-index: 0;
     animation: float 12s ease-in-out infinite;
   }
-  .bubble-1 { width: 420px; height: 420px; background: #ffd9a0; top: -120px; left: -100px; }
-  .bubble-2 { width: 360px; height: 360px; background: #b8e0ff; bottom: -100px; right: -80px; animation-delay: -4s; }
-  .bubble-3 { width: 300px; height: 300px; background: #f8c8e0; top: 40%; left: 60%; animation-delay: -8s; }
+  .bubble-1 { width: 420px; height: 420px; background: #f0c98f; top: -120px; left: -100px; }
+  .bubble-2 { width: 360px; height: 360px; background: #9fc6d8; bottom: -100px; right: -80px; animation-delay: -4s; }
+  .bubble-3 { width: 300px; height: 300px; background: #8cc1b4; top: 40%; left: 60%; animation-delay: -8s; }
 
   @keyframes float {
     0%, 100% { transform: translate(0, 0) scale(1); }
@@ -66,14 +74,14 @@
     letter-spacing: 2px;
     color: var(--text-sub);
     margin-bottom: 20px;
-    box-shadow: 0 4px 20px rgba(120, 100, 160, 0.12);
+    box-shadow: 0 4px 20px rgba(120, 130, 120, 0.14);
   }
 
   h1 {
     font-size: clamp(32px, 5vw, 46px);
     font-weight: 700;
     letter-spacing: 1px;
-    background: linear-gradient(90deg, #5b6ee1, #b85bc0, #e07856);
+    background: linear-gradient(90deg, #6aa596, #7fb3c9, #d9a06e);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -103,14 +111,14 @@
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(120, 100, 160, 0.14);
+    box-shadow: 0 8px 32px rgba(120, 130, 120, 0.14);
     overflow: hidden;
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
   }
 
   .card:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 18px 48px rgba(120, 100, 160, 0.24);
+    box-shadow: 0 18px 48px rgba(120, 130, 120, 0.22);
   }
 
   /* 卡片"图片"区：每个工具专属渐变插画 */
@@ -151,9 +159,9 @@
     bottom: -40px; left: -30px;
   }
 
-  .art-dictation { background: linear-gradient(135deg, #ffb88c, #ff8fa3); }
-  .art-pvz      { background: linear-gradient(135deg, #a8e6a3, #56c596); }
-  .art-schedule { background: linear-gradient(135deg, #89b8f5, #a78bfa); }
+  .art-dictation { background: linear-gradient(135deg, #f5daa8, #eeb49a); }
+  .art-pvz      { background: linear-gradient(135deg, #b9ddc7, #8cc1b4); }
+  .art-schedule { background: linear-gradient(135deg, #b5d5e5, #8fbfd6); }
 
   .card-body {
     padding: 22px 24px 26px;
@@ -185,7 +193,7 @@
     gap: 6px;
     font-size: 14px;
     font-weight: 600;
-    color: #5b6ee1;
+    color: var(--green-deep);
   }
 
   .card-go .arrow { transition: transform 0.3s ease; }
@@ -226,7 +234,7 @@
           <span class="emoji">📝</span>
         </div>
         <div class="card-body">
-          <div class="card-title">听写小助手 <span style="font-size:13px;font-weight:500;color:#e07856;">V6</span></div>
+          <div class="card-title">听写小助手 <span style="font-size:13px;font-weight:500;color:#c97f58;">V6</span></div>
           <p class="card-desc">语文、英语听写辅助工具，图片转文字，正序、反序报读，让孩子在家轻松完成听写练习。</p>
           <span class="card-go">开始使用 <span class="arrow">→</span></span>
         </div>
