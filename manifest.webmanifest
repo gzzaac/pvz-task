@@ -1,6 +1,6 @@
 {
-  "name": "植物大战僵尸 · 暑假任务大作战",
-  "short_name": "暑假任务",
+  "name": "阿涛的工具箱",
+  "short_name": "阿涛的工具箱",
   "description": "用完成任务赚阳光、种植物防僵尸的方式，让孩子快乐完成暑假任务。",
   "start_url": "./index.html",
   "display": "standalone",
