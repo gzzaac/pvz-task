@@ -1843,7 +1843,20 @@
                     name: '小学课表',
                     desc: '语数英 + 音体美',
                     daysPerWeek: 5,
-                    slots: generateSlots(6, '08:30', 40, 10, 4, 120),
+                    slots: [
+                        { name: '第一节', start: '08:20', end: '09:00', merged: false },
+                        { name: '课间休息', start: '09:00', end: '09:15', merged: true },
+                        { name: '第二节', start: '09:15', end: '09:55', merged: false },
+                        { name: '升旗/大课间', start: '09:55', end: '10:35', merged: true },
+                        { name: '第三节', start: '10:35', end: '11:15', merged: false },
+                        { name: '课间休息（眼保健操）', start: '11:15', end: '11:30', merged: true },
+                        { name: '第四节', start: '11:30', end: '12:10', merged: false },
+                        { name: '午休', start: '12:10', end: '13:30', merged: true },
+                        { name: '校园运动', start: '13:35', end: '14:05', merged: true },
+                        { name: '第五节', start: '14:20', end: '15:00', merged: false },
+                        { name: '课间休息', start: '15:00', end: '15:10', merged: true },
+                        { name: '第六节', start: '15:10', end: '15:50', merged: false }
+                    ],
                     courses: [
                         { name: '语文', color: '#FF6B6B' },
                         { name: '数学', color: '#54A0FF' },

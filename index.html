@@ -209,8 +209,19 @@
   }
 
   @media (max-width: 640px) {
-    .container { padding: 44px 18px 60px; }
-    .card-art { height: 160px; }
+    .container { padding: 32px 16px 48px; }
+    header { margin-bottom: 32px; }
+    /* 缩小标题避免孤字换行（"欢迎来到我的小工具站"10 字可一行放下） */
+    h1 { font-size: 26px; letter-spacing: 0; }
+    .subtitle { font-size: 14px; }
+    .site-badge { font-size: 12px; padding: 6px 14px; margin-bottom: 14px; }
+    .grid { gap: 20px; }
+    /* 压低头图高度，减少占屏 */
+    .card-art { height: 112px; }
+    .card-art .emoji { font-size: 52px; }
+    .card-body { padding: 16px 18px 20px; }
+    .card-title { font-size: 18px; }
+    .card-desc { font-size: 13px; }
   }
 </style>
 </head>
