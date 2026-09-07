@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="EN75rXyOU9gbRWNeaalwlw">
+<head data-page-node-id="nDqs3w5j0089dKS0zFHLlH">
+    <meta charset="UTF-8" data-page-node-id="lLHgOdig2SfAGUmHYoGgPZ">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="MgfIEqmgoXpc5f9BREyr7T">
     <title>课程表 - 智能排课工具</title>
     <style>
         :root {
@@ -489,12 +489,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-            padding: 8px 10px;
+            gap: 12px;
+            padding: 10px 14px;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-color, #e3ece6);
             margin-bottom: 8px;
             background: var(--card-bg);
+            flex-wrap: wrap;
         }
         .sched-row.active {
             border-color: var(--primary);
@@ -503,7 +504,7 @@
         .sched-info {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             flex: 1;
             min-width: 0;
         }
@@ -514,8 +515,8 @@
             background: transparent;
             font-weight: 600;
             color: var(--text);
-            font-size: 0.85rem;
-            padding: 3px 6px;
+            font-size: 0.9rem;
+            padding: 4px 8px;
             border-radius: 4px;
         }
         .sched-name-input:focus {
@@ -525,29 +526,72 @@
         }
         .sched-current-tag {
             flex-shrink: 0;
-            font-size: 0.65rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: #fff;
             background: var(--primary);
-            padding: 2px 7px;
-            border-radius: 999px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+            display: inline-block;
+            text-align: center;
+            min-width: 56px;
         }
         .sched-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             flex-shrink: 0;
+            align-items: center;
         }
+        .sched-actions .btn {
+            padding: 5px 14px;
+            font-size: 0.78rem;
+            min-width: 56px;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            text-align: center;
+        }
+        .sched-actions .btn-switch {
+            background: var(--primary);
+            color: #fff;
+        }
+        .sched-actions .btn-switch:hover {
+            background: var(--primary-hover);
+        }
+        .sched-actions .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        .sched-actions .btn-danger:hover {
+            background: var(--danger-hover);
+        }
+        .sched-actions .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
         .sched-new-row {
             display: flex;
             gap: 8px;
             margin-top: 12px;
+            flex-wrap: wrap;
         }
         .sched-new-row input {
             flex: 1;
-            min-width: 0;
+            min-width: 120px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+        }
+        .sched-new-row input:focus {
+            border-color: var(--primary);
         }
 
-        /* ===== 单元格样式（无删除按钮） ===== */
+        /* ===== 单元格样式 ===== */
         .course-cell {
             cursor: pointer;
             transition: var(--transition);
@@ -616,7 +660,6 @@
             background: var(--weekend-bg);
         }
 
-        /* 多条目布局（仅当 visibleEntries > 1 时，隐藏备注） */
         .course-cell.multi-entry {
             display: flex;
             flex-direction: column;
@@ -638,7 +681,7 @@
             font-size: 0.58rem;
         }
         .course-cell.multi-entry .course-note {
-            display: none;  /* 多条时隐藏备注 */
+            display: none;
         }
         .course-cell.multi-entry .entry-divider {
             flex-shrink: 0;
@@ -748,6 +791,7 @@
             background: rgba(231, 76, 60, 0.15);
         }
 
+        /* ===== 弹窗修复：头部固定，内容可滚动 ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -761,6 +805,7 @@
             align-items: center;
             padding: 12px;
             animation: fadeIn 0.2s ease;
+            backdrop-filter: blur(2px);
         }
         .modal-overlay.active {
             display: flex;
@@ -771,12 +816,11 @@
             box-shadow: var(--shadow-lg);
             width: 100%;
             max-width: 620px;
-            max-height: 92vh;
-            overflow: hidden;
-            animation: slideUp 0.25s ease;
-            padding: 0;
+            max-height: min(92vh, 100%);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.25s ease;
         }
         .modal.wide {
             max-width: 860px;
@@ -787,16 +831,16 @@
             justify-content: space-between;
             padding: 16px 18px 12px;
             border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
             background: var(--card-bg);
-            z-index: 5;
-            border-radius: var(--radius) var(--radius) 0 0;
             flex-shrink: 0;
+            border-radius: var(--radius) var(--radius) 0 0;
+            z-index: 10;
+            min-height: 56px;
         }
         .modal-header h3 {
             font-size: 1.05rem;
             font-weight: 700;
+            margin: 0;
         }
         .modal-close {
             width: 30px;
@@ -821,6 +865,9 @@
             padding: 16px 18px;
             overflow-y: auto;
             flex: 1 1 auto;
+            -webkit-overflow-scrolling: touch;
+            min-height: 0;
+            max-height: calc(92vh - 120px);
         }
         .modal-footer {
             padding: 10px 18px 16px;
@@ -828,10 +875,10 @@
             gap: 8px;
             justify-content: flex-end;
             border-top: 1px solid var(--border);
-            position: sticky;
-            bottom: 0;
             background: var(--card-bg);
+            flex-shrink: 0;
             flex-wrap: wrap;
+            border-radius: 0 0 var(--radius) var(--radius);
         }
 
         @keyframes fadeIn {
@@ -1136,20 +1183,42 @@
             background: var(--bg);
             border-radius: var(--radius-sm);
             border: 1px solid var(--border);
+            flex-wrap: wrap;
         }
-        .course-item .course-color {
-            width: 28px;
-            height: 28px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
+        .course-item .color-wrapper {
+            position: relative;
+            width: 36px;
+            height: 36px;
             flex-shrink: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid var(--border);
+        }
+        .course-item .color-wrapper input[type="color"] {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            width: calc(100% + 8px);
+            height: calc(100% + 8px);
+            padding: 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+            opacity: 0;
+        }
+        .course-item .color-wrapper .color-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+            pointer-events: none;
         }
         .course-item .course-fields {
             flex: 1;
             display: flex;
             flex-direction: column;
             gap: 6px;
+            min-width: 120px;
         }
         .course-item .course-fields-row {
             display: flex;
@@ -1174,10 +1243,73 @@
             font-weight: 600;
             flex: 2;
         }
-        .course-item .btn-icon {
-            padding: 4px 6px;
+        .course-item .btn-delete-course {
+            padding: 6px 12px;
             font-size: 0.75rem;
+            flex-shrink: 0;
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
         }
+        .course-item .btn-delete-course:hover {
+            background: var(--danger-hover);
+        }
+
+        /* 自定义颜色选择弹层（不依赖原生 input[type=color]，手机 WebView 也可用） */
+        .color-pop-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 10001;
+            background: rgba(0,0,0,0.25);
+        }
+        .color-popover {
+            position: fixed;
+            z-index: 10002;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            padding: 12px 14px;
+            width: 252px;
+            max-width: calc(100vw - 24px);
+        }
+        .color-popover .cp-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .color-popover .cp-custom-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .color-popover .cp-native {
+            width: 34px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .color-popover .cp-hex {
+            flex: 1;
+            padding: 5px 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            background: var(--card-bg);
+            color: var(--text);
+            outline: none;
+            min-width: 0;
+        }
+        .color-popover .cp-hex:focus { border-color: var(--primary); }
 
         .color-palette {
             display: flex;
@@ -1204,12 +1336,25 @@
 
         .picker-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 10px;
             max-height: 360px;
             overflow-y: auto;
             padding: 4px;
         }
+        @media (max-width: 420px) {
+            .picker-grid {
+                gap: 6px;
+            }
+            .picker-card {
+                padding: 8px 4px;
+                min-height: 60px;
+            }
+            .picker-card .picker-name {
+                font-size: 0.7rem;
+            }
+        }
+
         .picker-card {
             display: flex;
             flex-direction: column;
@@ -1231,19 +1376,29 @@
             box-shadow: var(--shadow);
         }
         .picker-card .picker-color {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             flex-shrink: 0;
         }
         .picker-card .picker-name {
             font-weight: 700;
             font-size: 0.85rem;
-            word-break: break-word;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            line-height: 1.2;
         }
         .picker-card .picker-meta {
             font-size: 0.65rem;
             color: var(--text-secondary);
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            line-height: 1.2;
+        }
+        .picker-card.add-card .picker-name {
+            font-size: 0.75rem;
         }
         .picker-card.add-card {
             border-style: dashed;
@@ -1316,7 +1471,6 @@
             font-size: 0.85rem;
         }
 
-        /* ===== 右键/长按菜单 ===== */
         .context-menu {
             display: none;
             position: fixed;
@@ -1352,7 +1506,6 @@
             background: rgba(231, 76, 60, 0.1);
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 768px) {
             .app-container {
                 padding: 5px 7px 16px;
@@ -1461,17 +1614,19 @@
             }
             .modal {
                 max-width: 100%;
-                max-height: 96vh;
+                max-height: 100%;
                 border-radius: 10px;
             }
             .modal-header {
                 padding: 12px 14px 10px;
+                min-height: 48px;
             }
             .modal-header h3 {
                 font-size: 0.95rem;
             }
             .modal-body {
                 padding: 12px 14px;
+                max-height: calc(96vh - 100px);
             }
             .modal-footer {
                 padding: 8px 14px 12px;
@@ -1519,17 +1674,6 @@
             .slot-item .slot-actions button {
                 width: 30px;
                 height: 30px;
-            }
-            .picker-grid {
-                grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
-                gap: 8px;
-            }
-            .picker-card {
-                min-height: 70px;
-                padding: 8px 4px;
-            }
-            .picker-card .picker-name {
-                font-size: 0.75rem;
             }
             .template-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -1601,9 +1745,11 @@
             }
             .modal-body {
                 padding: 10px 12px;
+                max-height: calc(96vh - 90px);
             }
             .modal-header {
                 padding: 10px 12px 8px;
+                min-height: 44px;
             }
             .modal-footer {
                 padding: 6px 12px 10px;
@@ -1758,56 +1904,59 @@
             .course-cell .course-meta {
                 font-size: 0.5rem;
             }
+            .modal {
+                max-height: 100%;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="app-container" id="app">
+<body data-page-node-id="7ZBweJj5EvP0aTKugwgADg">
+    <div class="app-container" id="app" data-page-node-id="rBEEIX2kZ7l7TDX2BBUK7T">
         <!-- 顶部标题栏 -->
-        <div class="header">
-            <div class="header-top">
-                <div class="header-title-area">
-                    <input class="header-title" id="titleInput" value="我的课程表" title="点击重命名" spellcheck="false">
-                    <input class="header-subtitle" id="subtitleInput" value="点击添加备注..." title="点击添加备注" spellcheck="false">
+        <div class="header" data-page-node-id="uVNbTSzpeVQRBwXE56elQR">
+            <div class="header-top" data-page-node-id="uDdIepv02IgJSV7B41ug9Z">
+                <div class="header-title-area" data-page-node-id="HtspC1pK2o38gdVZaVZsCA">
+                    <input class="header-title" id="titleInput" value="我的课程表" title="点击重命名" spellcheck="false" data-page-node-id="oy0AVT2ZuXaeo6OLEAiavQ">
+                    <input class="header-subtitle" id="subtitleInput" value="点击添加备注..." title="点击添加备注" spellcheck="false" data-page-node-id="vEvSZre3zKCnwoy9OHBdbM">
                 </div>
-                <div class="header-time" id="currentDateTime" title="当前时间">
-                    <span id="currentTimeText"></span>
-                    <div class="header-time-meta">
-                        <span class="oe-chip" id="oeChip" style="display:none;" title="单双周模式"></span>
-                        <span class="version-badge">V3.2.1·阿涛</span>
-                        <span class="edit-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>点击空格编辑</span>
+                <div class="header-time" id="currentDateTime" title="当前时间" data-page-node-id="IwvdxNggXYMG5clG3Bt2NF">
+                    <span id="currentTimeText" data-page-node-id="HRIO4fhRYAgFa0kDfkbl06"></span>
+                    <div class="header-time-meta" data-page-node-id="kajSFChJkNz0D7nDTNdFRn">
+                        <span class="oe-chip" id="oeChip" style="display:none;" title="单双周模式" data-page-node-id="n6P1Gv8hmZ42vKeILD79m3"></span>
+                        <span class="version-badge" data-page-node-id="WSCJYBWszcnp7pNLax0lt0">V3.4·阿涛</span>
+                        <span class="edit-hint" data-page-node-id="V4VFaDOh2wTHcCQd1mOx7a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="r5y2USPWPDBMBNwSEcyNWh"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" data-page-node-id="PfRVVSOLzpxKriU9cxRWxd"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" data-page-node-id="sVSiPr14iOYJMGT4l6yN3J"/></svg>点击空格编辑</span>
                     </div>
                 </div>
             </div>
-            <div class="header-buttons">
-                <button class="btn" id="btnSettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>课表设置</button>
-                <button class="btn" id="btnLibrary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>课程库</button>
-                <button class="btn" id="btnTemplates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>课程模板</button>
-                <button class="btn" id="btnBatch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>批量设置</button>
-                <button class="btn" id="btnSchedules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="15" height="14" rx="2"/><path d="M20 7v12a2 2 0 0 1-2 2H7"/><path d="M6 8h7"/><path d="M6 12h7"/><path d="M6 15h4"/></svg>多课表</button>
-                <button class="btn" id="btnExport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出</button>
-                <button class="btn btn-danger" id="btnClear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>清空课表</button>
+            <div class="header-buttons" data-page-node-id="INFLQyKopxhn42sieYu8YK">
+                <button class="btn" id="btnSettings" data-page-node-id="VXg3GtLltZelPyxrAukkVA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="HoADkoYEpAoSHHlC7maQIb"><circle cx="12" cy="12" r="3" data-page-node-id="wHrMN1egK1r8GhKhPsXMir"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" data-page-node-id="Dh2NAPdO11BAbOMNFCJ19d"/></svg>课表设置</button>
+                <button class="btn" id="btnLibrary" data-page-node-id="QMRMfdX7qR8PZbo1hziMXr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="IFCVY4LmD8UVv6Xli5Oo5P"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" data-page-node-id="vi8MVvWc6hzpJLdtIQZEwW"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" data-page-node-id="XycDHdFr8KiUhWi6IJeJ80"/></svg>课程库</button>
+                <button class="btn" id="btnTemplates" data-page-node-id="62o7MoRupeeh11xFsfUP32"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="ecOb67M7DPyQS4j1dZzZwO"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" data-page-node-id="IhiEsWMVd6ovxdl955HoE5"/><line x1="3" y1="9" x2="21" y2="9" data-page-node-id="drSPYoKZrZPQe865bUKB1P"/><line x1="9" y1="21" x2="9" y2="9" data-page-node-id="IaGRuEoYJliTNNXApSfNQh"/></svg>课程模板</button>
+                <button class="btn" id="btnBatch" data-page-node-id="opryIFcf1WfflUfvevSB4h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="7JQ14mI2iACVQlbWp4xzKE"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" data-page-node-id="2O60fcbxMcUHlLeTdHFksj"/><circle cx="9" cy="7" r="4" data-page-node-id="UMa9AHo2kHfXX2VkcnuCxA"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" data-page-node-id="hXVNVZcNn7WqZ498wA2AxW"/><path d="M16 3.13a4 4 0 0 1 0 7.75" data-page-node-id="cGsY9Qo4p2qRUY2cxsnUGl"/></svg>批量设置</button>
+                <button class="btn" id="btnSchedules" data-page-node-id="AioC7qw84mkw69JBUONcSf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="axWVFf9FAM20IupM7NoEM1"><rect x="2" y="4" width="15" height="14" rx="2" data-page-node-id="3HGdlNh33CdgRRApbWOGBl"/><path d="M20 7v12a2 2 0 0 1-2 2H7" data-page-node-id="riHsuKBpnyuhEj4L5yXigk"/><path d="M6 8h7" data-page-node-id="qJpQR1jbKetoTrVsqRnhla"/><path d="M6 12h7" data-page-node-id="zr3TD53pCPi6CmD21kDbtC"/><path d="M6 15h4" data-page-node-id="LFBoXuMINgRUdkIjL07nyM"/></svg>多课表</button>
+                <button class="btn" id="btnExport" data-page-node-id="Vbe5upKYBvLMRSiMZewMQG"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="s4vsLRSCLoh96TU0KBObmC"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" data-page-node-id="Le3QHPcd7d71x3wTnSMIfz"/><polyline points="7 10 12 15 17 10" data-page-node-id="sHE5sdRUaq7ySLCQTfbG3K"/><line x1="12" y1="15" x2="12" y2="3" data-page-node-id="haeDano3uyiVGFtZxAxmdl"/></svg>导出</button>
+                <button class="btn btn-danger" id="btnClear" data-page-node-id="i4ThT9OmEQQo59lSz0TflL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="M0xySIXK5YXj3T20vQpoij"><polyline points="3 6 5 6 21 6" data-page-node-id="Oj6XhTknFFsyvEp9JYGcA2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" data-page-node-id="XOLGJzgGrGhFaDBKkL5P63"/></svg>清空课表</button>
             </div>
         </div>
 
         <!-- 课表主体 -->
-        <div class="schedule-wrapper" id="scheduleWrapper">
-            <table class="schedule-table" id="scheduleTable">
-                <thead id="tableHead"></thead>
-                <tbody id="tableBody"></tbody>
+        <div class="schedule-wrapper" id="scheduleWrapper" data-page-node-id="qbUQcYZXBe3UPM7FLOOwEE">
+            <table class="schedule-table" id="scheduleTable" data-page-node-id="tOj5v3751JkcYGQVr8Ejv8">
+                <thead id="tableHead" data-page-node-id="y6BW7DY4sRaG1HzMFyoJvs"></thead>
+                <tbody id="tableBody" data-page-node-id="OGqMLovEvjtjYNy7jozeve"></tbody>
             </table>
         </div>
     </div>
 
     <!-- 右键/长按菜单 -->
-    <div class="context-menu" id="contextMenu"></div>
+    <div class="context-menu" id="contextMenu" data-page-node-id="jTjmvBoFMbc2tf7qzhToGl"></div>
 
     <!-- 恢复备份用的隐藏文件选择框 -->
-    <input type="file" id="restoreFileInput" accept=".json,application/json" style="display:none;">
+    <input type="file" id="restoreFileInput" accept=".json,application/json" style="display:none;" data-page-node-id="cZwvkx6MTf79Uch7gZnbiA">
 
     <!-- 通用弹窗 -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="modalContent"></div>
+    <div class="modal-overlay" id="modalOverlay" data-page-node-id="wu9AJ0C9Ifbgh56IYciI6K">
+        <div class="modal" id="modalContent" data-page-node-id="sV7WE1TCx7hzywFBZEVkAA"></div>
     </div>
 
     <script>
@@ -1838,25 +1987,46 @@
                 return slots;
             }
 
+            // ===== 小学课表模板 =====
+            const PRIMARY_SLOTS = [
+                { name: '第一节', start: '08:20', end: '09:00', merged: false },
+                { name: '课间休息', start: '09:00', end: '09:15', merged: true },
+                { name: '第二节', start: '09:15', end: '09:55', merged: false },
+                { name: '升旗/大课间', start: '09:55', end: '10:35', merged: true },
+                { name: '第三节', start: '10:35', end: '11:15', merged: false },
+                { name: '课间休息（眼保健操）', start: '11:15', end: '11:30', merged: true },
+                { name: '第四节', start: '11:30', end: '12:10', merged: false },
+                { name: '午休', start: '12:10', end: '13:30', merged: true },
+                { name: '校园运动', start: '13:35', end: '14:05', merged: true },
+                { name: '第五节', start: '14:20', end: '15:00', merged: false },
+                { name: '课间休息', start: '15:00', end: '15:10', merged: true },
+                { name: '第六节', start: '15:10', end: '15:50', merged: false }
+            ];
+
+            // ===== 高中课表模板 =====
+            const HIGH_SLOTS = [
+                { name: '早读', start: '07:20', end: '07:50', merged: false },
+                { name: '第一节', start: '08:00', end: '08:40', merged: false },
+                { name: '第二节', start: '08:50', end: '09:30', merged: false },
+                { name: '大课间活动', start: '09:30', end: '10:00', merged: true },
+                { name: '第三节', start: '10:00', end: '10:40', merged: false },
+                { name: '第四节', start: '10:50', end: '11:30', merged: false },
+                { name: '第五节', start: '11:40', end: '12:20', merged: false },
+                { name: '午休', start: '12:50', end: '13:50', merged: true },
+                { name: '第六节', start: '14:25', end: '15:05', merged: false },
+                { name: '第七节', start: '15:15', end: '15:55', merged: false },
+                { name: '眼保健操', start: '15:55', end: '16:10', merged: true },
+                { name: '第八节', start: '16:10', end: '16:50', merged: false },
+                { name: '劳动社团体锻', start: '17:00', end: '17:40', merged: false },
+                { name: '晚自习一二三', start: '19:40', end: '22:20', merged: false }
+            ];
+
             const TEMPLATES = {
                 primary: {
                     name: '小学课表',
                     desc: '语数英 + 音体美',
                     daysPerWeek: 5,
-                    slots: [
-                        { name: '第一节', start: '08:20', end: '09:00', merged: false },
-                        { name: '课间休息', start: '09:00', end: '09:15', merged: true },
-                        { name: '第二节', start: '09:15', end: '09:55', merged: false },
-                        { name: '升旗/大课间', start: '09:55', end: '10:35', merged: true },
-                        { name: '第三节', start: '10:35', end: '11:15', merged: false },
-                        { name: '课间休息（眼保健操）', start: '11:15', end: '11:30', merged: true },
-                        { name: '第四节', start: '11:30', end: '12:10', merged: false },
-                        { name: '午休', start: '12:10', end: '13:30', merged: true },
-                        { name: '校园运动', start: '13:35', end: '14:05', merged: true },
-                        { name: '第五节', start: '14:20', end: '15:00', merged: false },
-                        { name: '课间休息', start: '15:00', end: '15:10', merged: true },
-                        { name: '第六节', start: '15:10', end: '15:50', merged: false }
-                    ],
+                    slots: PRIMARY_SLOTS,
                     courses: [
                         { name: '语文', color: '#FF6B6B' },
                         { name: '数学', color: '#54A0FF' },
@@ -1867,8 +2037,7 @@
                         { name: '科学', color: '#0ABDE3' },
                         { name: '道德与法治', color: '#778BEB' }
                     ],
-                    schedule: { '0-0': 1, '0-2': 2, '0-4': 3, '1-0': 2, '1-2': 1, '1-4': 4, '2-0': 1, '2-2': 3, '2-4': 5,
-                        '3-0': 2, '3-2': 1, '3-4': 6, '4-0': 1, '4-2': 2, '4-4': 4 }
+                    schedule: {}
                 },
                 middle: {
                     name: '中学课表',
@@ -1896,23 +2065,7 @@
                     name: '高中课表',
                     desc: '早读/晚自习/课间操',
                     daysPerWeek: 7,
-                    slots: [
-                        { name: '早读', start: '07:20', end: '07:50', merged: false },
-                        { name: '第一节', start: '08:00', end: '08:40', merged: false },
-                        { name: '第二节', start: '08:50', end: '09:30', merged: false },
-                        { name: '大课间', start: '09:30', end: '10:00', merged: true },
-                        { name: '第三节', start: '10:00', end: '10:40', merged: false },
-                        { name: '第四节', start: '10:50', end: '11:30', merged: false },
-                        { name: '第五节', start: '11:40', end: '12:20', merged: false },
-                        { name: '午餐/午休', start: '12:20', end: '14:25', merged: true },
-                        { name: '第六节', start: '14:25', end: '15:05', merged: false },
-                        { name: '第七节', start: '15:15', end: '15:55', merged: false },
-                        { name: '眼保健操', start: '15:55', end: '16:10', merged: true },
-                        { name: '第八节', start: '16:10', end: '16:50', merged: false },
-                        { name: '晚自习一', start: '19:40', end: '20:30', merged: false },
-                        { name: '晚自习二', start: '20:40', end: '21:30', merged: false },
-                        { name: '晚自习三', start: '21:40', end: '22:20', merged: false }
-                    ],
+                    slots: HIGH_SLOTS,
                     courses: [
                         { name: '语文', color: '#FF6B6B' },
                         { name: '数学', color: '#54A0FF' },
@@ -2286,7 +2439,6 @@
                 saveData();
                 scheduleAutoFit(); }
 
-            // 单元格文字自适应（保留原字体大小风格）
             function autoFitCourseCells() {
                 const targets = document.querySelectorAll('.course-cell .course-name, .course-cell .course-meta');
                 if (!targets.length) return;
@@ -2367,7 +2519,6 @@
                             const visibleEntries = entries.filter(e => !e.weekType || oeView === 'all' || e
                             .weekType === oeView);
                             const isWeekend = d >= 5;
-                            // 关键：只有可见条目数量 > 1 时才应用 multi-entry 样式（隐藏备注）
                             const isMulti = visibleEntries.length > 1;
                             const cellCls =
                                 `course-cell ${visibleEntries.length ? 'filled' : ''} ${isMulti ? 'multi-entry' : ''} ${isWeekend ? 'weekend-cell' : ''}`;
@@ -2410,7 +2561,6 @@
                 bindTableEvents();
             }
 
-            // ---- 长按检测（手机端） ----
             let longPressTimer = null;
             let longPressTriggered = false;
 
@@ -2430,9 +2580,7 @@
             }
 
             function bindTableEvents() {
-                // 所有单元格：单击 = 选课弹窗，长按 = 菜单
                 tableBody.querySelectorAll('.course-cell').forEach(cell => {
-                    // 单击
                     cell.addEventListener('click', (e) => {
                         if (longPressTriggered) {
                             longPressTriggered = false;
@@ -2443,7 +2591,6 @@
                         openCoursePicker(day, slot);
                     });
 
-                    // 右键（桌面）
                     cell.addEventListener('contextmenu', (e) => {
                         e.preventDefault();
                         const day = parseInt(cell.dataset.day);
@@ -2451,7 +2598,6 @@
                         showContextMenu(e.clientX, e.clientY, day, slot);
                     });
 
-                    // 长按（手机）
                     cell.addEventListener('touchstart', (e) => {
                         const touch = e.touches[0];
                         startLongPress(cell, touch.clientX, touch.clientY);
@@ -2470,7 +2616,6 @@
                     }, { passive: true });
                 });
 
-                // 节次编辑
                 tableBody.querySelectorAll('.period-time-edit').forEach(el => {
                     el.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -2490,6 +2635,7 @@
                 const slot = data.timeSlots[slotIdx];
                 const isFirst = slotIdx === 0;
                 const isLast = slotIdx === data.timeSlots.length - 1;
+                const onlyOne = data.timeSlots.length === 1;
                 openModal(`
                     <div class="modal-header"><h3>编辑节次 · ${escapeHtml(slot.name)}</h3><button class="modal-close">✕</button></div>
                     <div class="modal-body">
@@ -2504,10 +2650,11 @@
                         </div>
                         <div class="form-group" style="font-size:0.72rem;color:var(--text-secondary);">提示：合并后该节次不安排课程，星期部分显示为一整行。</div>
                     </div>
-                    <div class="modal-footer" style="justify-content:space-between;">
+                    <div class="modal-footer" style="justify-content:space-between;flex-wrap:wrap;">
                         <div style="display:flex;gap:6px;">
                             <button class="btn btn-sm" id="btnSlotUp" ${isFirst ? 'disabled' : ''} title="上移">↑ 上移</button>
                             <button class="btn btn-sm" id="btnSlotDown" ${isLast ? 'disabled' : ''} title="下移">↓ 下移</button>
+                            <button class="btn btn-sm btn-danger" id="btnDeleteSlot" ${onlyOne ? 'disabled' : ''} title="删除此行">🗑️ 删除此节次</button>
                         </div>
                         <div style="display:flex;gap:6px;">
                             <button class="btn" id="btnCancelTime">取消</button>
@@ -2515,6 +2662,17 @@
                         </div>
                     </div>
                 `);
+
+                $('#btnDeleteSlot')?.addEventListener('click', () => {
+                    if (data.timeSlots.length <= 1) {
+                        alert('课表至少需要保留一个节次，无法删除最后一节。');
+                        return;
+                    }
+                    if (!confirm(`确定要删除节次「${data.timeSlots[slotIdx].name}」吗？该节次下的所有课程将被清空。`)) return;
+                    deleteSlot(slotIdx);
+                    closeModal();
+                });
+
                 $('#btnCancelTime').addEventListener('click', closeModal);
                 $('#btnSaveTime').addEventListener('click', () => {
                     data.timeSlots[slotIdx].name = $('#editSlotName').value.trim() || '节次';
@@ -2527,6 +2685,31 @@
                 });
                 $('#btnSlotUp')?.addEventListener('click', () => moveSlot(slotIdx, -1));
                 $('#btnSlotDown')?.addEventListener('click', () => moveSlot(slotIdx, 1));
+            }
+
+            function deleteSlot(idx) {
+                data.timeSlots.splice(idx, 1);
+                const newSchedule = {};
+                Object.keys(data.schedule).forEach(key => {
+                    const parts = key.split('-');
+                    const day = parseInt(parts[0]);
+                    const slot = parseInt(parts[1]);
+                    if (slot === idx) {
+                        return;
+                    } else if (slot > idx) {
+                        const newKey = `${day}-${slot - 1}`;
+                        newSchedule[newKey] = data.schedule[key];
+                    } else {
+                        newSchedule[key] = data.schedule[key];
+                    }
+                });
+                data.schedule = newSchedule;
+                if (data.timeSlots.length === 0) {
+                    data.timeSlots = generateSlots(1, '08:00', 40, 10, 0, 0);
+                    data.timeSlots[0].name = '第一节';
+                }
+                saveData();
+                renderAll();
             }
 
             function moveSlot(idx, dir) {
@@ -2559,14 +2742,32 @@
                 modalContent.innerHTML = html;
                 modalContent.classList.toggle('wide', !!wide);
                 modalOverlay.classList.add('active');
-                modalOverlay.querySelector('.modal-close')?.addEventListener('click', closeModal);
+                // 绑定关闭按钮
+                const closeBtn = modalContent.querySelector('.modal-close');
+                if (closeBtn) closeBtn.addEventListener('click', closeModal);
                 _modalOutsideHandler = (e) => { if (e.target === modalOverlay) closeModal(); };
                 modalOverlay.addEventListener('click', _modalOutsideHandler);
             }
 
             function closeModal() {
+                closeColorPopover();
                 modalOverlay.classList.remove('active');
                 modalContent.innerHTML = '';
+            }
+
+            // 选课卡片文字自适应：超宽时逐步缩小字号，保证不换行
+            function fitPickerCardText() {
+                const els = modalContent.querySelectorAll('.picker-grid .picker-name, .picker-grid .picker-meta');
+                els.forEach(el => {
+                    el.style.fontSize = '';
+                    let size = parseFloat(getComputedStyle(el).fontSize);
+                    const min = 8.5;
+                    let guard = 24;
+                    while (el.scrollWidth > el.clientWidth && size > min && guard-- > 0) {
+                        size -= 0.5;
+                        el.style.fontSize = size + 'px';
+                    }
+                });
             }
 
             // ============ 多课表操作 ============
@@ -2636,8 +2837,8 @@
                             ${item.id === currentScheduleId ? '<span class="sched-current-tag">当前</span>' : ''}
                         </div>
                         <div class="sched-actions">
-                            ${item.id === currentScheduleId ? '' : `<button class="btn btn-sm" data-act="switch" data-id="${item.id}">切换</button>`}
-                            <button class="btn btn-sm btn-danger" data-act="delete" data-id="${item.id}" ${scheduleIndex.list.length <= 1 ? 'disabled' : ''}>删除</button>
+                            ${item.id === currentScheduleId ? '' : `<button class="btn btn-switch" data-act="switch" data-id="${item.id}">切换</button>`}
+                            <button class="btn btn-danger" data-act="delete" data-id="${item.id}" ${scheduleIndex.list.length <= 1 ? 'disabled' : ''}>删除</button>
                         </div>
                     </div>`).join('');
                 openModal(`
@@ -2958,7 +3159,7 @@
                 });
             }
 
-            // ============ 课程选择器弹窗（核心修复：切换周类型时自动保存备注） ============
+            // ============ 课程选择器弹窗 ============
             function openCoursePicker(day, slotIdx) {
                 const oeEnabled = !!(data.settings.oddEven && data.settings.oddEven.enabled);
                 const curView = getOddEvenView();
@@ -2984,7 +3185,6 @@
                 };
                 const wtLabel = (wt) => wt === 'odd' ? '仅单周' : (wt === 'even' ? '仅双周' : '每周');
 
-                // ---- 保存当前备注到当前槽位（核心修复：切换时先存再换） ----
                 function saveCurrentNote() {
                     const ta = $('#cellNoteInput');
                     if (!ta) return;
@@ -2994,13 +3194,9 @@
                     if (idx >= 0) {
                         ents[idx].note = note;
                         setCellEntries(day, slotIdx, ents);
-                    } else if (note.trim() && ents.length < 2) {
-                        // 如果当前槽位无课程但备注不为空，且总条目<2，尝试创建一个临时条目（但不选课，只存备注？）
-                        // 更稳妥：暂存到内存，用户选课时再合并。但为简化，直接忽略（用户需先选课再输备注）
                     }
                 }
 
-                // ---- 构建本格已排 chips ----
                 const existingChips = () => {
                     const ents = getCellEntries(day, slotIdx);
                     if (!ents.length) return '<span class="slot-empty-hint">本格为空 · 在下方选择课程即可排入</span>';
@@ -3049,12 +3245,12 @@
                         <div class="picker-grid">
                             ${cardsHtml()}
                             <div class="picker-card add-card" id="btnAddNewCourseInPicker">
-                                <div style="font-size:1.5rem;line-height:1;">+</div>
-                                <div class="picker-name" style="font-size:0.75rem;">新增课程</div>
+                                <div style="font-size:1.1rem;line-height:1;">+</div>
+                                <div class="picker-name">新增课程</div>
                             </div>
                             <div class="picker-card add-card" id="btnClearCell">
-                                <div style="font-size:1.2rem;line-height:1;">✕</div>
-                                <div class="picker-name" style="font-size:0.75rem;">清空单元格</div>
+                                <div style="font-size:0.95rem;line-height:1;">✕</div>
+                                <div class="picker-name">清空单元格</div>
                             </div>
                         </div>
                         ${oeEnabled ? `
@@ -3077,8 +3273,8 @@
                         <button class="btn btn-primary" id="btnPickerSaveNote">保存备注</button>
                     </div>
                 `, true);
+                setTimeout(fitPickerCardText, 0);
 
-                // ---- 同步UI ----
                 function syncActiveUi() {
                     const ents = getCellEntries(day, slotIdx);
                     document.querySelectorAll('#weekTypeSeg .wt-btn').forEach(b => b.classList.toggle('active', b.dataset
@@ -3114,8 +3310,6 @@
                     sv.style.cursor = ok ? '' : 'not-allowed';
                 }
 
-                // ---- 事件绑定 ----
-                // 周类型切换：先保存当前备注，再切换
                 document.querySelectorAll('#weekTypeSeg .wt-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
                         saveCurrentNote();
@@ -3124,7 +3318,6 @@
                     });
                 });
 
-                // slot-chip 点击切换槽位：先保存当前备注
                 document.querySelectorAll('#slotChipList .slot-chip').forEach(chip => {
                     chip.addEventListener('click', (e) => {
                         if (e.target.closest('.slot-chip-del')) return;
@@ -3134,18 +3327,15 @@
                     });
                 });
 
-                // slot-chip 删除
                 document.querySelectorAll('#slotChipList .slot-chip-del').forEach(del => {
                     del.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        // 删除前保存当前备注
                         saveCurrentNote();
                         removeCellEntryAt(day, slotIdx, parseInt(del.dataset.idx));
                         openCoursePicker(day, slotIdx);
                     });
                 });
 
-                // 提交课程
                 function commitPick(cid) {
                     const note = ($('#cellNoteInput') ? $('#cellNoteInput').value : '') || '';
                     if (!oeEnabled || activeSlot === '') {
@@ -3201,17 +3391,69 @@
                 });
 
                 $('#btnPickerCancel').addEventListener('click', closeModal);
-
-                // 初始同步
                 syncActiveUi();
             }
 
             // ============ 课程库弹窗 ============
+            // 自定义颜色选择弹层（原生 input[type=color] 在部分手机 WebView 上不弹窗，故自实现）
+            function closeColorPopover() {
+                const ov = document.getElementById('colorPopOverlay');
+                if (ov) ov.remove();
+            }
+            function applyCourseColor(cid, color) {
+                const c = getCourseById(cid);
+                if (!c) return;
+                c.color = color;
+                saveData();
+                renderTable();
+                const preview = document.querySelector(`.course-item[data-id="${cid}"] .color-preview`);
+                if (preview) preview.style.background = color;
+                closeColorPopover();
+            }
+            function openColorPopover(cid, anchor) {
+                closeColorPopover();
+                const c = getCourseById(cid);
+                if (!c) return;
+                const ov = document.createElement('div');
+                ov.className = 'color-pop-overlay';
+                ov.id = 'colorPopOverlay';
+                ov.innerHTML = `
+                    <div class="color-popover">
+                        <div class="cp-title">选择颜色</div>
+                        <div class="color-palette">${PRESET_COLORS.map(pc =>
+                            `<div class="color-swatch ${pc === c.color ? 'selected' : ''}" data-color="${pc}" style="background:${pc};" title="${pc}"></div>`).join('')}</div>
+                        <div class="cp-custom-row">
+                            <input type="color" class="cp-native" value="${c.color}" title="自定义取色（如浏览器支持）">
+                            <input type="text" class="cp-hex" value="${c.color}" placeholder="#8cc1b4" title="输入颜色代码">
+                        </div>
+                    </div>`;
+                document.body.appendChild(ov);
+                const pop = ov.querySelector('.color-popover');
+                const r = anchor.getBoundingClientRect();
+                const pw = Math.min(252, window.innerWidth - 24), ph = 170;
+                pop.style.left = Math.max(12, Math.min(r.left, window.innerWidth - pw - 12)) + 'px';
+                pop.style.top = Math.max(12, Math.min(r.bottom + 8, window.innerHeight - ph - 12)) + 'px';
+                ov.addEventListener('click', e => { if (e.target === ov) closeColorPopover(); });
+                ov.querySelectorAll('.color-swatch').forEach(sw => {
+                    sw.addEventListener('click', () => applyCourseColor(cid, sw.dataset.color));
+                });
+                const native = ov.querySelector('.cp-native');
+                native.addEventListener('input', () => applyCourseColor(cid, native.value));
+                const hex = ov.querySelector('.cp-hex');
+                hex.addEventListener('change', () => {
+                    const v = hex.value.trim();
+                    if (/^#[0-9a-fA-F]{6}$/.test(v)) applyCourseColor(cid, v);
+                    else alert('请输入 6 位颜色代码，如 #8cc1b4');
+                });
+            }
+
             function openCourseLibraryModal(onDone) {
                 const renderLibraryList = () => {
                     const listHtml = data.courses.map(c => `
                         <div class="course-item" data-id="${c.id}">
-                            <input type="color" class="course-color" data-id="${c.id}" value="${c.color}" title="颜色">
+                            <div class="color-wrapper course-color-trigger" data-id="${c.id}" title="点击更改颜色">
+                                <div class="color-preview" style="background:${c.color};"></div>
+                            </div>
                             <div class="course-fields">
                                 <div class="course-fields-row">
                                     <input type="text" class="name" data-id="${c.id}" value="${c.name}" placeholder="课程名称">
@@ -3222,7 +3464,7 @@
                                     <input type="text" data-field="note" data-id="${c.id}" value="${c.note}" placeholder="备注（可选）" style="flex:3;">
                                 </div>
                             </div>
-                            <button class="btn btn-danger btn-icon course-delete" data-id="${c.id}" title="删除">✕</button>
+                            <button class="btn-delete-course" data-id="${c.id}" title="删除此课程">删除</button>
                         </div>
                     `).join('');
 
@@ -3232,7 +3474,7 @@
                     openModal(`
                         <div class="modal-header"><h3>课程库</h3><button class="modal-close">✕</button></div>
                         <div class="modal-body">
-                            <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:10px;">集中维护课程名称、颜色、教师、教室和备注，方便反复排课。</p>
+                            <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:10px;">集中维护课程名称、颜色、教师、教室和备注，方便反复排课。点击颜色块可更换颜色。</p>
                             <div class="course-list" id="libraryList">${listHtml}</div>
                             <button class="btn btn-primary" id="btnAddCourse" style="width:100%;margin-top:12px;padding:8px;">+ 添加课程</button>
                             <div style="margin-top:14px;">
@@ -3246,14 +3488,18 @@
                         </div>
                     `, true);
 
-                    document.querySelectorAll('.course-item input.course-color').forEach(inp => {
-                        inp.addEventListener('input', () => {
-                            const c = getCourseById(parseInt(inp.dataset.id));
-                            if (c) c.color = inp.value;
-                            saveData();
-                            renderTable();
+                    document.querySelectorAll('.course-color-trigger').forEach(el => {
+                        el.addEventListener('click', () => openColorPopover(parseInt(el.dataset.id), el));
+                    });
+
+                    document.querySelectorAll('.color-palette .color-swatch').forEach(sw => {
+                        sw.addEventListener('click', function() {
+                            const lastItem = document.querySelector('.course-item:last-child');
+                            if (!lastItem) return;
+                            applyCourseColor(parseInt(lastItem.dataset.id), this.dataset.color);
                         });
                     });
+
                     document.querySelectorAll('.course-item input.name').forEach(inp => {
                         inp.addEventListener('change', () => {
                             const c = getCourseById(parseInt(inp.dataset.id));
@@ -3270,7 +3516,7 @@
                             renderTable();
                         });
                     });
-                    document.querySelectorAll('.course-delete').forEach(btn => {
+                    document.querySelectorAll('.btn-delete-course').forEach(btn => {
                         btn.addEventListener('click', () => {
                             const id = parseInt(btn.dataset.id);
                             if (data.courses.length <= 1) { alert('至少保留一门课程'); return; }
@@ -3284,15 +3530,6 @@
                                 renderTable();
                                 renderLibraryList();
                             }
-                        });
-                    });
-                    document.querySelectorAll('.color-swatch').forEach(sw => {
-                        sw.addEventListener('click', () => {
-                            const last = data.courses[data.courses.length - 1];
-                            if (last) { last.color = sw.dataset.color;
-                                saveData();
-                                renderTable();
-                                renderLibraryList(); }
                         });
                     });
                     $('#btnAddCourse').addEventListener('click', () => {
@@ -3684,7 +3921,7 @@
 
                 ctx.fillStyle = t.subColor;
                 ctx.font = '14px sans-serif';
-                ctx.fillText('极简课程表 · V3.2.1', W / 2, H - 34);
+                ctx.fillText('极简课程表 · V3.4', W / 2, H - 34);
 
                 saveExportFile(`${data.title}_课程表_精美.png`, 'image/png', canvas.toDataURL('image/png'));
             }
@@ -4099,24 +4336,27 @@
 
             // ============ 初始化 ============
             renderAll();
-            console.log('📚 智能课程表 V3.2.1 已加载');
+            console.log('📚 智能课程表 V3.4 已加载');
             console.log('💾 数据自动保存到本地');
             console.log('📱 点击单元格选课 · 长按/右键弹出菜单');
-            console.log('✏️ 切换单双周时备注自动保存 · 单双周视图下备注正常显示');
+            console.log('✏️ 切换单双周时备注自动保存 · 可删除整行节次');
+            console.log('📋 小学/高中模板已更新为备份文件中的节次结构');
+            console.log('🔝 弹窗头部已固定，内容区域可滚动');
         })();
     </script>
-<script>
-// 源码保护：禁止右键查看/查看源代码/开发者工具（不影响正常使用）
-document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'U' || e.key === 'S')) {
-        e.preventDefault();
-    }
-    if (e.key === 'F12') { e.preventDefault(); }
-    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
-        e.preventDefault();
-    }
-});
-</script>
+
+    <script>
+        // 源码保护：禁止右键查看/查看源代码/开发者工具（不影响正常使用）
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'U' || e.key === 'S')) {
+                e.preventDefault();
+            }
+            if (e.key === 'F12') { e.preventDefault(); }
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
