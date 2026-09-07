@@ -457,15 +457,20 @@
             color: var(--primary);
             border-color: var(--primary);
         }
+        .schedule-table th:first-child {
+            width: 76px;
+        }
         .time-col .period-time {
             display: block;
             font-size: 0.65rem;
+            white-space: nowrap;
         }
         .time-col .period-time-edit {
             cursor: pointer;
             transition: all 0.15s;
             display: block;
             font-variant-numeric: tabular-nums;
+            white-space: nowrap;
         }
         .time-col .period-time-edit:hover {
             color: var(--primary);
@@ -1587,6 +1592,9 @@
                 font-size: 0.6rem;
                 padding: 4px 3px !important;
             }
+            .schedule-table th:first-child {
+                width: 66px;
+            }
             .time-col .period-name {
                 font-size: 0.7rem;
             }
@@ -1724,8 +1732,14 @@
                 font-size: 0.5rem;
                 padding: 3px 2px !important;
             }
+            .schedule-table th:first-child {
+                width: 60px;
+            }
             .time-col .period-name {
                 font-size: 0.6rem;
+            }
+            .time-col .period-time {
+                font-size: 0.5rem;
             }
             .course-cell {
                 min-height: 34px;
@@ -1780,8 +1794,14 @@
                 font-size: 0.45rem;
                 padding: 2px 1px !important;
             }
+            .schedule-table th:first-child {
+                width: 56px;
+            }
             .time-col .period-name {
                 font-size: 0.5rem;
+            }
+            .time-col .period-time {
+                font-size: 0.45rem;
             }
             .course-cell {
                 min-height: 28px;
@@ -1880,6 +1900,9 @@
                 min-width: 48px;
                 padding: 2px 3px !important;
                 font-size: 0.55rem;
+            }
+            .schedule-table th:first-child {
+                width: 64px;
             }
             .time-col .period-name {
                 font-size: 0.62rem;
@@ -1994,7 +2017,7 @@
                 { name: '第二节', start: '09:15', end: '09:55', merged: false },
                 { name: '升旗/大课间', start: '09:55', end: '10:35', merged: true },
                 { name: '第三节', start: '10:35', end: '11:15', merged: false },
-                { name: '课间休息（眼保健操）', start: '11:15', end: '11:30', merged: true },
+                { name: '眼保健操', start: '11:15', end: '11:30', merged: true },
                 { name: '第四节', start: '11:30', end: '12:10', merged: false },
                 { name: '午休', start: '12:10', end: '13:30', merged: true },
                 { name: '校园运动', start: '13:35', end: '14:05', merged: true },
