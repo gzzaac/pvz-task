@@ -3787,6 +3787,26 @@
                 ctx.closePath();
             }
 
+            // 单双周角标：与界面 .week-tag 样式一致（深色半透明圆角块 + 白字）
+            function weekTagWidth(ctx, fs) {
+                ctx.font = 'bold ' + fs + 'px sans-serif';
+                return ctx.measureText('单').width + 8;
+            }
+
+            function drawWeekTag(ctx, wt, x, cy, fs) {
+                const label = wt === 'odd' ? '单' : '双';
+                ctx.font = 'bold ' + fs + 'px sans-serif';
+                const tw = ctx.measureText(label).width;
+                const pw = tw + 8, ph = fs + 6;
+                ctx.fillStyle = 'rgba(0,0,0,0.30)';
+                roundRectPath(ctx, x, cy - ph / 2, pw, ph, 5);
+                ctx.fill();
+                ctx.fillStyle = '#fff';
+                ctx.fillText(label, x + pw / 2, cy + fs * 0.36);
+            }
+
+            function wtSuffix(wt) { return wt === 'odd' ? '（单）' : (wt === 'even' ? '（双）' : ''); }
+
             function exportPrettyImage(themeKey) {
                 const t = PRETTY_THEMES[themeKey] || PRETTY_THEMES.fresh;
                 const rows = getExportData();
@@ -3906,37 +3926,67 @@
                         for (let d = 0; d < days; d++) {
                             const cx = tx + timeColW + d * colW;
                             ctx.strokeRect(cx, y, colW, rowH);
-                            const course = row.courses[d] ? getCourseById(row.courses[d]) : null;
-                            if (course) {
-                                ctx.fillStyle = course.color + '2e';
-                                roundRectPath(ctx, cx + 7, y + 8, colW - 14, rowH - 16, 10);
-                                ctx.fill();
-                                ctx.fillStyle = '#4a443c';
-                                let fs = 19;
-                                ctx.font = `bold ${fs}px sans-serif`;
-                                while (ctx.measureText(course.name).width > colW - 30 && fs > 12) { fs--;
-                                    ctx.font = `bold ${fs}px sans-serif`; }
-                                const meta = [course.classroom, course.teacher].filter(Boolean).join(' · ');
-                                const note = getCellNote(d, r) || (course.note || '');
-                                const line2 = meta || note;
-                                const line3 = (meta && note) ? note : '';
-                                const drawMeta = (txt, baseY) => {
-                                    ctx.fillStyle = '#8b9a90';
-                                    ctx.font = '13px sans-serif';
-                                    let t = txt;
-                                    while (ctx.measureText(t).width > colW - 26 && t.length > 2) t = t.slice(
-                                        0, -2) + '…';
-                                    ctx.fillText(t, cx + colW / 2, baseY);
-                                };
-                                if (line3) {
-                                    ctx.fillText(course.name, cx + colW / 2 + 2, y + rowH / 2 - 13);
-                                    drawMeta(line2, y + rowH / 2 + 4);
-                                    drawMeta(line3, y + rowH / 2 + 19);
-                                } else if (line2) {
-                                    ctx.fillText(course.name, cx + colW / 2 + 2, y + rowH / 2 - 4);
-                                    drawMeta(line2, y + rowH / 2 + 18);
-                                } else {
-                                    ctx.fillText(course.name, cx + colW / 2 + 2, y + rowH / 2 + 7);
+                            const ents = ((row.entries && row.entries[d]) || []).filter(en => en && en.cid != null);
+                            if (ents.length >= 2) {
+                                const gap = 6;
+                                const cardW = (colW - 14 - gap) / 2;
+                                ents.slice(0, 2).forEach((ent, k) => {
+                                    const course = getCourseById(ent.cid);
+                                    if (!course) return;
+                                    const ccx = cx + 7 + k * (cardW + gap);
+                                    ctx.fillStyle = course.color + '2e';
+                                    roundRectPath(ctx, ccx, y + 8, cardW, rowH - 16, 10);
+                                    ctx.fill();
+                                    let fs = 15;
+                                    ctx.font = `bold ${fs}px sans-serif`;
+                                    const tagW = ent.weekType ? weekTagWidth(ctx, 10) : 0;
+                                    while (ctx.measureText(course.name).width + (ent.weekType ? 3 + tagW : 0) > cardW - 8 && fs > 10) { fs--;
+                                        ctx.font = `bold ${fs}px sans-serif`; }
+                                    const nw = ctx.measureText(course.name).width;
+                                    const groupW = nw + (ent.weekType ? 3 + tagW : 0);
+                                    const sx = ccx + (cardW - groupW) / 2;
+                                    const nameBase = y + rowH / 2 + 6;
+                                    ctx.fillStyle = '#4a443c';
+                                    ctx.fillText(course.name, sx + nw / 2, nameBase);
+                                    if (ent.weekType) drawWeekTag(ctx, ent.weekType, sx + nw + 3, nameBase - fs * 0.35, 10);
+                                });
+                            } else if (ents.length === 1) {
+                                const course = getCourseById(ents[0].cid);
+                                if (course) {
+                                    ctx.fillStyle = course.color + '2e';
+                                    roundRectPath(ctx, cx + 7, y + 8, colW - 14, rowH - 16, 10);
+                                    ctx.fill();
+                                    ctx.fillStyle = '#4a443c';
+                                    let fs = 19;
+                                    ctx.font = `bold ${fs}px sans-serif`;
+                                    const wt = ents[0].weekType;
+                                    const tagW = wt ? weekTagWidth(ctx, 11) : 0;
+                                    while (ctx.measureText(course.name).width + (wt ? 4 + tagW : 0) > colW - 30 && fs > 12) { fs--;
+                                        ctx.font = `bold ${fs}px sans-serif`; }
+                                    const meta = [course.classroom, course.teacher].filter(Boolean).join(' · ');
+                                    const note = getCellNote(d, r) || (course.note || '');
+                                    const line2 = meta || note;
+                                    const line3 = (meta && note) ? note : '';
+                                    const drawMeta = (txt, baseY) => {
+                                        ctx.fillStyle = '#8b9a90';
+                                        ctx.font = '13px sans-serif';
+                                        let t = txt;
+                                        while (ctx.measureText(t).width > colW - 26 && t.length > 2) t = t.slice(
+                                            0, -2) + '…';
+                                        ctx.fillText(t, cx + colW / 2, baseY);
+                                    };
+                                    const nw = ctx.measureText(course.name).width;
+                                    const groupW = nw + (wt ? 4 + tagW : 0);
+                                    const sx = cx + 2 + (colW - groupW) / 2;
+                                    const nameBase = line3 ? y + rowH / 2 - 13 : (line2 ? y + rowH / 2 - 4 : y + rowH / 2 + 7);
+                                    ctx.fillText(course.name, sx + nw / 2, nameBase);
+                                    if (wt) drawWeekTag(ctx, wt, sx + nw + 4, nameBase - fs * 0.35, 11);
+                                    if (line3) {
+                                        drawMeta(line2, y + rowH / 2 + 4);
+                                        drawMeta(line3, y + rowH / 2 + 19);
+                                    } else if (line2) {
+                                        drawMeta(line2, y + rowH / 2 + 18);
+                                    }
                                 }
                             }
                         }
@@ -4065,7 +4115,8 @@
                     courses: Array.from({ length: data.settings.daysPerWeek }, (_, d) => {
                         const e = getCellEntries(d, i);
                         return e.length ? e[0].cid : null;
-                    })
+                    }),
+                    entries: Array.from({ length: data.settings.daysPerWeek }, (_, d) => getCellEntries(d, i))
                 }));
             }
 
@@ -4143,35 +4194,68 @@
                             y + rowHeight / 2 + 5);
                     } else {
                         for (let d = 0; d < data.settings.daysPerWeek; d++) {
-                            const course = row.courses[d] ? getCourseById(row.courses[d]) : null;
+                            const ents = ((row.entries && row.entries[d]) || []).filter(en => en && en.cid != null);
                             const cx = timeColWidth + d * colWidth;
-                            if (course) {
-                                ctx.fillStyle = course.color + '22';
-                                roundRectPath(ctx, cx + 4, y + 4, colWidth - 8, rowHeight - 8, 8);
-                                ctx.fill();
-                                ctx.fillStyle = course.color;
-                                ctx.font = 'bold 15px sans-serif';
-                                const meta = [course.classroom, course.teacher].filter(Boolean).join(' · ');
-                                const note = getCellNote(d, rIdx) || (course.note || '');
-                                const line2 = meta || note;
-                                const line3 = (meta && note) ? note : '';
-                                const drawSecond = (txt, baseY) => {
-                                    ctx.font = '12px sans-serif';
-                                    ctx.fillStyle = '#5b6961';
-                                    let t = txt;
-                                    while (ctx.measureText(t).width > colWidth - 26 && t.length > 2) t = t
-                                        .slice(0, -2) + '…';
-                                    ctx.fillText(t, cx + colWidth / 2, baseY);
-                                };
-                                if (line3) {
-                                    ctx.fillText(course.name, cx + colWidth / 2, y + rowHeight / 2 - 13);
-                                    drawSecond(line2, y + rowHeight / 2 + 4);
-                                    drawSecond(line3, y + rowHeight / 2 + 19);
-                                } else if (line2) {
-                                    ctx.fillText(course.name, cx + colWidth / 2, y + rowHeight / 2 - 1);
-                                    drawSecond(line2, y + rowHeight / 2 + 16);
-                                } else {
-                                    ctx.fillText(course.name, cx + colWidth / 2, y + rowHeight / 2 + 5);
+                            if (ents.length >= 2) {
+                                const gap = 5;
+                                const cardW = (colWidth - 8 - gap) / 2;
+                                ents.slice(0, 2).forEach((ent, k) => {
+                                    const course = getCourseById(ent.cid);
+                                    if (!course) return;
+                                    const ccx = cx + 4 + k * (cardW + gap);
+                                    ctx.fillStyle = course.color + '22';
+                                    roundRectPath(ctx, ccx, y + 4, cardW, rowHeight - 8, 8);
+                                    ctx.fill();
+                                    let fs = 13;
+                                    ctx.font = 'bold ' + fs + 'px sans-serif';
+                                    const tagW = ent.weekType ? weekTagWidth(ctx, 9) : 0;
+                                    while (ctx.measureText(course.name).width + (ent.weekType ? 3 + tagW : 0) > cardW - 6 && fs > 10) { fs--;
+                                        ctx.font = 'bold ' + fs + 'px sans-serif'; }
+                                    const nw = ctx.measureText(course.name).width;
+                                    const groupW = nw + (ent.weekType ? 3 + tagW : 0);
+                                    const sx = ccx + (cardW - groupW) / 2;
+                                    const nameBase = y + rowHeight / 2 + 5;
+                                    ctx.fillStyle = course.color;
+                                    ctx.fillText(course.name, sx + nw / 2, nameBase);
+                                    if (ent.weekType) drawWeekTag(ctx, ent.weekType, sx + nw + 3, nameBase - fs * 0.35, 9);
+                                });
+                            } else if (ents.length === 1) {
+                                const course = getCourseById(ents[0].cid);
+                                if (course) {
+                                    ctx.fillStyle = course.color + '22';
+                                    roundRectPath(ctx, cx + 4, y + 4, colWidth - 8, rowHeight - 8, 8);
+                                    ctx.fill();
+                                    ctx.fillStyle = course.color;
+                                    let fs = 15;
+                                    ctx.font = 'bold ' + fs + 'px sans-serif';
+                                    const wt = ents[0].weekType;
+                                    const tagW = wt ? weekTagWidth(ctx, 9) : 0;
+                                    while (ctx.measureText(course.name).width + (wt ? 4 + tagW : 0) > colWidth - 26 && fs > 11) { fs--;
+                                        ctx.font = 'bold ' + fs + 'px sans-serif'; }
+                                    const meta = [course.classroom, course.teacher].filter(Boolean).join(' · ');
+                                    const note = getCellNote(d, rIdx) || (course.note || '');
+                                    const line2 = meta || note;
+                                    const line3 = (meta && note) ? note : '';
+                                    const drawSecond = (txt, baseY) => {
+                                        ctx.font = '12px sans-serif';
+                                        ctx.fillStyle = '#5b6961';
+                                        let t = txt;
+                                        while (ctx.measureText(t).width > colWidth - 26 && t.length > 2) t = t
+                                            .slice(0, -2) + '…';
+                                        ctx.fillText(t, cx + colWidth / 2, baseY);
+                                    };
+                                    const nw = ctx.measureText(course.name).width;
+                                    const groupW = nw + (wt ? 4 + tagW : 0);
+                                    const sx = cx + (colWidth - groupW) / 2;
+                                    const nameBase = line3 ? y + rowHeight / 2 - 13 : (line2 ? y + rowHeight / 2 - 1 : y + rowHeight / 2 + 5);
+                                    ctx.fillText(course.name, sx + nw / 2, nameBase);
+                                    if (wt) drawWeekTag(ctx, wt, sx + nw + 4, nameBase - fs * 0.35, 9);
+                                    if (line3) {
+                                        drawSecond(line2, y + rowHeight / 2 + 4);
+                                        drawSecond(line3, y + rowHeight / 2 + 19);
+                                    } else if (line2) {
+                                        drawSecond(line2, y + rowHeight / 2 + 16);
+                                    }
                                 }
                             }
                             ctx.strokeRect(cx, y, colWidth, rowHeight);
@@ -4204,9 +4288,16 @@
                         html += `<td class="merged-cell" colspan="${data.settings.daysPerWeek}">${row.slot.name}</td>`;
                     } else {
                         for (let d = 0; d < data.settings.daysPerWeek; d++) {
-                            const course = row.courses[d] ? getCourseById(row.courses[d]) : null;
-                            if (course) {
-                                html += `<td><span class="course-name" style="color:${course.color};">${escapeHtml(course.name)}</span>`;
+                            const ents = ((row.entries && row.entries[d]) || []).filter(en => en && en.cid != null);
+                            if (ents.length >= 2) {
+                                const lines = ents.slice(0, 2).map(en => {
+                                    const c = getCourseById(en.cid);
+                                    return c ? `<span class="course-name" style="color:${c.color};">${escapeHtml(c.name + wtSuffix(en.weekType))}</span>` : '';
+                                }).filter(Boolean).join('<br>');
+                                html += `<td>${lines || '&nbsp;'}</td>`;
+                            } else if (ents.length === 1) {
+                                const course = getCourseById(ents[0].cid);
+                                html += `<td><span class="course-name" style="color:${course.color};">${escapeHtml(course.name + wtSuffix(ents[0].weekType))}</span>`;
                                 const meta = [course.classroom, course.teacher].filter(Boolean).join(' · ');
                                 if (meta) html += `<br><span class="course-meta">${escapeHtml(meta)}</span>`;
                                 const note = getCellNote(d, rIdx) || (course.note || '');
@@ -4240,9 +4331,16 @@
                         html += `<td colspan="${data.settings.daysPerWeek}">${row.slot.name}</td>`;
                     } else {
                         for (let d = 0; d < data.settings.daysPerWeek; d++) {
-                            const course = row.courses[d] ? getCourseById(row.courses[d]) : null;
-                            if (course) {
-                                let cell = course.name;
+                            const ents = ((row.entries && row.entries[d]) || []).filter(en => en && en.cid != null);
+                            if (ents.length >= 2) {
+                                const lines = ents.slice(0, 2).map(en => {
+                                    const c = getCourseById(en.cid);
+                                    return c ? c.name + wtSuffix(en.weekType) : '';
+                                }).filter(Boolean).join('\n');
+                                html += `<td>${escapeHtml(lines).replace(/\n/g, '<br>')}</td>`;
+                            } else if (ents.length === 1) {
+                                const course = getCourseById(ents[0].cid);
+                                let cell = course.name + wtSuffix(ents[0].weekType);
                                 if (course.classroom) cell += `\n${course.classroom}`;
                                 if (course.teacher) cell += `\n${course.teacher}`;
                                 const note = getCellNote(d, rIdx) || (course.note || '');
