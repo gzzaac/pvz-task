@@ -97,8 +97,8 @@
   /* ===== 卡片网格 ===== */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+    gap: 24px;
   }
 
   .card {
@@ -162,6 +162,7 @@
   .art-dictation { background: linear-gradient(135deg, #f5daa8, #eeb49a); }
   .art-pvz      { background: linear-gradient(135deg, #b9ddc7, #8cc1b4); }
   .art-schedule { background: linear-gradient(135deg, #b5d5e5, #8fbfd6); }
+  .art-retire   { background: linear-gradient(135deg, #f0c98f, #e7a78c); }
 
   .card-body {
     padding: 22px 24px 26px;
@@ -269,6 +270,17 @@
         <div class="card-body">
           <div class="card-title">课程表 · 智能排课</div>
           <p class="card-desc">支持多课程表切换、单双周排课，课节时间灵活可调，支持导出课程表图片，小学生到高中都能用。</p>
+          <span class="card-go">开始使用 <span class="arrow">→</span></span>
+        </div>
+      </a>
+
+      <a class="card" href="./retirement%20.html">
+        <div class="card-art art-retire">
+          <span class="emoji">🧮</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">退休养老测算</div>
+          <p class="card-desc">输入城市、退休年份、性别、已缴年数与缴费比例，测算养老保险退休金，支持全国各省市数据一键填入。</p>
           <span class="card-go">开始使用 <span class="arrow">→</span></span>
         </div>
       </a>
